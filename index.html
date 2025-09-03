@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>仁和國中管樂團</title>
+  <meta name="description" content="全桃園唯一行進管樂、室內合奏並行的優秀樂團" />
+  <link rel="preload" as="image" href="assets/hero.jpg">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./" aria-label="仁和國中管樂團首頁">
+        <img src="assets/logo.png" alt="仁和國中管樂團 團徽" class="brand-logo">
+        <span class="brand-zh">仁和中管樂團</span>
+        <span class="brand-en">Renhe Junior High School Wind Band</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- 背景玻璃層：隨捲動改色 -->
+  <div class="bg-glass" aria-hidden="true"></div>
+
+
+  <!-- 背景玻璃層：隨捲動改色 -->
+  <div class="bg-glass" aria-hidden="true"></div>
+
+
+
+  <a id="top" class="sr-anchor" aria-hidden="true"></a>
+
+  <!-- 單一主體捲動容器 -->
+  <main class="snap" id="main">
+    <!-- HERO (第一屏) -->
+    <section class="hero panel" role="img" aria-label="Renhe Wind Band">
+      <div class="hero-media">
+        <img src="assets/hero.jpg" alt="" />
+        <div class="hero-blur"></div>
+      </div>
+      <div class="hero-content container">
+        <h1>仁和國中管樂團</h1>
+        <p class="sub">
+          全桃園唯一行進管樂、室內合奏並行的優秀樂團<br/>
+          擁有優良師資、資源與傳統，長年於學生音樂比賽中屢獲佳績<br/>
+          歡迎就讀仁和國中的同學們加入！
+        </p>
+      </div>
+    </section>
+
+        <!-- 樂團特色（Hero 之後、楊教練之前） -->
+    <section class="panel features-section" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <h2 id="features-title" class="sr-only">樂團特色</h2>
+        <div class="features-grid">
+          <article class="feature-card glow-yellow">
+            <p>合奏 + 行進管樂並進<br>培養孩子的</p>
+          </article>
+
+          <article class="feature-card glow-blue">
+            <p>充實的樂團內容訓練<br>學習的同時有更多的體驗</p>
+          </article>
+
+          <article class="feature-card glow-green">
+            <p>學習如何與團隊合奏<br>如何與他人互相配合</p>
+          </article>
+
+          <article class="feature-card glow-red">
+            <p>大量演出機會<br>學習克服緊張、學習抗壓</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 1. 樂團總指揮 楊宇綸 老師 -->
+    <section class="panel profile-section" id="sec-yang" data-theme="yang" aria-labelledby="ttl-yang">
+      <div class="container profile">
+        <img class="profile-photo yang" src="assets/yang.jpg" alt="樂團總指揮 楊宇綸 老師">
+        <div class="profile-body">
+          <h2 id="ttl-yang" class="profile-title">樂團總指揮　楊宇綸 老師</h2>
+          <ul class="profile-list">
+            <li>中原大學會計系，輔仁大學音樂研究所樂團指揮組，指揮師事林俊吉、郭聯昌教授。</li>
+            <li>自2001年任平鎮高中指導老師至今，連續帶領平鎮高中管樂團代表參加全國學生音樂比賽榮獲特優及優勝。<br>
+              2006年指揮平鎮國中參加台管盃管樂大賽，榮獲國中組第一名及指定曲最佳詮釋獎。<br>
+              2009年帶領平鎮高中參加台灣管樂協會盃管樂大賽獲第二名殊榮。<br>
+              自2002年起，帶領樂團參加學生音樂比賽，共榮獲多次特優殊榮。
+            </li>
+            <li>2010年4月與音樂大師秋山紀夫及八木澤教司合作演出中日交流音樂會，並與上低音號演奏家露木薰合作演出協奏曲。</li>
+            <li>2014年7月帶領平鎮國中管樂團參加北京管樂節管樂大賽榮獲最佳指揮獎。</li>
+            <li>2022年9月帶領平鎮國中管樂團獲選111年全國學生音樂比賽特優團隊聯合音樂會管樂團代表團隊，於衛武營國家藝術中心展演。</li>
+          </ul>
+
+          <!-- 以按鈕觸發覆蓋層顯示完整經歷 -->
+          <div class="bio-trigger-wrap">
+            <button type="button" class="btn more-bio" data-target="yang-bio-overlay" aria-haspopup="dialog" aria-controls="yang-bio-overlay">
+              完整經歷
+            </button>
+          </div>
+
+          <!-- 隱藏的完整經歷內容（供覆蓋層使用） -->
+          <template id="yang-bio-template">
+            <h3 class="overlay-title">完整經歷</h3>
+            <ul>
+              <li>桃園市立平鎮高中管樂團指揮</li>
+              <li>桃園市立平鎮國中管樂團指揮</li>
+              <li>桃園市立仁和國中管樂團指揮</li>
+              <li>桃園市立元生國小管樂團指揮</li>
+              <li>經歷：國立武陵高中管樂團指揮、國立中壢家商管樂團指揮、
+                  國立楊梅高中管樂團指揮、新北市立三和國中管樂團指揮、
+                  桃園市興國國小管樂團指揮、桃園私立有得雙語國中小管樂團指揮、
+                  桃園市立興南國中低音銅管分部老師、
+                  汲音交響管樂團常任指揮/執行長、台灣管樂協會監事、
+                  2014年北京國際管樂節管樂大賽最佳指揮獎</li>
+              <li>指導樂團成績(近6年)：
+                <pre class="bio-pre">
+        2024年3月(112學年)
+        平鎮國中管樂團 	全國學生音樂比賽北區國中管樂合奏A組 特優
+        仁和國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 優等
+        仁和國中管樂團 	全國學生音樂比賽北區國中室外行進管樂B組 特優
+        平鎮高中管樂團 	全國學生音樂比賽北區高中管樂合奏B組 特優
+
+        元生國小管樂團 	全國學生音樂比賽北區國小管樂合奏B組 優等
+
+
+        2023年3月(111學年)
+        平鎮國中管樂團 	全國學生音樂比賽北區國中管樂合奏A組 特優
+        仁和國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 優等
+        仁和國中管樂團 	全國學生音樂比賽北區國中室外行進管樂B組 特優(第一名)
+        六和國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 優等
+
+        平鎮高中管樂團 	全國學生音樂比賽北區高中管樂合奏B組 特優
+
+        元生國小管樂團 	全國學生音樂比賽北區國小管樂合奏B組 優等
+
+        
+        2022年3月(110學年)
+        平鎮國中管樂團 	全國學生音樂比賽北區國中管樂合奏A組 特優
+        仁和國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 優等
+        仁和國中管樂團 	全國學生音樂比賽北區國中室外行進管樂B組 特優(第一名)
+        六和國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 優等
+
+        平鎮高中管樂團 	全國學生音樂比賽北區高中管樂合奏B組 優等
+
+        平鎮高中銅管五重奏 全國學生音樂比賽北區高中銅管五重奏B組 優等
+
+
+        2020年12月 (109學年)
+        平鎮高中管樂團 	桃園市學生音樂比賽高中管樂合奏B組 特優 (晉級全國)
+        平鎮高中銅管五重奏 桃園市學生音樂比賽高中銅管五重奏B組 優等 (晉級全國)
+        平鎮國中管樂團 	桃園市學生音樂比賽國中管樂合奏B組 特優 (晉級全國)
+        六和國中管樂團 	桃園市學生音樂比賽國中管樂合奏B組 特優 (晉級全國)
+        仁和國中管樂團 	桃園市學生音樂比賽國中室外行進管樂B組 優等 (晉級全國)
+
+        2019年12月 (108學年)
+        平鎮高中管樂團 	桃園市學生音樂比賽高中管樂合奏B組 特優 (晉級全國)
+        平鎮高中銅管五重奏 桃園市學生音樂比賽高中銅管五重奏B組 特優 (晉級全國)
+        平鎮國中管樂團 	桃園市學生音樂比賽國中管樂合奏B組 特優 (晉級全國)
+        仁和國中管樂團 	桃園市學生音樂比賽國中管樂合奏B組 特優 (晉級全國)
+        六和國中管樂團 	桃園市學生音樂比賽國中管樂合奏B組 特優 (晉級全國)
+
+        2019年3月 (107學年)
+        平鎮高中管樂團 	全國學生音樂比賽北區高中管樂合奏B組 特優(第一名)
+        平鎮高中銅管五重奏 全國學生音樂比賽北區高中銅管五重奏B組 優等(第一名)
+        平鎮國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 特優(第二名)
+        三和國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 特優(第三名)
+        仁和國中管樂團 	全國學生音樂比賽北區國中管樂合奏B組 特優
+        六和國中管樂團 	全國學生音樂比賽國中管樂合奏B組 優等
+                </pre>
+              </li>
+            </ul>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 行進樂隊總教練 周健安 老師 -->
+    <section class="panel profile-section" id="sec-chou" data-theme="chou" aria-labelledby="ttl-chou">
+      <div class="container profile">
+        <img class="profile-photo chou" src="assets/chou.jpg" alt="行進樂隊總教練 周健安 老師">
+        <div class="profile-body">
+          <h2 id="ttl-chou" class="profile-title">行進樂隊總教練　周健安 老師</h2>
+          <ul class="profile-list">
+            <li>輔仁⼤學⾳樂系研究所畢業，主修樂團指揮，師從指揮家郭聯昌教授，管樂教學啟蒙於
+                周忠實⽼師，並曾獲美國指揮⼤師芬奈爾教授（Dr. Frederick Fennell）指導。</li>
+            <li>1993年開始指導管樂團迄今，主要擔任各級學校樂團指導，並致⼒於室外樂隊演出型態之
+                推廣，多次獲邀至天津、南京、鄭州等地舉辦講座及指導樂團。</li>
+            <li>多年來指導曉明女中⾏進樂隊參與⾳樂比賽，連續多年獲得特優第⼀名的佳績，並於2018年
+                參加世界盃⾏進樂隊⼤賽(WAMSB)榮獲⾦牌獎，2019年更遠赴⾺來西亞參加『AJMBC』⼤
+                賽，榮獲⾦牌獎及全場最⾼分之佳績。</li>
+            <li>室外樂專長為整體設計及規劃，Pyware 3D Drill Design 軟體教學及專案圖形設計，⾏進打擊
+                樂教學。</li>
+            <li>⽬前為海洋⼤學管樂團，嘉義市南興國中樂旗隊常任指揮及多所學校樂團指導⽼師，並擔任
+                Mair Drum 打擊樂器品牌代⾔⼈</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 旗隊教練 簡語彤 老師 -->
+    <section class="panel profile-section" id="sec-jian" data-theme="jian" aria-labelledby="ttl-jian">
+      <div class="container profile">
+        <img class="profile-photo jian" src="assets/jian.jpg" alt="旗隊教練 簡語彤 老師">
+        <div class="profile-body">
+          <h2 id="ttl-jian" class="profile-title">旗隊教練　簡語彤 老師</h2>
+          <ul class="profile-list">
+            <li>現為「無限旗旗舞藝術表演團」特約表演者，曾任團長，景美女中旗隊第12屆畢業。
+                2009 年加入無限旗至今，多次隨團參加國內外商業邀演。</li>
+            <li>現任東石國中、中正預校、基隆市立中山高中、八斗國中旗隊教練。</li>    
+            <li>重要舞台經歷：</li>
+            <li>
+                2011年，無限旗公演《從前 從前》表演者。<br>
+                2016年，無限旗公演《Mobiusband》舞台監督。<br>
+                2017年，台灣國際行進樂隊公開賽旗隊比賽參賽作品《愛情．死亡．時間》導演。<br>
+                2018年，世界盃行進樂隊大賽旗隊比賽《以愛為名》表演者。
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 右側懸浮導航（Liquid Glass） -->
+  <nav class="float-launchers" aria-label="快速導覽">
+    <!-- 師資（藍） -->
+    <a class="lg-chip" href="#sec-yang" data-label="師資介紹" aria-label="前往師資介紹" style="--glow: 41,115,255;">
+      <!-- 你也可換成自己的 SVG 圖標 -->
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5m0 2c-5 0-9 2.5-9 5v1h18v-1c0-2.5-4-5-9-5"/>
+      </svg>
+    </a>
+
+    <!-- 成績（黃） -->
+    <a class="lg-chip" href="#achievements" data-label="歷年成績" aria-label="前往歷年成績" style="--glow: 246,232,98;">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M3 3h18v2H3zm2 4h14v2H5zm-2 4h18v2H3zm2 4h14v2H5zm-2 4h18v2H3z"/>
+      </svg>
+    </a>
+
+    <!-- QA（綠） -->
+    <a class="lg-chip" href="#qa" data-label="常見問題" aria-label="前往常見問題" style="--glow: 0,198,90;">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M12 2a10 10 0 1 0 6.36 17.64L22 22l-2.36-3.64A10 10 0 0 0 12 2m1 15h-2v-2h2zm2.07-7.75-.9.92A3.5 3.5 0 0 0 12 14h-2a5.5 5.5 0 0 1 2.07-4.25l1.2-1.2A1.5 1.5 0 1 0 11 6H9a3.5 3.5 0 1 1 6.07 3.25Z"/>
+      </svg>
+    </a>
+
+    <!-- 其他頁（紅） -->
+    <a class="lg-chip" href="others.html" data-label="更多頁面" aria-label="前往更多頁面" style="--glow: 255,24,74;">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/>
+      </svg>
+    </a>
+  </nav>
+
+
+
+  <!-- Bio Modal 覆蓋層 -->
+  <div id="yang-bio-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlay-title" hidden>
+    <div class="overlay-card" role="document">
+      <div class="overlay-body" id="overlay-content"><!-- 由 JS 注入 --></div>
+      <div class="overlay-actions">
+        <button type="button" class="btn btn-primary overlay-close" data-target="yang-bio-overlay">返回</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© <span id="y"></span> 仁和國中管樂團網站 · 由 王邑東 製作</small>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
