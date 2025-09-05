@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>仁和國中管樂團｜樂團課程內容</title>
+  <meta name="description" content="仁和國中管樂團課程內容" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 僅作用於 courses 頁 */
+    body.page-courses{ --theme-rgb: 0,198,90; }
+
+    @media (max-height: 500px){
+      .teachers-hero .container{
+        padding-top:72px; min-height:60vh; display:flex; flex-direction:column; justify-content:center;
+      }
+    }
+
+    .course-hub{
+      position:relative; width:min(1120px,94vw); height:min(72vh,640px);
+      display:grid; place-items:center; transform-origin:center; margin-inline:auto;
+    }
+    @media (max-width:420px),(max-height:420px){ .course-hub{ transform:scale(.92);} }
+
+    /* 白卡：先浮出 */
+    .course-card{
+      background:var(--card); border:1px solid var(--border); border-radius:20px;
+      box-shadow:0 8px 28px rgba(31,41,55,.08);
+      padding:clamp(16px,2vw,24px);
+      max-width:880px; position:absolute; left:50%; top:50%;
+      transform:translate(-50%,-50%) scale(.94); opacity:0;
+      z-index:2; width:min(820px,86vw);
+      transition: transform .5s ease, opacity .5s ease;
+    }
+    .course-card h2{ margin:.1em 0 .4em; font-size:clamp(22px,2.6vw,30px); }
+    .course-card p{ margin:0; }
+
+    /* 照片：從白卡「後方」擴散淡入（JS 會寫入 --fromX/--fromY） */
+    .course-photo{
+      position:absolute; width: var(--w, clamp(140px, 18vw, 260px));
+      aspect-ratio:4/3; border-radius:16px; overflow:hidden; background:#F3F4F6;
+      border:1px solid var(--border); box-shadow:0 12px 28px rgba(31,41,55,.10);
+      z-index:1; opacity:0;
+      transform: translate(var(--fromX,0px), var(--fromY,0px)) scale(.86);
+      transition: transform .55s cubic-bezier(.22,.61,.36,1), opacity .55s ease;
+      will-change:transform;
+    }
+    .course-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* 進場：白卡先、照片後（延遲序列） */
+    .panel.in-view .course-card{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+    .panel.in-view .course-photo{ opacity:1; transform: none; }
+
+    /* 依序延遲（白卡後 0.15s 開始，逐張 +0.08s） */
+    .course-hub .course-photo:nth-of-type(2){ transition-delay:.15s; }
+    .course-hub .course-photo:nth-of-type(3){ transition-delay:.23s; }
+    .course-hub .course-photo:nth-of-type(4){ transition-delay:.31s; }
+    .course-hub .course-photo:nth-of-type(5){ transition-delay:.39s; }
+    .course-hub .course-photo:nth-of-type(6){ transition-delay:.47s; }
+    .course-hub .course-photo:nth-of-type(7){ transition-delay:.55s; }
+  </style>
+</head>
+<body class="page-courses">
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./" aria-label="仁和國中管樂團首頁">
+        <img src="assets/logo.png" alt="仁和國中管樂團 團徽" class="brand-logo">
+        <span class="brand-zh">仁和中管樂團</span>
+        <span class="brand-en">Renhe Junior High School Wind Band</span>
+      </a>
+    </div>
+  </header>
+  <div class="bg-glass" aria-hidden="true"></div>
+
+  <main id="main" class="snap">
+    <section class="panel teachers-hero" aria-labelledby="ttl-teachers">
+      <div class="container">
+        <h1 id="ttl-teachers">課程內容</h1>
+        <p class="sub">進到樂團，從來都不只是為了演奏樂器</p>
+      </div>
+    </section>
+
+    <!-- data-angle-offset 控制每一屏起始角度；用 --w 或 data-w 控每張照片寬度 -->
+    <section class="panel" data-angle-offset="0">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>行進樂隊課程</h2>
+          <p>強調肢體協調、動作訓練與樂器行進演奏，培養體力與節奏感。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="行進樂隊課程照片 1"></figure>
+        <figure class="course-photo" style="--w:180px"><img src="/course-photo/gray-2.jpg" alt="行進樂隊課程照片 2"></figure>
+        <figure class="course-photo" style="--w:220px"><img src="/course-photo/gray-3.jpg" alt="行進樂隊課程照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="行進樂隊課程照片 4"></figure>
+        <figure class="course-photo" style="--w:240px"><img src="/course-photo/gray-5.jpg" alt="行進樂隊課程照片 5"></figure>
+        <figure class="course-photo" data-w="210"><img src="/course-photo/gray-6.jpg" alt="行進樂隊課程照片 6"></figure>
+      </div>
+    </section>
+
+    <section class="panel" data-angle-offset="20">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>合奏課程</h2>
+          <p>全體團員共同排練，訓練音樂默契與團隊合作，提升整體演奏技巧。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="合奏課程照片 1"></figure>
+        <figure class="course-photo" style="--w:190px"><img src="/course-photo/gray-2.jpg" alt="合奏課程照片 2"></figure>
+        <figure class="course-photo" style="--w:230px"><img src="/course-photo/gray-3.jpg" alt="合奏課程照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="合奏課程照片 4"></figure>
+        <figure class="course-photo" style="--w:250px"><img src="/course-photo/gray-5.jpg" alt="合奏課程照片 5"></figure>
+        <figure class="course-photo" data-w="210"><img src="/course-photo/gray-6.jpg" alt="合奏課程照片 6"></figure>
+      </div>
+    </section>
+
+    <section class="panel" data-angle-offset="40">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>分部課程</h2>
+          <p>由專業老師指導木管、銅管、打擊樂，進行更細緻的技術訓練。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="分部課程照片 1"></figure>
+        <figure class="course-photo" style="--w:220px"><img src="/course-photo/gray-2.jpg" alt="分部課程照片 2"></figure>
+        <figure class="course-photo" style="--w:180px"><img src="/course-photo/gray-3.jpg" alt="分部課程照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="分部課程照片 4"></figure>
+        <figure class="course-photo" style="--w:240px"><img src="/course-photo/gray-5.jpg" alt="分部課程照片 5"></figure>
+        <figure class="course-photo" data-w="210"><img src="/course-photo/gray-6.jpg" alt="分部課程照片 6"></figure>
+      </div>
+    </section>
+
+    <section class="panel" data-angle-offset="60">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>旗隊課程</h2>
+          <p>結合音樂與舞蹈的肢體表現，培養學生表演自信與舞台張力。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="旗隊課程照片 1"></figure>
+        <figure class="course-photo" style="--w:230px"><img src="/course-photo/gray-2.jpg" alt="旗隊課程照片 2"></figure>
+        <figure class="course-photo" style="--w:210px"><img src="/course-photo/gray-3.jpg" alt="旗隊課程照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="旗隊課程照片 4"></figure>
+        <figure class="course-photo" style="--w:260px"><img src="/course-photo/gray-5.jpg" alt="旗隊課程照片 5"></figure>
+        <figure class="course-photo" data-w="200"><img src="/course-photo/gray-6.jpg" alt="旗隊課程照片 6"></figure>
+      </div>
+    </section>
+
+    <section class="panel" data-angle-offset="80">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>自主練習</h2>
+          <p>提供場地與資源，讓團員能夠自主安排練習時段，加強個人技巧。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="自主練習照片 1"></figure>
+        <figure class="course-photo" style="--w:180px"><img src="/course-photo/gray-2.jpg" alt="自主練習照片 2"></figure>
+        <figure class="course-photo" style="--w:240px"><img src="/course-photo/gray-3.jpg" alt="自主練習照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="自主練習照片 4"></figure>
+        <figure class="course-photo" style="--w:250px"><img src="/course-photo/gray-5.jpg" alt="自主練習照片 5"></figure>
+        <figure class="course-photo" data-w="220"><img src="/course-photo/gray-6.jpg" alt="自主練習照片 6"></figure>
+      </div>
+    </section>
+
+    <section class="panel" data-angle-offset="100">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>全國學生音樂比賽</h2>
+          <p>參與比賽是課程的重要一環，透過舞台磨練表現力與臨場經驗。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="全國學生音樂比賽照片 1"></figure>
+        <figure class="course-photo" style="--w:230px"><img src="/course-photo/gray-2.jpg" alt="全國學生音樂比賽照片 2"></figure>
+        <figure class="course-photo" style="--w:170px"><img src="/course-photo/gray-3.jpg" alt="全國學生音樂比賽照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="全國學生音樂比賽照片 4"></figure>
+        <figure class="course-photo" style="--w:240px"><img src="/course-photo/gray-5.jpg" alt="全國學生音樂比賽照片 5"></figure>
+        <figure class="course-photo" data-w="210"><img src="/course-photo/gray-6.jpg" alt="全國學生音樂比賽照片 6"></figure>
+      </div>
+    </section>
+
+    <section class="panel" data-angle-offset="120">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>寒暑訓</h2>
+          <p>利用假期進行集訓，提升演奏水準，培養團隊凝聚力。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="寒暑訓照片 1"></figure>
+        <figure class="course-photo" style="--w:180px"><img src="/course-photo/gray-2.jpg" alt="寒暑訓照片 2"></figure>
+        <figure class="course-photo" style="--w:200px"><img src="/course-photo/gray-3.jpg" alt="寒暑訓照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="寒暑訓照片 4"></figure>
+        <figure class="course-photo" style="--w:240px"><img src="/course-photo/gray-5.jpg" alt="寒暑訓照片 5"></figure>
+        <figure class="course-photo" data-w="260"><img src="/course-photo/gray-6.jpg" alt="寒暑訓照片 6"></figure>
+      </div>
+    </section>
+
+    <section class="panel" data-angle-offset="140">
+      <div class="course-hub">
+        <div class="course-card">
+          <h2>成果發表會</h2>
+          <p>定期舉辦音樂會，展現學習成果，也培養學生上台演出的自信。</p>
+        </div>
+        <figure class="course-photo"><img src="/course-photo/gray-1.jpg" alt="成果發表會照片 1"></figure>
+        <figure class="course-photo" style="--w:190px"><img src="/course-photo/gray-2.jpg" alt="成果發表會照片 2"></figure>
+        <figure class="course-photo" style="--w:230px"><img src="/course-photo/gray-3.jpg" alt="成果發表會照片 3"></figure>
+        <figure class="course-photo"><img src="/course-photo/gray-4.jpg" alt="成果發表會照片 4"></figure>
+        <figure class="course-photo" style="--w:200px"><img src="/course-photo/gray-5.jpg" alt="成果發表會照片 5"></figure>
+        <figure class="course-photo" data-w="260"><img src="/course-photo/gray-6.jpg" alt="成果發表會照片 6"></figure>
+      </div>
+    </section>
+  </main>
+
+  <!-- 右側懸浮導航（Liquid Glass） -->
+  <nav class="float-launchers" aria-label="快速導覽">
+    <!-- 師資（藍） -->
+    <a class="lg-chip" href="teachers.html" data-label="師資介紹" aria-label="前往師資介紹" style="--glow: 41,115,255;">
+      <!-- 你也可換成自己的 SVG 圖標 -->
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5m0 2c-5 0-9 2.5-9 5v1h18v-1c0-2.5-4-5-9-5"/>
+      </svg>
+    </a>
+
+    <!-- 課程內容（綠） -->
+    <a class="lg-chip" href="courses.html" data-label="課程內容" aria-label="前往課程內容" style="--glow: 0,198,90;">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M3 3h18v2H3zm2 4h14v2H5zm-2 4h18v2H3zm2 4h14v2H5zm-2 4h18v2H3z"/>
+      </svg>
+    </a>
+
+    <!-- QA（紅） -->
+    <a class="lg-chip" href="#qa" data-label="常見問題" aria-label="前往常見問題" style="--glow: 255,24,74;">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M12 2a10 10 0 1 0 6.36 17.64L22 22l-2.36-3.64A10 10 0 0 0 12 2m1 15h-2v-2h2zm2.07-7.75-.9.92A3.5 3.5 0 0 0 12 14h-2a5.5 5.5 0 0 1 2.07-4.25l1.2-1.2A1.5 1.5 0 1 0 11 6H9a3.5 3.5 0 1 1 6.07 3.25Z"/>
+      </svg>
+    </a>
+
+    <!-- 其他頁（黃） -->
+    <a class="lg-chip" href="others.html" data-label="更多頁面" aria-label="前往更多頁面" style="--glow: 246,232,98;">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/>
+      </svg>
+    </a>
+  </nav>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© <span id="y"></span> 仁和國中管樂團網站 · 由 王邑東 製作</small>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+
+  <!-- 僅本頁使用的排版/進場腳本（不影響其他頁） -->
+  <script>
+  (function(){
+    function px(n){ return n + 'px'; }
+
+    function getCardRect(hub){
+      const card = hub.querySelector('.course-card');
+      const r = card.getBoundingClientRect();
+      const hr = hub.getBoundingClientRect();
+      return { w:r.width, h:r.height, cx:(r.left-hr.left)+r.width/2, cy:(r.top-hr.top)+r.height/2 };
+    }
+
+    function photoSize(el){
+      const cs = getComputedStyle(el).getPropertyValue('--w').trim();
+      const dw = el.getAttribute('data-w');
+      let w = 0;
+      if(cs){ const m = cs.match(/([0-9.]+)/); if(m) w = parseFloat(m[1]); }
+      if(!w && dw) w = parseFloat(dw);
+      if(!w) w = 200;
+      return { w, h: w*0.75 };
+    }
+
+    // 計算兩矩形重疊面積
+    function overlapArea(a, b){
+      const x = Math.max(0, Math.min(a.x+a.w, b.x+b.w) - Math.max(a.x, b.x));
+      const y = Math.max(0, Math.min(a.y+a.h, b.y+b.h) - Math.max(a.y, b.y));
+      return x * y;
+    }
+
+    function layoutPanel(panel){
+      const hub = panel.querySelector('.course-hub'); if(!hub) return;
+      const photos = Array.from(hub.querySelectorAll('.course-photo'));
+      if(photos.length === 0) return;
+
+      const hubRect = hub.getBoundingClientRect();
+      const card = getCardRect(hub);
+      const pad = 10;
+      const offsetDeg = parseFloat(panel.getAttribute('data-angle-offset') || '0');
+      const step = 360 / photos.length;
+
+      // 有效半徑（留 8% buffer）
+      const maxR = Math.min((hubRect.width-card.w)/2, (hubRect.height-card.h)/2);
+      const baseRadius = Math.max(Math.min(maxR*0.92, Math.min(hubRect.width, hubRect.height)*0.36), 20);
+
+      photos.forEach((ph, i)=>{
+        const {w,h} = photoSize(ph);
+        const ang = (offsetDeg + step*i) * Math.PI/180;
+
+        // 初始位置：極座標轉直角座標
+        let r = baseRadius;
+        let x = card.cx + r*Math.cos(ang) - w/2;
+        let y = card.cy + r*Math.sin(ang) - h/2;
+
+        // 框限（100% 在 hub 內）
+        const minX = pad, minY = pad;
+        const maxX = hubRect.width - w - pad, maxY = hubRect.height - h - pad;
+
+        // 逐步外擴直到遮蔽 <= 20% 或抵達框限
+        const photoArea = w*h;
+        const cardRect = { x: card.cx - card.w/2, y: card.cy - card.h/2, w: card.w, h: card.h };
+        let guard = 0;
+        while(guard++ < 40){
+          // clamp 後再測重疊，避免錯誤判斷
+          const cx = Math.min(Math.max(x, minX), maxX);
+          const cy = Math.min(Math.max(y, minY), maxY);
+          const pRect = { x: cx, y: cy, w, h };
+          const o = overlapArea(cardRect, pRect);
+          if(o <= 0.2 * photoArea) { x = cx; y = cy; break; }
+          // 往外推 6px（沿角度方向），直到滿足條件/達邊界
+          r += 6;
+          x = card.cx + r*Math.cos(ang) - w/2;
+          y = card.cy + r*Math.sin(ang) - h/2;
+          if ( (x <= minX && y <= minY) || (x >= maxX && y >= maxY) ) { x = cx; y = cy; break; }
+        }
+
+        // 寫入定位
+        ph.style.left = px(x);
+        ph.style.top  = px(y);
+
+        // 設定「從白卡後方」的起點位移（進場用）
+        const fromX = (card.cx - (x + w/2));
+        const fromY = (card.cy - (y + h/2));
+        ph.style.setProperty('--fromX', px(fromX));
+        ph.style.setProperty('--fromY', px(fromY));
+      });
+    }
+
+    const panels = Array.from(document.querySelectorAll('main .panel'));
+    function relayoutAll(){ panels.forEach(layoutPanel); }
+
+    window.addEventListener('load', relayoutAll);
+    window.addEventListener('resize', relayoutAll);
+    // 保守補槍：避免字體載入/圖片回流造成初次量測誤差
+    setTimeout(relayoutAll, 200);
+    setTimeout(relayoutAll, 800);
+  })();
+  </script>
+</body>
+</html>

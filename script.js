@@ -163,46 +163,30 @@ document.addEventListener('keydown', (e)=>{
   }
 })();
 
-// ===== Liquid Glass 按鈕：觸控展開/收合 =====
+// ===== Liquid Glass 按鈕：hover 展開；click 直接導頁（不鎖定） =====
 (() => {
   const chips = Array.from(document.querySelectorAll('.lg-chip'));
   if (!chips.length) return;
 
-  // 觸控／滑鼠皆可；滑鼠 hover 已由 CSS 處理，這裡只補「點擊切換」
-  const toggle = (chip) => {
-    const isOpen = chip.classList.toggle('is-open');
-    // 關其他
-    if (isOpen) {
-      chips.forEach(c => { if (c !== chip) c.classList.remove('is-open'); });
-    }
-  };
-
+  // 1) 取消既有「點擊切換展開」的概念：click 只做導頁，不阻止預設
   chips.forEach(chip => {
-    chip.addEventListener('click', (e)=>{
-      // 若是鍵盤 Enter/Space 也走 click，無障礙 OK
-      // 連結預設會導頁；想要「點一下先展開，再點第二下才導頁」可這樣處理：
-      if (!chip.classList.contains('is-open')) {
-        e.preventDefault();
-        toggle(chip);
-      }
+    // 移除殘留 class（若有其他腳本加過）
+    chip.classList.remove('is-open','expanded','is-active','pinned');
+
+    chip.addEventListener('click', () => {
+      // 不做 toggle，不加任何 class；讓 <a> 直接導頁
+      // 仍保留 CSS :hover 控制展開
     });
   });
 
-  // 點頁面其他處關閉
-  document.addEventListener('click', (e)=>{
-    const t = e.target;
-    if (!t.closest('.lg-chip')){
-      chips.forEach(c => c.classList.remove('is-open'));
-    }
-  }, true);
-
-  // 捲動時自動收起，避免遮擋
-  let raf = null;
-  window.addEventListener('scroll', ()=>{
-    if (raf) return;
-    raf = requestAnimationFrame(()=>{
-      chips.forEach(c => c.classList.remove('is-open'));
-      raf = null;
+  // 2) 滑鼠離開即縮回：交給 CSS :hover；但若有鍵盤 focus，給 .is-hovering 幫助可視化
+  chips.forEach(chip => {
+    chip.addEventListener('focus', () => chip.classList.add('is-hovering'));
+    chip.addEventListener('blur',  () => chip.classList.remove('is-hovering'));
+    chip.addEventListener('pointerleave', () => {
+      chip.classList.remove('is-hovering','is-open','expanded','is-active','pinned');
     });
-  }, { passive: true });
+  });
+
+  // 3) 捲動、點擊頁面其他處：不影響，因為沒有「鎖定展開」狀態了
 })();
