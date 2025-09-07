@@ -163,30 +163,73 @@ document.addEventListener('keydown', (e)=>{
   }
 })();
 
-// ===== Liquid Glass 按鈕：hover 展開；click 直接導頁（不鎖定） =====
+//
+
+// ===== Float Launchers（手機：漢堡主鈕＋兩段點擊；桌機：維持 hover 展開 / click 導頁） =====
 (() => {
-  const chips = Array.from(document.querySelectorAll('.lg-chip'));
-  if (!chips.length) return;
+  const stack = document.querySelector('.float-launchers');
+  const chips = Array.from(document.querySelectorAll('.float-launchers .lg-chip'));
+  if (!stack || chips.length === 0) return;
 
-  // 1) 取消既有「點擊切換展開」的概念：click 只做導頁，不阻止預設
-  chips.forEach(chip => {
-    // 移除殘留 class（若有其他腳本加過）
-    chip.classList.remove('is-open','expanded','is-active','pinned');
+  const isTouch = matchMedia('(pointer: coarse)').matches || window.innerWidth <= 900;
 
-    chip.addEventListener('click', () => {
-      // 不做 toggle，不加任何 class；讓 <a> 直接導頁
-      // 仍保留 CSS :hover 控制展開
+  // === 手機／觸控：主漢堡 + 兩段點擊 ===
+  if (isTouch) {
+    // 1) 插入主漢堡按鈕（若不存在）
+    let main = stack.querySelector('.lg-main');
+    if (!main) {
+      main = document.createElement('button');
+      main.type = 'button';
+      main.className = 'lg-chip lg-main';
+      main.setAttribute('aria-label', '展開選單');
+      main.innerHTML = `
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/>
+        </svg>
+      `;
+      stack.insertBefore(main, stack.firstChild);
+    }
+
+    const closeAll = () => {
+      stack.classList.remove('is-show');
+      chips.forEach(c => { c.classList.remove('is-open'); c.__armed = false; });
+    };
+
+    // 2) 漢堡開/關（只有漢堡或點外面才會關閉）
+    main.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (stack.classList.contains('is-show')) {
+        closeAll();
+      } else {
+        stack.classList.add('is-show');
+      }
     });
-  });
 
-  // 2) 滑鼠離開即縮回：交給 CSS :hover；但若有鍵盤 focus，給 .is-hovering 幫助可視化
-  chips.forEach(chip => {
-    chip.addEventListener('focus', () => chip.classList.add('is-hovering'));
-    chip.addEventListener('blur',  () => chip.classList.remove('is-hovering'));
-    chip.addEventListener('pointerleave', () => {
-      chip.classList.remove('is-hovering','is-open','expanded','is-active','pinned');
+    document.addEventListener('click', (ev) => {
+      if (ev.target.closest('.float-launchers')) return;
+      closeAll();
     });
-  });
 
-  // 3) 捲動、點擊頁面其他處：不影響，因為沒有「鎖定展開」狀態了
+    // 3) 兩段點擊：第一次點某顆 → 只展開；第二次點 → 導頁（不自動收合）
+    chips.forEach(chip => {
+      chip.__armed = false;
+      chip.addEventListener('click', (e) => {
+        if (chip.__armed) {
+          // 第二次點擊：允許預設導頁，不關閉整串（依你的規則）
+          chip.__armed = false;
+          e.stopPropagation();
+          return;
+        }
+        // 第一次點擊：展開自己，不導頁、不關閉
+        e.preventDefault();
+        e.stopPropagation();
+        stack.classList.add('is-show');
+        chips.forEach(c => { if (c !== chip) { c.__armed = false; c.classList.remove('is-open'); } });
+        chip.classList.add('is-open');
+        chip.__armed = true;
+      }, { passive: false, capture: true });
+    });
+  }
+
+  // === 桌機：無需額外 JS；維持 CSS :hover 展開、click 導頁 ===
 })();

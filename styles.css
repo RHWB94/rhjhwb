@@ -573,85 +573,48 @@ section.panel{
   border: 1px solid var(--border);
 }
 
-/* ===== Courses：白卡置中 + 四周延伸照片 ===== */
-.course-hub{
-  position: relative;
-  width: min(1120px, 94vw);
-  height: min(72vh, 640px);     /* 給照片有佈局空間 */
-  display: grid;
-  place-items: center;          /* 讓中心白卡置中 */
-}
 
-/* 白卡維持你原有風格，改為絕對置中以保四周可放圖 */
-.course-hub .course-card{
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  width: min(820px, 86vw);
-}
 
-/* 四周相片：同一套底框＋陰影語言 */
-.course-photo{
-  position: absolute;
-  width: clamp(120px, 22vw, 240px);
-  aspect-ratio: 4 / 3;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #F3F4F6;
-  border: 1px solid var(--border);
-  box-shadow: 0 12px 28px rgba(31,41,55,.10);
-  z-index: 1;
-  opacity: .95;
-}
-.course-photo img{
-  width: 100%; height: 100%; object-fit: cover; display: block;
-}
+/* === Mobile menu launcher (coarse pointer) === */
+@media (pointer: coarse) {
+  .float-launchers { align-items: flex-end; }
+  .float-launchers .lg-chip { transition: opacity .2s ease, transform .2s ease; }
 
-/* 位置：依示意圖作放射狀分佈；可再微調 */
-.course-photo.p1{ top:   4%; left:  6%;  rotate: -2deg; }
-.course-photo.p2{ top:   6%; right: 6%;  rotate:  2deg; }
-.course-photo.p3{ bottom:10%; right: 4%; rotate:  1deg; }
-.course-photo.p4{ bottom:12%; left:  4%; rotate: -1deg; }
-.course-photo.p5{ bottom:-4%; left: 50%; transform: translateX(-50%); rotate: 0.5deg; }
-
-/* 進場動畫（沿用你的 IO，這裡加上 course 元素） */
-.course-card,
-.course-photo{
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity .45s ease, transform .45s ease, rotate .45s ease;
-}
-.panel.in-view .course-card{ opacity: 1; transform: translate(-50%, -50%); }
-.panel.in-view .course-photo{ opacity: 1; transform: none; }
-.panel.in-view .course-photo.p5{ transform: translateX(-50%); } /* 保持置中 */
-
-/* 小螢幕：把外圍相片改成「卡片下方的直式相簿」以免擠壓 */
-@media (max-width: 900px){
-  .course-hub{
-    height: auto;
-    padding: 16px 0 4px;
+  /* 預設只顯示主按鈕；其他 chip 先隱藏 */
+  .float-launchers:not(.is-show) .lg-chip:not(.lg-main) {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
   }
-  .course-hub .course-card{
-    position: relative;
-    left: auto; top: auto; transform: none;
-    width: 100%;
-    margin: 0 auto 12px;
-  }
-  .course-photo{
-    position: relative;
-    width: 100%;
-    max-width: 520px;
-    margin: 10px auto;
-    rotate: 0deg;
-  }
-  .course-photo.p5{ transform: none; }
-}
 
-/* 超矮視窗（手機橫向）：避免進場觸發不到 */
-@media (max-height: 420px){
-  .course-card, .course-photo{
-    opacity: 1 !important;
-    transform: none !important;
+  /* 展開時顯示所有 chip */
+  .float-launchers.is-show .lg-chip {
+    opacity: 1;
+    transform: none;
   }
 }
+
+
+
+/* === Touch override: keep lg-chip circular; do not widen on :hover/.is-open === */
+@media (pointer: coarse) {
+  .lg-chip { --w: 56px !important; }                 /* base circle size (matches your design) */
+  .lg-chip:hover,
+  .lg-chip.is-open { --w: 56px !important; }         /* keep circle even when 'armed' */
+  /* Optional: armed glow for feedback */
+  .lg-chip.is-open { box-shadow: 0 0 0 3px rgba(0,0,0,.06), 0 0 0 6px rgba(var(--glow, 41,115,255), .25); }
+}
+
+
+
+/* === Touch rules refined: only hamburger (.lg-main) stays circular; other chips widen when armed === */
+@media (pointer: coarse) {
+  /* Hamburger keeps circle always */
+  .lg-main,
+  .lg-main:hover,
+  .lg-main.is-open { --w: 56px !important; }
+
+  /* Other chips: circle by default, widen on first tap (.is-open) */
+  .lg-chip:not(.lg-main).is-open { --w: 172px !important; }
+}
+
