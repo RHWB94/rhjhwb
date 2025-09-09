@@ -1,17 +1,14 @@
-
-// === courses.js | 嚴謹模式：白卡置中後才左側撒入、關閉時風向右撤，照片必定 12 張（覆蓋≤20%），關閉後不亂排 ===
+// === courses.js | Single-open delegation + strict modal locks (with head/tail click guard) ===
 (() => {
-  
-// --- Animation lock (avoid fast switching & click-through) ---
-let __busy = false;
-let __activeCard = null;
-const grid = document.querySelector('.course-grid');
+  let __busy = false;          // true while opening/closing
+  let __activeCard = null;     // currently opened card
+  let __lockUntil = 0;         // head/tail cooldown to block rapid taps
+  const now = () => (performance?.now ? performance.now() : Date.now());
+
+  const grid = document.querySelector('.course-grid');
   if (!grid) return;
 
-  const cards = Array.from(document.querySelectorAll('.course-card'));
-  const centerHint = document.querySelector('.center-hint');
-
-  // 確保 overlay 存在（放卡片外圍的舞台）
+  // Prepare overlay root once
   let overlayRoot = document.querySelector('.overlay-root');
   if (!overlayRoot){
     overlayRoot = document.createElement('div');
@@ -27,9 +24,7 @@ const grid = document.querySelector('.course-grid');
   const overlayClickout = overlayRoot.querySelector('.overlay-clickout');
   const photoStage = overlayRoot.querySelector('.photo-stage');
 
-  const getSBW = () => window.innerWidth - document.documentElement.clientWidth;
-
-  // 幾何工具
+  // Utility
   const area = r => Math.max(0, r.w) * Math.max(0, r.h);
   const overlapArea = (a,b)=>{
     const x = Math.max(0, Math.min(a.x+a.w, b.x+b.w) - Math.max(a.x, b.x));
@@ -37,7 +32,7 @@ const grid = document.querySelector('.course-grid');
     return x*y;
   };
 
-  // === REPLACE: scatterOutside (平均四側 + 手機放大 + 左進右出) ===
+  // Scatter photos around the centered card (enter returns Promise; exit returns Promise)
   function scatterOutside(card, key, title, count = 12){
     photoStage.innerHTML = '';
 
@@ -49,30 +44,18 @@ const grid = document.querySelector('.course-grid');
 
     const RAND = (a,b) => a + Math.random()*(b-a);
     const placed = [];
-    const MAX_TRY = 800;
 
-    // ---- 尺寸策略：手機放大 + 下限 ----
     const isPhone = vw <= 600;
-    const baseMinVW = isPhone ? 0.26 : 0.13;   // 手機 26–36vw、桌機 13–20vw
+    const baseMinVW = isPhone ? 0.26 : 0.13;
     const baseMaxVW = isPhone ? 0.36 : 0.20;
     const MIN_W = isPhone ? 110 : 90;
-    const MIN_H = isPhone ? 82  : 68;
+    const MIN_H = isPhone ?  82 : 68;
 
-    // ---- 四側平均配額（12張 → 預設每側3張，餘數輪流配）----
     const total = count;
     const base = Math.floor(total / 4);
     const quota = { left: base, top: base, right: base, bottom: base };
     ['left','top','right','bottom'].slice(0, total % 4).forEach(s => quota[s]++);
-
-    const cycle = ['left','top','right','bottom']; // 輪轉順序
-    let cursor = 0;
-
-    const area = r => Math.max(0, r.w) * Math.max(0, r.h);
-    const overlapArea = (a,b)=>{
-      const x = Math.max(0, Math.min(a.x+a.w, b.x+b.w) - Math.max(a.x, b.x));
-      const y = Math.max(0, Math.min(a.y+a.h, b.y+b.h) - Math.max(a.y, b.y));
-      return x*y;
-    };
+    const cycle = ['left','top','right','bottom']; let cursor = 0;
 
     function pickOnSide(side, w, h){
       if (side==='left'   && exclude.x - w - 20 > 8) return { x: Math.round(RAND(8, exclude.x - w - 20)), y: Math.round(RAND(8, vh - h - 8)) };
@@ -83,31 +66,25 @@ const grid = document.querySelector('.course-grid');
       if (side==='top'    && exclude.y - h - 20 > 8) return { x: Math.round(RAND(8, vw - w - 8)), y: Math.round(RAND(8, exclude.y - h - 20)) };
       if (side==='bottom'){
         const free = vh - (exclude.y + exclude.h);
-        if (free - h - 20 > 8) return { x: Math.round(RAND(8, vw - w - 8)), y: Math.round(RAND(exclude.y + exclude.h + 20, vh - h - 8)) };
+        if (free - h - 20 > 8) return { x: Math.round(RAND(exclude.y + exclude.h + 20, vh - h - 8)), y: Math.round(RAND(8, vw - w - 8)) };
       }
       return null;
     }
 
-    let tries = 0;
-    while (placed.length < count && tries < MAX_TRY){
-      tries++;
-
-      // 依畫面設定初始尺寸
+    let maxEnterDelay = 0;
+    while (placed.length < count){
       let w = Math.round(Math.max(vw * RAND(baseMinVW, baseMaxVW), isPhone ? 128 : 90));
       let h = Math.round(w * RAND(0.72, 0.90));
 
-      // 找側邊（輪轉 + 配額）
-      let side = null, pos = null, sideTried = 0;
-      while (sideTried < 4){
-        const s = cycle[cursor % 4]; cursor++; sideTried++;
+      let side = null, pos = null, tried = 0;
+      while (tried++ < 4){
+        const s = cycle[cursor++ % 4];
         if (quota[s] <= 0) continue;
         pos = pickOnSide(s, w, h);
         if (pos){ side = s; break; }
       }
-      // 全側暫時塞不下 → 退回全域隨機（仍要避開白卡與覆蓋限制）
       if (!pos) pos = { x: Math.round(RAND(8, vw - w - 8)), y: Math.round(RAND(8, vh - h - 8)) };
 
-      // 位置/尺寸嘗試（雙向 20% 覆蓋率；放不下就微縮重試，但不低於下限）
       let attempts = 0;
       while (attempts++ < 180){
         const box = { x: pos.x, y: pos.y, w, h };
@@ -117,13 +94,10 @@ const grid = document.querySelector('.course-grid');
         }
         const ok = placed.every(p=>{
           const a = overlapArea(box, p);
-          if (a === 0) return true;
-          return (a/area(box) <= 0.2) && (a/area(p) <= 0.2);
+          return a === 0 || (a/area(box) <= 0.2 && a/area(p) <= 0.2);
         });
         if (ok){
-          placed.push(box);
-          if (side) quota[side]--; // 真正放下才扣配額
-
+          placed.push(box); if (side) quota[side]--;
           const item = document.createElement('div');
           item.className = 'photo-item is-enter';
           item.style.left   = box.x + 'px';
@@ -131,7 +105,6 @@ const grid = document.querySelector('.course-grid');
           item.style.width  = w + 'px';
           item.style.height = h + 'px';
 
-          // 角度/飄移（進場→就位→退場）
           const rotStart = (RAND(-22,22)).toFixed(1)+'deg';
           const rotEnd   = (RAND(-8,8)).toFixed(1)+'deg';
           const rotExit  = (RAND(20,46)).toFixed(1)+'deg';
@@ -152,10 +125,9 @@ const grid = document.querySelector('.course-grid');
           item.appendChild(img);
           photoStage.appendChild(item);
 
-          // 階梯延遲：左側進場 → 就位
           const delay = (isPhone ? 140 : 100) + placed.length*75;
+          if (delay + 460 > maxEnterDelay) maxEnterDelay = delay + 460;
           setTimeout(()=>{ item.classList.remove('is-enter'); item.classList.add('is-in'); item.style.opacity='1'; }, delay);
-
           break;
         }else{
           w = Math.max(MIN_W, Math.round(w * RAND(0.90, 0.94)));
@@ -165,172 +137,175 @@ const grid = document.querySelector('.course-grid');
       }
     }
 
+    const entered = new Promise(res => setTimeout(res, maxEnterDelay + 20));
     return {
+      entered,
       exit(){
         const items = Array.from(photoStage.querySelectorAll('.photo-item'));
-        items.forEach((el,i)=>{
-          setTimeout(()=>{ el.classList.remove('is-in'); el.classList.add('is-exit'); el.style.opacity='0'; }, i*24);
-        });
+        items.forEach((el,i)=> setTimeout(()=>{
+          el.classList.remove('is-in'); el.classList.add('is-exit'); el.style.opacity='0';
+        }, i*24));
+        // Return a promise that resolves after the last item should be done animating
+        const totalDelay = (items.length-1)*24 + 460 + 40;
+        return new Promise(res => setTimeout(res, Math.max(0,totalDelay)));
       },
       clean(){ photoStage.innerHTML = ''; }
     };
   }
 
-  // ===== 開關狀態機：避免失效/閃退，完整復原 =====
-  let busy = false;
-
+  // Open / Close with strict locks and head/tail cooldowns
   function openCard(card) {
+    if (__activeCard && __activeCard !== card) return;
+    if (__busy || card.classList.contains('is-active')) return;
+    if (now() < __lockUntil) return; // head guard
 
-// 防重：若另一張卡正在浮動或全域上鎖，直接略過
-  if (document.body.classList.contains('modal-lock') && __activeCard && __activeCard !== card) return;
+    __busy = true;
+    __activeCard = card;
+    __lockUntil = now() + 600;       // opening head cooldown
 
-if (__busy || (card && card.classList && card.classList.contains('is-active'))) return;
-__busy = true;
-__activeCard = card;
-document.body.classList.add('modal-lock');
-// 在 modal 期間讓整個 grid 失效（避免鍵盤啟動其他卡）
-try { grid.setAttribute('inert',''); grid.setAttribute('aria-hidden','true'); } catch(e){}
+    document.body.classList.add('modal-strict'); // lock during move-in
+    document.body.classList.add('modal-lock');
+    try { grid.setAttribute('inert',''); grid.setAttribute('aria-hidden','true'); } catch(e){}
 
-const grid = document.querySelector('.course-grid');
-const overlayRoot = document.querySelector('.overlay-root');
-const overlayBg = overlayRoot && overlayRoot.querySelector('.overlay-bg');
-const overlayClickout = overlayRoot && overlayRoot.querySelector('.overlay-clickout');
-const photoStage = overlayRoot && overlayRoot.querySelector('.photo-stage');
+    const rect = card.getBoundingClientRect();
+    const ph = document.createElement('div');
+    ph.className = 'card-placeholder';
+    ph.style.width = rect.width + 'px';
+    ph.style.height= rect.height + 'px';
+    grid.insertBefore(ph, card.nextSibling);
 
-if (!grid || !overlayRoot) { __busy = false; __activeCard = null; document.body.classList.remove('modal-lock'); return; }
+    Object.assign(card.style, {
+      position:'fixed', width:rect.width+'px', height:rect.height+'px',
+      left:rect.left+'px', top:rect.top+'px', zIndex:'1001', transform:'translate(0,0)'
+    });
+    card.classList.add('is-floating','is-active');
+    grid.classList.add('is-faded');
 
-const rect = card.getBoundingClientRect();
-const ph = document.createElement('div');
-ph.className = 'card-placeholder';
-ph.style.width = rect.width + 'px';
-ph.style.height= rect.height + 'px';
-grid.insertBefore(ph, card.nextSibling);
+    const sbw = window.innerWidth - document.documentElement.clientWidth;
+    if (sbw>0) document.body.style.paddingRight = sbw + 'px';
+    document.body.classList.add('no-scroll');
+    overlayRoot.classList.add('is-on');
 
-Object.assign(card.style, {
-  position:'fixed', width:rect.width+'px', height:rect.height+'px',
-  left:rect.left+'px', top:rect.top+'px', zIndex:'1001', transform:'translate(0,0)'
-});
-card.classList.add('is-floating','is-active');
-grid.classList.add('is-faded');
+    const dx = Math.round(window.innerWidth/2 - (rect.left + rect.width/2));
+    const dy = Math.round(window.innerHeight/2 - (rect.top  + rect.height/2));
+    card.style.willChange = 'transform';
+    card.style.backfaceVisibility = 'hidden';
+    card.style.transition = 'transform 420ms cubic-bezier(.22,.61,.36,1)';
+    requestAnimationFrame(()=> card.style.transform = `translate3d(${dx}px, ${dy}px, 0)`);
 
-const sbw = window.innerWidth - document.documentElement.clientWidth;
-if (sbw>0) document.body.style.paddingRight = sbw + 'px';
-document.body.classList.add('no-scroll');
-overlayRoot.classList.add('is-on');
+    const key = card.getAttribute('data-key') || 'course';
+    const title = card.querySelector('.card-title')?.textContent || '課程';
 
-const dx = Math.round(window.innerWidth/2 - (rect.left + rect.width/2));
-const dy = Math.round(window.innerHeight/2 - (rect.top  + rect.height/2));
-card.style.willChange = 'transform';
-card.style.backfaceVisibility = 'hidden';
-card.style.transition = 'transform 420ms cubic-bezier(.22,.61,.36,1)';
-requestAnimationFrame(()=> card.style.transform = `translate3d(${dx}px, ${dy}px, 0)`);
+    const onCentered = () => {
+      card.removeEventListener('transitionend', onCentered);
 
-const key = card.getAttribute('data-key') || 'course';
-const title = card.querySelector('.card-title')?.textContent || '課程';
+      const scatterCtl = scatterOutside(card, key, title, 12);
 
+      scatterCtl.entered.then(()=>{
+        // Opening animations fully done; allow close interactions
+        __busy = false;
+        document.body.classList.remove('modal-strict'); // allow close clicks
 
-const onOpened = () => {
-  card.removeEventListener('transitionend', onOpened);
-  let scatterCtl = null;
-  try {
-    if (typeof scatterOutside === 'function') {
-      scatterCtl = scatterOutside(card, key, title, 12);
-    } else if (typeof window.scatterOutside === 'function') {
-      scatterCtl = window.scatterOutside(card, key, title, 12);
-    }
-  } catch(e){}
+        const face = card.querySelector('.card-face');
+        const onFaceClick = (ev)=>{ ev.preventDefault(); beginClose(); };
+        const onOverlayClick = (ev)=>{
+          if (!card.classList.contains('is-active')) return;
+          const inCard = ev.target.closest && ev.target.closest('.course-card.is-floating');
+          if (inCard) return;
+          ev.preventDefault();
+          beginClose();
+        };
+        const onEsc = (e)=>{ if (e.key==='Escape'){ e.preventDefault(); beginClose(); } };
 
-  // === 強化關閉機制（除了 overlay-bg / overlay-clickout 以外，整個 overlay-root 點擊也可關閉） ===
-  // 1) 將 overlayRoot 本身掛上 click（避免子元素層級或事件被吃掉時無法關閉）
-  const overlayRootClick = (ev) => {
-    // 若未開啟或非本卡，略過
-    if (!card.classList.contains('is-active')) return;
-    // 若點擊到卡片本體（雖然卡片預設 pointer-events:none），仍保留保險判斷
-    const inCard = ev.target.closest && ev.target.closest('.course-card.is-floating');
-    if (inCard) return;
-    ev.preventDefault();
-    close();
-  };
-  overlayRoot.addEventListener('click', overlayRootClick);
+        if (face){ face.style.pointerEvents = 'auto'; face.addEventListener('click', onFaceClick); }
+        overlayRoot.addEventListener('click', onOverlayClick);
+        overlayBg && overlayBg.addEventListener('click', onOverlayClick);
+        overlayClickout && overlayClickout.addEventListener('click', onOverlayClick);
+        document.addEventListener('keydown', onEsc);
 
-  // 2) 允許點擊卡片正面關閉（使用者「再次點擊」的直覺）
-  const face = card.querySelector('.card-face');
-  const onFaceClick = (ev) => {
-    ev.preventDefault();
-    close();
-  };
-  if (face){
-    // 只在浮動期間短暫允許 face 接收事件
-    face.style.pointerEvents = 'auto';
-    face.addEventListener('click', onFaceClick);
+        function beginClose(){
+          if (!card.classList.contains('is-active')) return;
+          if (__busy && __activeCard !== card) return;
+
+          __busy = true;
+          __lockUntil = now() + 900;        // closing head cooldown
+          document.body.classList.add('modal-strict'); // lock during move-out
+
+          // 1) Photos exit (Promise)
+          const exitPhotosDone = (scatterCtl && scatterCtl.exit) ? scatterCtl.exit() : Promise.resolve();
+
+          // 2) Card back to original position (Promise)
+          const cardBackDone = new Promise(resolve=>{
+            requestAnimationFrame(()=>{
+              card.style.transition = 'transform 360ms cubic-bezier(.22,.61,.36,1)';
+              card.style.transform = 'translate3d(0,0,0)';
+            });
+            const onBack = ()=>{ card.removeEventListener('transitionend', onBack); resolve(); };
+            card.addEventListener('transitionend', onBack, { once:true });
+            setTimeout(resolve, 800); // fallback
+          });
+
+          // Wait for both, then cleanup and tail cooldown
+          Promise.all([exitPhotosDone, cardBackDone]).then(()=>{
+            try { scatterCtl && scatterCtl.clean && scatterCtl.clean(); } catch(e){}
+
+            if (face){ face.removeEventListener('click', onFaceClick); face.style.pointerEvents = ''; }
+            overlayRoot.removeEventListener('click', onOverlayClick);
+            overlayBg && overlayBg.removeEventListener('click', onOverlayClick);
+            overlayClickout && overlayClickout.removeEventListener('click', onOverlayClick);
+            document.removeEventListener('keydown', onEsc);
+
+            grid.classList.remove('is-faded');
+            card.classList.remove('is-floating','is-active');
+            Object.assign(card.style, { position:'', width:'', height:'', left:'', top:'', zIndex:'', transform:'', transition:'', willChange:'', backfaceVisibility:'' });
+            ph.remove();
+
+            document.body.classList.remove('no-scroll');
+            document.body.style.paddingRight = '';
+            overlayRoot.classList.remove('is-on');
+            try { grid.removeAttribute('inert'); grid.removeAttribute('aria-hidden'); } catch(e){}
+
+            __activeCard = null;
+            __busy = false;
+            document.body.classList.remove('modal-lock');
+            document.body.classList.remove('modal-strict');
+
+            // Tail cooldown to prevent immediate re-open glitches
+            __lockUntil = now() + 200;
+          });
+        }
+      });
+    };
+
+    card.addEventListener('transitionend', onCentered, { once:true });
   }
 
-  const close = () => {
-    if (!card.classList.contains('is-active')) return;
-    if (__busy && __activeCard !== card) return;
-    __busy = true;
+  // === Event delegation (single-open guard) ===
+  function handleCardActivate(target){
+    const card = target.closest && target.closest('.course-card');
+    if (!card) return;
+    if (document.body.classList.contains('modal-lock')) return; // already open/closing
+    if (__activeCard && __activeCard !== card) return;
+    if (__busy) return;
+    if (now() < __lockUntil) return; // head/tail guard
+    openCard(card);
+  }
 
-    try { scatterCtl && scatterCtl.exit && scatterCtl.exit(); } catch(e){}
-
-    requestAnimationFrame(()=>{
-      card.style.transition = 'transform 360ms cubic-bezier(.22,.61,.36,1)';
-      card.style.transform = 'translate3d(0,0,0)';
-    });
-
-    const cleanup = () => {
-      card.removeEventListener('transitionend', cleanup);
-      try { scatterCtl && scatterCtl.clean && scatterCtl.clean(); } catch(e){}
-
-      // 還原 face 綁定
-      if (face){
-        face.removeEventListener('click', onFaceClick);
-        face.style.pointerEvents = '';
-      }
-      overlayRoot.removeEventListener('click', overlayRootClick);
-
-      grid.classList.remove('is-faded');
-      card.classList.remove('is-floating','is-active');
-      card.style.position=''; card.style.width=''; card.style.height='';
-      card.style.left=''; card.style.top=''; card.style.zIndex=''; card.style.transform=''; card.style.transition=''; card.style.willChange=''; card.style.backfaceVisibility='';
-
-      ph.remove();
-      grid.classList.remove('is-faded');
-      document.body.classList.remove('no-scroll');
-      document.body.style.paddingRight='';
-
-      overlayRoot.classList.remove('is-on');
-
-      // 解除 grid 的 inert/aria-hidden
-      try { grid.removeAttribute('inert'); grid.removeAttribute('aria-hidden'); } catch(e){}
-
-      __activeCard = null;
-      __busy = false;
-      document.body.classList.remove('modal-lock');
-
-      overlayClickout && overlayClickout.removeEventListener('click', close);
-      overlayBg && overlayBg.removeEventListener('click', close);
-      document.removeEventListener('keydown', onEsc);
-    };
-    card.addEventListener('transitionend', cleanup, { once:true });
-    setTimeout(cleanup, 800);
-  };
-  const onEsc = (e)=>{ if (e.key==='Escape'){ e.preventDefault(); close(); } };
-  overlayClickout && overlayClickout.addEventListener('click', close);
-  overlayBg && overlayBg.addEventListener('click', close);
-  document.addEventListener('keydown', onEsc);
-
-  __busy = false;
-};
-
-card.addEventListener('transitionend', onOpened, { once:true });
-
-}
-
-
-  cards.forEach(card=>{
-    card.addEventListener('click', ()=> { if (__activeCard) return; openCard(card); });
-    card.addEventListener('keydown', e=>{
-      if (e.key==='Enter' || e.key===' '){ e.preventDefault(); if (__activeCard) return; openCard(card); }
-    });
+  // Delegate click & keyboard from grid
+  grid.addEventListener('click', (e)=> handleCardActivate(e.target), { passive:true });
+  grid.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      handleCardActivate(e.target);
+    }
   });
+
+  // Prevent any clicks during strict lock at capture phase (extra insurance)
+  document.addEventListener('click', (e)=>{
+    if (document.body.classList.contains('modal-strict')){
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }, { capture:true });
+
 })();

@@ -1,45 +1,37 @@
 /* ========== courses.css（僅此頁，僅卡片/網格相關） ========== */
-#courses-page {
-  --card-bg: #ffffff;
+#courses-page{--card-bg: #ffffff;
   --card-shadow: 0 8px 24px rgba(0,0,0,0.1);
   --hint-color: rgba(0,0,0,0.38);
   --overlay-bg: rgba(0,0,0,0.3);
-  --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
+  --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);}
 /* 中央「點擊查看」提示（保持原位） */
 #courses-page .center-hint,
-.center-hint {
-  position: sticky;
+.center-hint{position: sticky;
   top: 96px;
   z-index: 1;
   text-align: center;
   font-size: 13px;
   color: var(--hint-color, rgba(0,0,0,0.38));
   pointer-events: none;
-  transition: opacity .25s ease;
-}
+  transition: opacity .25s ease;}
 #courses-page .center-hint.is-hidden,
-.center-hint.is-hidden { opacity: 0; }
-
+.center-hint.is-hidden{opacity: 0;}
 /* 2 欄 × 4 列網格（手機亦維持 2 欄），四周留白距離 */
 #courses-page .course-grid,
-.course-grid {
-  display: grid;
+.course-grid{display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(14px, 2.8vw, 24px);
   padding: clamp(14px, 4vw, 32px); /* 讓白卡與視窗外緣有距離 */
-  box-sizing: border-box;
-}
+  box-sizing: border-box;}
+
 @media (min-width: 880px) {
-  #courses-page .course-grid,
-  .course-grid { gap: 24px; }
+#courses-page .course-grid,
+  .course-grid{gap: 24px;}
 }
 
 /* 白卡樣式 */
 #courses-page .course-card,
-.course-card {
-  background: var(--card-bg, #fff);
+.course-card{background: var(--card-bg, #fff);
   border-radius: 18px;
   box-shadow: var(--card-shadow, 0 8px 24px rgba(0,0,0,0.1));
   min-height: 130px;
@@ -51,132 +43,97 @@
               opacity .28s ease;
   position: relative;
   isolation: isolate;
-  background-clip: padding-box;
-}
+  background-clip: padding-box;}
 #courses-page .course-card:focus-visible,
-.course-card:focus-visible {
-  outline: 2px solid #4c9ffe;
-  outline-offset: 3px;
-}
+.course-card:focus-visible{outline: 2px solid #4c9ffe;
+  outline-offset: 3px;}
 #courses-page .course-card:hover,
-.course-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.12);
-}
-#courses-page .card-face, .card-face { padding: 18px 16px; text-align: center; }
-#courses-page .card-title, .card-title { font-size: 18px; margin: 0 0 6px 0; }
-#courses-page .card-desc, .card-desc { font-size: 12px; opacity: .6; margin: 0; }
-
+.course-card:hover{transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.12);}
+#courses-page .card-face, .card-face{padding: 18px 16px; text-align: center;}
+#courses-page .card-title, .card-title{font-size: 18px; margin: 0 0 6px 0;}
+#courses-page .card-desc, .card-desc{font-size: 12px; opacity: .6; margin: 0;}
 /* 保留原位的占位符，避免 Grid 跳動 */
 #courses-page .card-placeholder,
-.card-placeholder {
-  border-radius: 18px;
-  visibility: hidden;
-}
-
+.card-placeholder{border-radius: 18px;
+  visibility: hidden;}
 /* 當某卡片被啟動時，其他卡片淡出且禁點 */
 #courses-page .course-grid.is-faded .course-card:not(.is-active),
-.course-grid.is-faded .course-card:not(.is-active) {
-  opacity: 0;
-  pointer-events: none;
-}
-
+.course-grid.is-faded .course-card:not(.is-active){opacity: 0;
+  pointer-events: none;}
 /* 背景與舞台（相片在卡片外浮出） */
 #courses-page .overlay-root,
-.overlay-root {
-  position: fixed;
+.overlay-root{position: fixed;
   inset: 0;
   z-index: 40;
-  pointer-events: none;
-}
+  pointer-events: none;}
 #courses-page .overlay-root.is-on,
-.overlay-root.is-on { pointer-events: auto; }
+.overlay-root.is-on{pointer-events: auto;}
 #courses-page .overlay-bg,
-.overlay-bg {
-  position: absolute;
+.overlay-bg{position: absolute;
   inset: 0;
   background: var(--overlay-bg, rgba(0,0,0,0.3));
   opacity: 0;
-  transition: opacity .28s ease;
-}
+  transition: opacity .28s ease;}
 #courses-page .overlay-root.is-on .overlay-bg,
-.overlay-root.is-on .overlay-bg { opacity: 1; }
+.overlay-root.is-on .overlay-bg{opacity: 1;}
 #courses-page .overlay-clickout,
-.overlay-clickout { position: absolute; inset: 0; }
-
+.overlay-clickout{position: absolute; inset: 0;}
 /* 照片舞台：位於卡片外、卡片下方一層（卡片在 z-index 更上） */
 #courses-page .photo-stage,
-.photo-stage {
-  position: absolute;
+.photo-stage{position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
   z-index: 41; /* 背景上、卡片下 */
-  pointer-events: none;
-}
+  pointer-events: none;}
 #courses-page .photo-wall,
-.photo-wall {
-  display: grid;
+.photo-wall{display: grid;
   grid-template-columns: repeat(3, minmax(80px, 1fr));
   gap: 10px;
   width: min(820px, 92vw);
   padding: 8px;
-  box-sizing: border-box;
-}
+  box-sizing: border-box;}
+
 @media (min-width: 680px) {
-  #courses-page .photo-wall,
-  .photo-wall { grid-template-columns: repeat(6, minmax(80px, 1fr)); }
+#courses-page .photo-wall,
+  .photo-wall{grid-template-columns: repeat(6, minmax(80px, 1fr));}
 }
-#courses-page .photo-item, .photo-item {
-  aspect-ratio: 1/1;
+
+#courses-page .photo-item, .photo-item{aspect-ratio: 1/1;
   background: #e9eef5;
   border-radius: 12px;
   overflow: hidden;
   transform: scale(1);
   opacity: 0;
-  transition: transform .36s var(--ease-smooth, cubic-bezier(0.22,0.61,0.36,1)), opacity .28s ease;
-}
-#courses-page .photo-item.is-in, .photo-item.is-in { transform: scale(var(--scale, 1)); opacity: 1; }
-#courses-page .photo-item img, .photo-item img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  user-select: none; -webkit-user-drag: none;
-}
-
+  transition: transform .36s var(--ease-smooth, cubic-bezier(0.22,0.61,0.36,1)), opacity .28s ease;}
+#courses-page .photo-item.is-in, .photo-item.is-in{transform: scale(var(--scale, 1)); opacity: 1;}
+#courses-page .photo-item img, .photo-item img{width: 100%; height: 100%; object-fit: cover; display: block;
+  user-select: none; -webkit-user-drag: none;}
 /* 浮到中間的卡片（使用原卡片本體） */
 #courses-page .course-card.is-floating,
-.course-card.is-floating {
-  position: fixed;
+.course-card.is-floating{position: fixed;
   left: 0; top: 0;
   transform-origin: center center;
   z-index: 1000;            /* 壓過任何覆層 */
   opacity: 1 !important;    /* 不受 is-faded 等規則影響 */
   box-shadow: 0 18px 48px rgba(0,0,0,0.16);
-  will-change: transform;   /* 首拍更順 */
-}
-
+  will-change: transform;   /* 首拍更順 */}
 /* 鎖滾動 */
-body.no-scroll { overflow: hidden; }
-
+body.no-scroll{overflow: hidden;}
 /* 當卡片展開時，隱藏右側懸浮按鈕（避免干擾視覺） */
-body.no-scroll .float-launchers { opacity: 0; pointer-events: none; transition: opacity .2s ease; }
-
+body.no-scroll .float-launchers{opacity: 0; pointer-events: none; transition: opacity .2s ease;}
 /* 改善浮動卡片文字銳利度（行動裝置） */
-.course-card.is-floating { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; backface-visibility: hidden; }
-
-
+.course-card.is-floating{-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; backface-visibility: hidden;}
 /* ===== 散落照片層（在浮動卡片內），文字在上方 ===== */
-.course-card.is-floating{ position:fixed; }
-.course-card.is-floating .card-face{
-  position: relative;
-  z-index: 3; /* 文字層最高，確保不被照片遮住 */
-}
-.course-card.is-floating .photo-scat{
-  position: absolute;
+.course-card.is-floating{position:fixed;}
+.course-card.is-floating .card-face{position: relative;
+  z-index: 3; /* 文字層最高，確保不被照片遮住 */}
+.course-card.is-floating .photo-scat{position: absolute;
   inset: -14% -14% -14% -14%;
   z-index: 1;        /* 在文字下方，但仍在卡片背景之上 */
-  pointer-events: none;
-}
-.course-card.is-floating .photo-chip{ will-change: transform, opacity;
+  pointer-events: none;}
+.course-card.is-floating .photo-chip{will-change: transform, opacity;
   position: absolute;
   left: var(--xpx); top: var(--ypx);
   transform: translate(-50%, -50%) rotate(var(--rot)) scale(1);
@@ -186,72 +143,50 @@ body.no-scroll .float-launchers { opacity: 0; pointer-events: none; transition: 
   overflow: hidden;
   box-shadow: 0 8px 22px rgba(0,0,0,.16);
   opacity: 0;
-  transition: transform .38s var(--ease-smooth), opacity .28s ease;
-}
-.course-card.is-floating .photo-chip.is-in{ opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) scale(var(--scale)); }
-.course-card.is-floating .photo-chip img{
-  width: 100%; height: 100%; object-fit: cover; display:block;
-  user-select:none; -webkit-user-drag:none;
-}
+  transition: transform .38s var(--ease-smooth), opacity .28s ease;}
+.course-card.is-floating .photo-chip.is-in{opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) scale(var(--scale));}
+.course-card.is-floating .photo-chip img{width: 100%; height: 100%; object-fit: cover; display:block;
+  user-select:none; -webkit-user-drag:none;}
 
 @media (max-width: 768px){
-  .course-card.is-floating .photo-chip{ will-change: transform, opacity; width: clamp(70px, 28vw, 120px); }
+.course-card.is-floating .photo-chip{will-change: transform, opacity; width: clamp(70px, 28vw, 120px);}
 }
 
-
 /* ===== courses page hero uses the same style as teachers-hero; only color differs via --theme-rgb ===== */
-#courses-page{ --theme-rgb: var(--green-rgb, 0,198,90); }
-#courses-page .courses-hero .container{ text-align:center; }
-#courses-page .courses-hero h1{ font-size: clamp(28px, 4.2vw, 42px); margin:0 0 8px; letter-spacing:.02em; }
-#courses-page .courses-hero .sub{ color: var(--muted); margin:0; }
-
-
-
+#courses-page{--theme-rgb: var(--green-rgb, 0,198,90);}
+#courses-page .courses-hero .container{text-align:center;}
+#courses-page .courses-hero h1{font-size: clamp(28px, 4.2vw, 42px); margin:0 0 8px; letter-spacing:.02em;}
+#courses-page .courses-hero .sub{color: var(--muted); margin:0;}
 /* === 修正：白卡文字層在上，照片散落層在下 === */
-#courses-page .overlay-card {
-  backface-visibility: hidden;
+#courses-page .overlay-card{backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
   transform-style: preserve-3d;
   position: relative;
-  z-index: 10; /* 白卡本體 */
-}
-#courses-page .overlay-content {
-  position: relative;
-  z-index: 20; /* 文字最上層 */
-}
-#courses-page .photo-wall {
-  position: absolute;
+  z-index: 10; /* 白卡本體 */}
+#courses-page .overlay-content{position: relative;
+  z-index: 20; /* 文字最上層 */}
+#courses-page .photo-wall{position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 15; /* 在卡片背景之上，但低於文字 */
-}
-#courses-page .photo-item {
-  position: absolute;
+  z-index: 15; /* 在卡片背景之上，但低於文字 */}
+#courses-page .photo-item{position: absolute;
   width: 120px;   /* 基準寬度，之後隨機縮放 */
   height: 90px;
   border-radius: 12px;
   overflow: hidden;
   opacity: 0;
   transform: scale(.8) rotate(var(--rot, 0deg)) translate(var(--x,0), var(--y,0));
-  transition: opacity .4s ease, transform .4s ease;
-}
-#courses-page .photo-item.is-in {
-  opacity: 1;
-  transform: scale(1) rotate(var(--rot, 0deg)) translate(var(--x,0), var(--y,0));
-}
-#courses-page .photo-item img {
-  width: 100%;
+  transition: opacity .4s ease, transform .4s ease;}
+#courses-page .photo-item.is-in{opacity: 1;
+  transform: scale(1) rotate(var(--rot, 0deg)) translate(var(--x,0), var(--y,0));}
+#courses-page .photo-item img{width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   user-select: none;
-  -webkit-user-drag: none;
-}
-
-
+  -webkit-user-drag: none;}
 /* Scatter photos in overlay: absolute items, light rotation */
-.photo-stage .photo-item{
-  position: absolute;
+.photo-stage .photo-item{position: absolute;
   transform: translate(-50%,-50%) rotate(var(--rot,0deg)) scale(var(--scale,1));
   width: clamp(90px, 16vw, 180px);
   aspect-ratio: 4/3;
@@ -259,125 +194,80 @@ body.no-scroll .float-launchers { opacity: 0; pointer-events: none; transition: 
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0,0,0,.18);
   opacity: 0;
-  transition: transform .36s cubic-bezier(0.22,0.61,0.36,1), opacity .28s ease;
-}
-.photo-stage .photo-item.is-in{ opacity: 1; }
-.photo-stage .photo-item img{ width:100%; height:100%; object-fit:cover; display:block; user-select:none; -webkit-user-drag:none; }
-
-
+  transition: transform .36s cubic-bezier(0.22,0.61,0.36,1), opacity .28s ease;}
 /* 文字銳利度：浮動卡片移動到中間時避免模糊 */
-.course-card.is-floating .card-face{
-  -webkit-font-smoothing: antialiased;
-  text-rendering: geometricPrecision;
-}
-
+.course-card.is-floating .card-face{-webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;}
 /* 允許使用百分比定位（--xpx/--ypx 可含 % 或 px） */
-.course-card.is-floating .photo-chip{
-  left: var(--xpx);
-  top:  var(--ypx);
-}
-
-
+.course-card.is-floating .photo-chip{left: var(--xpx);
+  top:  var(--ypx);}
 /* === Directional flow: enter from left, exit to right (2025-09-07) === */
-.photo-stage .photo-item{
-  will-change: transform, opacity;
-}
-.photo-stage .photo-item.is-enter{
-  /* 初始：由螢幕左側外進場 */
+.photo-stage .photo-item{will-change: transform, opacity;}
+.photo-stage .photo-item.is-enter{/* 初始：由螢幕左側外進場 */
   transform: translate(calc(-100vw), 0) rotate(var(--rot,0deg)) scale(var(--scale,1));
-  opacity: 0;
-}
-.photo-stage .photo-item.is-in{
-  transform: translate(0,0) rotate(var(--rot,0deg)) scale(var(--scale,1));
-  opacity: 1;
-}
-.photo-stage .photo-item.is-exit{
-  /* 退場：往螢幕右側撤走 */
+  opacity: 0;}
+.photo-stage .photo-item.is-in{transform: translate(0,0) rotate(var(--rot,0deg)) scale(var(--scale,1));
+  opacity: 1;}
+.photo-stage .photo-item.is-exit{/* 退場：往螢幕右側撤走 */
   transform: translate(calc(100vw), 0) rotate(var(--rot,0deg)) scale(var(--scale,1));
-  opacity: 0;
-}
-
-
-
+  opacity: 0;}
 /* === Patch: Courses overlay scatter (left-in / wind-right-out) === */
-.overlay-root{ position: fixed; inset:0; z-index:50; pointer-events:none; }
-.overlay-root.is-on{ pointer-events:auto; }
+.overlay-root{position: fixed; inset:0; z-index:50; pointer-events:none;}
+.overlay-root.is-on{pointer-events:auto;}
 .overlay-root .overlay-bg,
-.overlay-root .overlay-clickout{ position:absolute; inset:0; }
-.overlay-root .overlay-bg{ background: rgba(17,24,39,.35); opacity:1; }
-
-.overlay-root .photo-stage{ position:absolute; inset:0; z-index:41; pointer-events:none; overflow:visible; }
-
+.overlay-root .overlay-clickout{position:absolute; inset:0;}
+.overlay-root .overlay-bg{background: rgba(17,24,39,.35); opacity:1;}
+.overlay-root .photo-stage{position:absolute; inset:0; z-index:41; pointer-events:none; overflow:visible;}
 /* photo items */
-.photo-stage .photo-item{
-  position:absolute;
+.photo-stage .photo-item{position:absolute;
   transform-origin:center;
   will-change: transform, opacity;
-  opacity: 0;
-}
-.photo-stage .photo-item img{
-  width:100%; height:100%; object-fit:cover; display:block;
+  opacity: 0;}
+.photo-stage .photo-item img{width:100%; height:100%; object-fit:cover; display:block;
   border-radius:10px;
   box-shadow: 0 12px 28px rgba(0,0,0,.16);
   border:1px solid rgba(255,255,255,.6);
-  background:#F3F4F6;
-}
-
+  background:#F3F4F6;}
 /* initial: off-screen left */
-.photo-stage .photo-item.is-enter{
-  transform: translate(calc(-100vw), 0) rotate(var(--rotStart, 0deg)) scale(var(--scale,1));
-  opacity: 0;
-}
+.photo-stage .photo-item.is-enter{transform: translate(calc(-100vw), 0) rotate(var(--rotStart, 0deg)) scale(var(--scale,1));
+  opacity: 0;}
 /* in-place */
-.photo-stage .photo-item.is-in{
-  transform: translate(0,0) rotate(var(--rotEnd, 0deg)) scale(var(--scale,1));
-  opacity: 1;
-}
+.photo-stage .photo-item.is-in{transform: translate(0,0) rotate(var(--rotEnd, 0deg)) scale(var(--scale,1));
+  opacity: 1;}
 /* exit: wind to the right with vertical drift */
-.photo-stage .photo-item.is-exit{
-  transform: translate(calc(100vw), var(--driftY, 0px)) rotate(var(--rotExit, 0deg)) scale(var(--scale,1));
-  opacity: 0;
-}
-
+.photo-stage .photo-item.is-exit{transform: translate(calc(100vw), var(--driftY, 0px)) rotate(var(--rotExit, 0deg)) scale(var(--scale,1));
+  opacity: 0;}
 /* easing */
-.photo-stage .photo-item{ transition: transform 460ms cubic-bezier(.22,.61,.36,1), opacity 320ms ease; }
+.photo-stage .photo-item{transition: transform 460ms cubic-bezier(.22,.61,.36,1), opacity 320ms ease;}
+
 @media (prefers-reduced-motion: reduce){
-  .photo-stage .photo-item{ transition: none; }
+.photo-stage .photo-item{transition: none;}
 }
-
-
 
 /* === Strict Scatter Animations === */
-.overlay-root{ position:fixed; inset:0; z-index:50; pointer-events:none; }
-.overlay-root.is-on{ pointer-events:auto; }
-.overlay-root .overlay-bg, .overlay-root .overlay-clickout{ position:absolute; inset:0; }
-.overlay-root .photo-stage{ position:absolute; inset:0; z-index:41; pointer-events:none; overflow:visible; }
-
-.photo-stage .photo-item{
-  position:absolute;
+.overlay-root{position:fixed; inset:0; z-index:50; pointer-events:none;}
+.overlay-root.is-on{pointer-events:auto;}
+.overlay-root .overlay-bg, .overlay-root .overlay-clickout{position:absolute; inset:0;}
+.overlay-root .photo-stage{position:absolute; inset:0; z-index:41; pointer-events:none; overflow:visible;}
+.photo-stage .photo-item{position:absolute;
   transform-origin:center center;
   will-change: transform, opacity;
   opacity:0;
   transition: transform 460ms cubic-bezier(.22,.61,.36,1), opacity 320ms ease;
   border-radius:12px;
   box-shadow: 0 12px 28px rgba(0,0,0,.16);
-  overflow:hidden;
-}
-.photo-stage .photo-item img{ width:100%; height:100%; object-fit:cover; display:block; background:#F3F4F6; }
-
+  overflow:hidden;}
+.photo-stage .photo-item img{width:100%; height:100%; object-fit:cover; display:block; background:#F3F4F6;}
 /* left-in */
-.photo-stage .photo-item.is-enter{ transform: translate(calc(-100vw),0) rotate(var(--rotStart,0deg)) scale(var(--scale,1)); opacity:0; }
+.photo-stage .photo-item.is-enter{transform: translate(calc(-100vw),0) rotate(var(--rotStart,0deg)) scale(var(--scale,1)); opacity:0;}
 /* in-place */
-.photo-stage .photo-item.is-in{ transform: translate(0,0) rotate(var(--rotEnd,0deg)) scale(var(--scale,1)); opacity:1; }
+.photo-stage .photo-item.is-in{transform: translate(0,0) rotate(var(--rotEnd,0deg)) scale(var(--scale,1)); opacity:1;}
 /* wind right-out */
-.photo-stage .photo-item.is-exit{ transform: translate(calc(100vw), var(--driftY,0px)) rotate(var(--rotExit,0deg)) scale(var(--scale,1)); opacity:0; }
-
+.photo-stage .photo-item.is-exit{transform: translate(calc(100vw), var(--driftY,0px)) rotate(var(--rotExit,0deg)) scale(var(--scale,1)); opacity:0;}
 /* keep card text crisp while floating */
-.course-card.is-floating .card-face{ -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; backface-visibility:hidden; }
-
+.course-card.is-floating .card-face{-webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; backface-visibility:hidden;}
 /* === FINAL OVERRIDE: Left-in / Right-out with wind (highest priority) === */
-.overlay-root .photo-stage .photo-item{
-  position:absolute;
+.overlay-root .photo-stage .photo-item{position:absolute;
   transform-origin:center center;
   will-change: transform, opacity;
   opacity:0;
@@ -385,95 +275,57 @@ body.no-scroll .float-launchers { opacity: 0; pointer-events: none; transition: 
   transition: transform 460ms cubic-bezier(.22,.61,.36,1), opacity 320ms ease;
   border-radius:12px;
   box-shadow: 0 12px 28px rgba(0,0,0,.16);
-  overflow:hidden;
-}
-.overlay-root .photo-stage .photo-item img{ width:100%; height:100%; object-fit:cover; display:block; background:#F3F4F6; }
-
-.overlay-root .photo-stage .photo-item.is-enter{
-  /* 螢幕左外進場 */
+  overflow:hidden;}
+.overlay-root .photo-stage .photo-item img{width:100%; height:100%; object-fit:cover; display:block; background:#F3F4F6;}
+.overlay-root .photo-stage .photo-item.is-enter{/* 螢幕左外進場 */
   transform: translate(calc(-100vw), 0) rotate(var(--rotStart,0deg)) scale(var(--scale,1));
-  opacity:0;
-}
-.overlay-root .photo-stage .photo-item.is-in{
-  transform: translate(0,0) rotate(var(--rotEnd,0deg))  scale(var(--scale,1));
-  opacity:1;
-}
-.overlay-root .photo-stage .photo-item.is-exit{
-  /* 往右側撤離並有上下風飄 */
+  opacity:0;}
+.overlay-root .photo-stage .photo-item.is-in{transform: translate(0,0) rotate(var(--rotEnd,0deg))  scale(var(--scale,1));
+  opacity:1;}
+.overlay-root .photo-stage .photo-item.is-exit{/* 往右側撤離並有上下風飄 */
   transform: translate(calc(100vw), var(--driftY,0px)) rotate(var(--rotExit,0deg)) scale(var(--scale,1));
-  opacity:0;
-}
+  opacity:0;}
 
-/* 手機下的最小尺寸（避免太小）——JS 已放大，這裡再保底 */
 @media (max-width: 600px){
-  .overlay-root .photo-stage .photo-item{ min-width:110px; min-height:82px; }
+.overlay-root .photo-stage .photo-item{min-width:110px; min-height:82px;}
 }
-
-
 
 /* === FINAL OVERRIDES 2025-09-07 === */
 /* 1) Remove white frames; keep subtle black shadow */
-.overlay-root .photo-stage .photo-item{
-  background: transparent !important;
-  box-shadow: 0 14px 30px rgba(0,0,0,.28) !important;
-}
-.overlay-root .photo-stage .photo-item img{
-  background: transparent !important;
-  border: none !important;
-}
-
+.overlay-root .photo-stage .photo-item{background: transparent !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.28) !important;}
+.overlay-root .photo-stage .photo-item img{background: transparent !important;
+  border: none !important;}
 /* 2) Elevate overlay to cover floating launchers (z-index:60) but stay under card (z:1000) */
-.overlay-root{ z-index: 900 !important; }
-.overlay-root .photo-stage{ z-index: 890 !important; }
-.overlay-root .overlay-bg, .overlay-root .overlay-clickout{ z-index: 880 !important; }
-
+.overlay-root{z-index: 900 !important;}
+.overlay-root .photo-stage{z-index: 890 !important;}
+.overlay-root .overlay-bg, .overlay-root .overlay-clickout{z-index: 880 !important;}
 /* 3) Fully capture clicks during modal (avoid click-through on hidden buttons) */
-body.modal-lock *{ pointer-events: none !important; }
+body.modal-lock *{pointer-events: none !important;}
 body.modal-lock .overlay-root,
-body.modal-lock .overlay-root *{ pointer-events: auto !important; }
-
+body.modal-lock .overlay-root *{pointer-events: auto !important;}
 /* 4) When modal is open, hide floating launchers entirely */
-body.no-scroll .float-launchers{
-  opacity: 0 !important;
+body.no-scroll .float-launchers{opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
-  transition: opacity .2s ease;
-}
-
+  transition: opacity .2s ease;}
 /* 5) Left-in / Right-out wind animation (ensure highest priority) */
-.overlay-root .photo-stage .photo-item{ 
-  transform-origin: center center;
+.overlay-root .photo-stage .photo-item{transform-origin: center center;
   will-change: transform, opacity;
   transition: transform 460ms cubic-bezier(.22,.61,.36,1), opacity 320ms ease;
-  opacity: 0;
-}
-.overlay-root .photo-stage .photo-item.is-enter{
-  transform: translate(calc(-100vw), 0) rotate(var(--rotStart,0deg)) scale(var(--scale,1));
-  opacity: 0;
-}
-.overlay-root .photo-stage .photo-item.is-in{
-  transform: translate(0,0) rotate(var(--rotEnd,0deg)) scale(var(--scale,1));
-  opacity: 1;
-}
-.overlay-root .photo-stage .photo-item.is-exit{
-  transform: translate(calc(100vw), var(--driftY,0px)) rotate(var(--rotExit,0deg)) scale(var(--scale,1));
-  opacity: 0;
-}
-
-
-
+  opacity: 0;}
+.overlay-root .photo-stage .photo-item.is-enter{transform: translate(calc(-100vw), 0) rotate(var(--rotStart,0deg)) scale(var(--scale,1));
+  opacity: 0;}
+.overlay-root .photo-stage .photo-item.is-in{transform: translate(0,0) rotate(var(--rotEnd,0deg)) scale(var(--scale,1));
+  opacity: 1;}
+.overlay-root .photo-stage .photo-item.is-exit{transform: translate(calc(100vw), var(--driftY,0px)) rotate(var(--rotExit,0deg)) scale(var(--scale,1));
+  opacity: 0;}
 /* === 修正：允許背景點擊穿透，避免浮動卡片擋住 overlay === */
-.course-card.is-floating {
-  pointer-events: none;
-}
-.course-card.is-floating .card-face {
-  pointer-events: auto;
-}
-
-
+.course-card.is-floating{pointer-events: none;}
+.course-card.is-floating .card-face{pointer-events: auto;}
 /* 防止返回時被 .is-faded 影響而瞬間變暗：排除 .is-floating */
-.course-grid.is-faded .course-card.is-floating { opacity: 1 !important; }
-
-
+.course-grid.is-faded .course-card.is-floating{opacity: 1 !important;}
 /* === Modal safety: when grid is inert/hidden, block any events just in case === */
-.course-grid[aria-hidden="true"] { pointer-events: none !important; }
+.course-grid[aria-hidden="true"]{pointer-events: none !important;}
+/* === Modal Ultra Strict Lock === */
+body.modal-strict *{pointer-events:none !important;}
