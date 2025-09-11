@@ -711,3 +711,24 @@ main.snap{scroll-snap-type: y proximity;}
 @media (min-width: 1025px) and (max-width: 1366px){
   .teachers-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 }
+
+/* Tablet～大平板：僅師資頁 grid 所在容器放寬，避免外距過大 */
+@media (min-width: 700px) and (max-width: 1366px){
+  /* 只放寬含有 .teachers-grid 的那個 .container */
+  .panel .container:has(.teachers-grid){
+    /* 盡量吃滿視窗，但仍保留左右安全邊距；避免突破 header 的視覺節奏 */
+    max-width: min(1260px, calc(100vw - 2*max(16px, 2.5vw)));
+  }
+
+  /* 3 欄固定，拉高單欄最小寬度避免卡片被壓小（外距自然會小於卡片寬的 1/3） */
+  .teachers-grid{
+    grid-template-columns: repeat(3, minmax(clamp(300px, 28vw, 380px), 1fr)) !important;
+    gap: clamp(16px, 2.2vw, 24px);
+  }
+
+  /* 卡片比例稍微偏方，視覺更「有份量」 */
+  .teacher-card{
+    aspect-ratio: 3 / 4;
+    grid-template-rows: 64% 1fr;
+  }
+}
