@@ -451,3 +451,204 @@ main.snap{scroll-snap-type: y proximity;}
     gap: 18px;
   }
 }
+
+
+/* ===== Achievements page (appended) ===== */
+/* Use red theme on this page */
+#achievements-page .bg-glass{ --theme-rgb: var(--red-rgb); }
+
+/* Non-fullheight sections for this page */
+.panel.is-auto{
+  min-height: auto;
+  scroll-snap-align: none;
+  scroll-snap-stop: auto;
+  display: block;
+  padding-top: calc(12px + 56px);
+  padding-bottom: 16px;
+}
+
+/* Generic card (align to site language) */
+.card{background: var(--card); border:1px solid var(--border); border-radius:16px;
+  box-shadow: 0 8px 28px rgba(31,41,55,.08);}
+.card.pad{padding:18px}
+
+/* Hero text alignment */
+.achievements-hero .container{text-align:center;}
+.achievements-hero h1{font-size:clamp(28px,4.2vw,42px);margin:0 0 8px;letter-spacing:.02em; color:#fff;}
+.achievements-hero .sub{color:#fff;margin:0;}
+
+/* Toolbar & filters */
+.achievements-toolbar{display:grid;gap: 14px;padding:14px;}
+.achievements-toolbar .legend{display:flex;flex-wrap:wrap;gap:8px;}
+.achievements-toolbar .filters{display:flex;gap:8px;flex-wrap:wrap;}
+.achievements-toolbar .btn{border:1px solid var(--border);background:#fff;
+  box-shadow:0 2px 4px rgba(0,0,0,.08);border-radius:12px;
+  padding:8px 12px;font-weight:700;font-size:14px;cursor:pointer;}
+.achievements-toolbar .btn[aria-pressed="true"]{outline:2px solid #ffccd5;}
+
+/* Badges – light metallic */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;
+  border-radius:999px;font-size:12px;font-weight:600;border:1px solid transparent; background:#f9fafb;}
+.badge .dot{width:10px;height:10px;border-radius:50%;background:currentColor;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);}
+.b-特優{color:#7d6922;background:linear-gradient(180deg,#fffbef,#fff5da);border-color:#f3e9c8;}
+.b-優等{color:#7a7a7a;background:linear-gradient(180deg,#fcfcfd,#f3f5f8);border-color:#e8ebf0;}
+.b-甲等{color:#865236;background:linear-gradient(180deg,#fff5ee,#ffe6d1);border-color:#f2ddc9;}
+.b-無{color:#6b7280;background:#f3f4f6;border-color:#e5e7eb;}
+.b-尚未出賽{color:#6b7280;background:#f9fafb;border-color:#e5e7eb;opacity:.75;}
+
+/* Cards grid */
+.achievements-grid{display:grid;gap:16px;padding:16px;
+  grid-template-columns:repeat(auto-fit, minmax(360px, 1fr));
+}
+.year-card h3{margin:0;font-size:clamp(18px,2.6vw,22px);font-weight:800;}
+.year-card .block h4{margin:0 0 8px;font-size:clamp(15px,2.2vw,18px);font-weight:700;color:#374151;}
+.year-card .rows .row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+  padding:8px 0;border-top:1px dashed #eee;}
+.year-card .rows .row:first-child{border-top:0;}
+
+/* 手機保底、平板保底（teacher grid 已有） */
+
+/* === Achievements: 統一設計 + 兩欄版面 + 濾鏡淡入（2025-09-10） === */
+
+/* Sticky 工具列（不壓到 header） */
+#achievements-page .achievements-toolbar{
+  position: sticky;
+  top: calc(56px + 8px);
+  max-width: 680px;
+  margin: 0 auto;
+  z-index: 5;
+}
+
+/* 年度白卡：標題與副標（桃園市／全國） */
+.year-card .hd{display:flex; align-items:baseline; gap:10px; margin-bottom:8px;}
+.year-card .hd .desc{color: var(--muted); font-size: 13px}
+
+/* 兩欄群組：左「桃園市」、右「全國」 */
+.year-card .blocks{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 680px){
+  .year-card .blocks{grid-template-columns: 1fr;}
+}
+
+/* 每一欄（比賽範疇）標題 */
+.year-card .block{background: #fff; border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px;}
+.year-card .block h4{margin: 0 0 8px; font-weight: 800; color: #374151}
+
+/* 單列：左曲目、右徽章 */
+.year-card .rows{display: grid; gap: 0;}
+.year-card .row{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px dashed #E5E7EB;
+}
+.year-card .row:first-child{border-top: 0;}
+.year-card .label{color: #111827;}
+
+/* 成績徽章：沿用全站 .badge + 等第色系（已定義） */
+.year-card .badge{font-weight: 700;}
+
+/* 切換年度時的淡入動畫（需求 4） */
+.achievements-grid.anim-enter .year-card{opacity: 0; transform: translateY(8px);}
+.achievements-grid.anim-enter .year-card.anim-in{
+  opacity: 1; transform: none;
+  transition: opacity .35s ease, transform .35s ease;
+}
+
+/* === Achievements grid: Desktop/Tablet 2 cols; Mobile 1 col (2025-09-10) === */
+
+
+
+/* Toolbar title (achievements) */
+.cta-title{font-weight:800;font-size:16px;line-height:1.2;margin:0;}
+
+
+#achievements-page .achievements-grid{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 680px){
+  #achievements-page .achievements-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 手機時再更小一點 */
+@media (max-width: 520px) {
+  #achievements-page .achievements-toolbar {
+    max-width: 88%;        /* 接近全寬，但保留邊距 */
+    padding: 16px 12px;    /* 上下左右內距 */
+  }
+}
+
+/* 「查看歷屆成績」標題與下面按鈕的距離 */
+#achievements-page .cta-link {
+  margin-bottom: 10px;     /* 增加間距 */
+  pointer-events: none;    /* 不能點擊 */
+}
+
+/* === Mobile hamburger circle & flow animation (2025-09-11) === */
+@media (pointer: coarse){
+  /* keep hamburger perfectly round on all devices */
+  .lg-main{
+    --size: 56px;
+    width: var(--size) !important;
+    height: var(--size) !important;
+    aspect-ratio: 1 / 1;
+    border-radius: 50% !important;
+    flex: 0 0 auto;
+    padding: 0 !important;
+    transform: translateZ(0); /* iOS/Safari raster hint to avoid distortion */
+  }
+
+  /* stage-in sequence: hamburger visible, other chips fade+lift in */
+  .float-launchers .lg-chip{
+    opacity: 0;
+    transform: translateY(6px) scale(.98);
+    transition:
+      opacity .22s ease,
+      transform .28s cubic-bezier(.22,.61,.36,1);
+  }
+  .float-launchers .lg-main{
+    opacity: 1;
+    transform: none;
+  }
+  .float-launchers.is-show .lg-chip{
+    opacity: 1;
+    transform: none;
+  }
+  /* staggered timing (DOM order: 1=hamburger, 2..N=chips) */
+  .float-launchers.is-show .lg-chip:nth-of-type(2){ transition-delay: 40ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(3){ transition-delay: 80ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(4){ transition-delay: 120ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(5){ transition-delay: 160ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(6){ transition-delay: 200ms; }
+
+  /* first tap on a chip -> widen & show label a beat later for smoothness */
+  .lg-chip:not(.lg-main).is-open{ --w: 172px !important; padding-left: 18px; padding-right: 18px; }
+  .lg-chip.is-open::after{ transition-delay: .06s; }
+
+  /* hamburger never widens; remains a circle even when menu is open */
+  .lg-main,
+  .lg-main:hover,
+  .lg-main.is-open{ --w: 56px !important; }
+}
+
+
+/* === Hotfix 2025-09-11: keep hamburger icon centered on touch devices === */
+@media (pointer: coarse){
+  .lg-main,
+  .lg-main:hover,
+  .lg-main.is-open{
+    --w: 56px !important;          /* width stays circular */
+    justify-content: center !important;  /* never shift left */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}

@@ -163,18 +163,20 @@ document.addEventListener('keydown', (e)=>{
   }
 })();
 
-//
-
 // ===== Float Launchers（手機：漢堡主鈕＋兩段點擊；桌機：維持 hover 展開 / click 導頁） =====
 (() => {
   const stack = document.querySelector('.float-launchers');
   const chips = Array.from(document.querySelectorAll('.float-launchers .lg-chip'));
   if (!stack || chips.length === 0) return;
 
-  const isTouch = matchMedia('(pointer: coarse)').matches || window.innerWidth <= 900;
+  // 以裝置是否支援觸控來判斷，而非視窗大小
+  const supportsTouch =
+    ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0) ||
+    ('msMaxTouchPoints' in navigator && navigator.msMaxTouchPoints > 0) ||
+    ('ontouchstart' in window);
 
-  // === 手機／觸控：主漢堡 + 兩段點擊 ===
-  if (isTouch) {
+  // 觸控裝置：主漢堡 + 兩段點擊
+  if (supportsTouch) {
     // 1) 插入主漢堡按鈕（若不存在）
     let main = stack.querySelector('.lg-main');
     if (!main) {
@@ -195,7 +197,7 @@ document.addEventListener('keydown', (e)=>{
       chips.forEach(c => { c.classList.remove('is-open'); c.__armed = false; });
     };
 
-    // 2) 漢堡開/關（只有漢堡或點外面才會關閉）
+    // 2) 漢堡切換整組選單顯示
     main.addEventListener('click', (e) => {
       e.preventDefault();
       if (stack.classList.contains('is-show')) {
@@ -205,22 +207,22 @@ document.addEventListener('keydown', (e)=>{
       }
     });
 
+    // 3) 點擊外部（非浮動選單區域）→ 收回
     document.addEventListener('click', (ev) => {
       if (ev.target.closest('.float-launchers')) return;
       closeAll();
     });
 
-    // 3) 兩段點擊：第一次點某顆 → 只展開；第二次點 → 導頁（不自動收合）
+    // 4) 兩段點擊：第一次點某顆 → 展開顯示文字；第二次點 → 導頁
     chips.forEach(chip => {
       chip.__armed = false;
       chip.addEventListener('click', (e) => {
         if (chip.__armed) {
-          // 第二次點擊：允許預設導頁，不關閉整串（依你的規則）
+          // 第二次點擊 → 放行預設導頁
           chip.__armed = false;
-          e.stopPropagation();
           return;
         }
-        // 第一次點擊：展開自己，不導頁、不關閉
+        // 第一次點 → 只展開當前 chip，不跳轉
         e.preventDefault();
         e.stopPropagation();
         stack.classList.add('is-show');
@@ -231,5 +233,5 @@ document.addEventListener('keydown', (e)=>{
     });
   }
 
-  // === 桌機：無需額外 JS；維持 CSS :hover 展開、click 導頁 ===
+  // 非觸控（桌機/滑鼠）：維持 CSS :hover 展開、點擊直接導頁
 })();
