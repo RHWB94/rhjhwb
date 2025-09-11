@@ -732,3 +732,143 @@ main.snap{scroll-snap-type: y proximity;}
     grid-template-rows: 64% 1fr;
   }
 }
+
+
+/* ===== LIQUID GLASS (integrated) — 2025-09-11 =====
+   iOS-like glossy transparent glass for .lg-chip; keep ::after for labels
+==================================================== */
+.float-launchers .lg-chip{
+  background:
+    radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.25), rgba(255,255,255,.02) 60%),
+    radial-gradient(80% 80% at 75% 75%, rgba(255,255,255,.18), transparent 60%),
+    rgba(255,255,255,.12);
+  -webkit-backdrop-filter: blur(8px) saturate(180%) contrast(1.15) brightness(1.05);
+          backdrop-filter: blur(8px) saturate(180%) contrast(1.15) brightness(1.05);
+  border: 1px solid rgba(255,255,255,.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 0 -1px 6px rgba(17,24,39,.08),
+    0 10px 24px rgba(17,24,39,.10),
+    0 0 24px rgba(var(--glow, 41,115,255), .35);
+}
+.float-launchers .lg-chip::before{
+  content:"";
+  position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+  background:
+    radial-gradient(220px 220px at 22% 18%, rgba(255,255,255,.75), rgba(255,255,255,0) 42%),
+    radial-gradient(240px 160px at 88% 82%, rgba(var(--glow,41,115,255),.25), rgba(0,0,0,0) 62%);
+  mix-blend-mode: screen;
+  opacity:.85;
+  filter: saturate(120%) contrast(110%);
+}
+.float-launchers .lg-chip.is-open{
+  transform: translateZ(0) scale(1.02);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.65),
+    inset 0 -1px 8px rgba(17,24,39,.08),
+    0 12px 28px rgba(17,24,39,.12),
+    0 0 32px rgba(var(--glow, 41,115,255), .42);
+}
+
+/* entry/exit keyframes for mobile open/close */
+@keyframes lgIn   { from{opacity:0; transform: translateY(6px) scale(.98)} to{opacity:1; transform:none} }
+@keyframes lgOut  { from{opacity:1; transform:none} to{opacity:0; transform: translateY(6px) scale(.98)} }
+
+@media (pointer: coarse){
+  /* make sure hamburger shows by default on touch */
+  .float-launchers .lg-main{ opacity:1; transform:none; }
+
+  /* when closed, hide other chips */
+  .float-launchers:not(.is-show) .lg-chip:not(.lg-main){
+    opacity:0; pointer-events:none; transform: translateY(6px) scale(.98);
+  }
+
+  /* opening sequence */
+  .float-launchers.is-show .lg-chip{ animation: lgIn .26s cubic-bezier(.22,.61,.36,1) forwards; }
+  .float-launchers.is-show .lg-chip:nth-of-type(2){ animation-delay: 40ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(3){ animation-delay: 80ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(4){ animation-delay:120ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(5){ animation-delay:160ms; }
+
+  /* closing sequence (JS adds .is-closing then removes is-show after anim) */
+  .float-launchers.is-closing .lg-chip{ animation: lgOut .22s ease forwards; }
+  .float-launchers.is-closing .lg-chip:nth-of-type(2){ animation-delay: 0ms;  }
+  .float-launchers.is-closing .lg-chip:nth-of-type(3){ animation-delay: 30ms; }
+  .float-launchers.is-closing .lg-chip:nth-of-type(4){ animation-delay: 60ms; }
+  .float-launchers.is-closing .lg-chip:nth-of-type(5){ animation-delay: 90ms; }
+}
+
+
+/* === 2025-09-12: Liquid label color tuning === */
+.float-launchers .lg-chip{ --txt: rgba(15,23,42,.82); }               /* default label */
+.float-launchers .lg-chip.is-open::after{ color: rgba(15,23,42,.72);} /* opened: slightly lighter */
+
+
+/* === 2025-09-12: Touch transitions for real widen animation === */
+@media (pointer: coarse){
+  .float-launchers .lg-chip{
+    transition:
+      opacity .22s ease,
+      transform .28s cubic-bezier(.22,.61,.36,1),
+      width .28s cubic-bezier(.22,.61,.36,1),
+      border-radius .28s cubic-bezier(.22,.61,.36,1),
+      padding .28s cubic-bezier(.22,.61,.36,1);
+    transform-origin: 90% 50%; /* feel like split from hamburger */
+  }
+  /* widen when armed */
+  .float-launchers .lg-chip:not(.lg-main).is-open{
+    --w: 172px !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+}
+
+
+/* === 2025-09-12: Bubble split/merge animation === */
+@keyframes bubbleOut { from{opacity:0; transform: translateY(10px) scale(.72)} to{opacity:1; transform:none} }
+@keyframes bubbleIn  { from{opacity:1; transform:none} to{opacity:0; transform: translateY(10px) scale(.72)} }
+
+@media (pointer: coarse){
+  /* Opening: chips pop out like bubbles (hamburger stays) */
+  .float-launchers.is-show .lg-chip:not(.lg-main){
+    animation: bubbleOut .28s cubic-bezier(.22,.61,.36,1) both;
+  }
+  /* Closing: chips merge back */
+  .float-launchers.is-closing .lg-chip:not(.lg-main){
+    animation: bubbleIn .24s ease both;
+  }
+  /* Stagger */
+  .float-launchers.is-show .lg-chip:nth-of-type(2),
+  .float-launchers.is-closing .lg-chip:nth-of-type(5){ animation-delay: 40ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(3),
+  .float-launchers.is-closing .lg-chip:nth-of-type(4){ animation-delay: 80ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(4),
+  .float-launchers.is-closing .lg-chip:nth-of-type(3){ animation-delay: 120ms; }
+  .float-launchers.is-show .lg-chip:nth-of-type(5),
+  .float-launchers.is-closing .lg-chip:nth-of-type(2){ animation-delay: 160ms; }
+}
+
+
+/* === Mobile/touch graceful close sequence & hamburger stability (2025-09-12) === */
+@media (pointer: coarse){
+  /* 開始關閉時，先讓文字淡出，但維持寬度一小段時間（由 JS 移除 .is-open 後才收回成圓） */
+  .lg-chip.is-closing::after{
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity .12s ease, transform .12s ease;
+  }
+
+  /* 漢堡主鈕不要參與任何淡入/淡出或位移的過場，避免閃爍 */
+  .float-launchers .lg-main{
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+    pointer-events: auto !important;
+  }
+  .float-launchers:not(.is-show) .lg-main{
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+

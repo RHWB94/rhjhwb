@@ -193,24 +193,48 @@ document.addEventListener('keydown', (e)=>{
     }
 
     const closeAll = () => {
-      stack.classList.remove('is-show');
-      chips.forEach(c => { c.classList.remove('is-open'); c.__armed = false; });
-    };
+  // Avoid re-entry
+  if (stack.classList.contains('is-closing')) return;
+
+  // Start closing animation first
+  stack.classList.add('is-closing');
+
+  // Keep chips circular; cancel armed state
+  chips.forEach(c => { c.classList.remove('is-open'); c.__armed = false; });
+
+  const finalize = () => {
+    stack.classList.remove('is-show');
+    stack.classList.remove('is-closing');
+  };
+
+  // Wait for staggered exit animations to finish
+  let done = false;
+  const onAnimEnd = () => {
+    if (done) return;
+    done = true;
+    setTimeout(finalize, 30);
+    chips.forEach(ch => ch.removeEventListener('animationend', onAnimEnd));
+  };
+  chips.forEach(ch => ch.addEventListener('animationend', onAnimEnd, { once:true }));
+
+  // Fallback in case animationend doesn't fire
+  setTimeout(() => { if (!done) onAnimEnd(); }, 420);
+};
 
     // 2) 漢堡切換整組選單顯示
     main.addEventListener('click', (e) => {
       e.preventDefault();
       if (stack.classList.contains('is-show')) {
-        closeAll();
+        closeAll(true);
       } else {
-        stack.classList.add('is-show');
+        stack.classList.add('is-show'); main.classList.add('is-open'); setTimeout(()=>main.classList.remove('is-open'), 180);
       }
     });
 
     // 3) 點擊外部（非浮動選單區域）→ 收回
     document.addEventListener('click', (ev) => {
       if (ev.target.closest('.float-launchers')) return;
-      closeAll();
+      closeAll(true);
     });
 
     // 4) 兩段點擊：第一次點某顆 → 展開顯示文字；第二次點 → 導頁
@@ -225,7 +249,7 @@ document.addEventListener('keydown', (e)=>{
         // 第一次點 → 只展開當前 chip，不跳轉
         e.preventDefault();
         e.stopPropagation();
-        stack.classList.add('is-show');
+        stack.classList.add('is-show'); main.classList.add('is-open'); setTimeout(()=>main.classList.remove('is-open'), 180);
         chips.forEach(c => { if (c !== chip) { c.__armed = false; c.classList.remove('is-open'); } });
         chip.classList.add('is-open');
         chip.__armed = true;
