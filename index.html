@@ -31,9 +31,14 @@
     <!-- HERO (第一屏) -->
     <section class="hero panel" role="img" aria-label="Renhe Wind Band">
       <div class="hero-media">
-        <img src="assets/hero.jpg" alt="" />
-        <div class="hero-blur"></div>
-      </div>
+  <picture>
+    <source type="image/webp"
+            srcset="assets/assets_webp/hero_300.webp 300w, assets/assets_webp/hero_1200.webp 1200w"
+            sizes="100vw">
+    <img src="assets/assets_jpg/hero.jpg" alt="" decoding="async" width="1200" height="675" />
+  </picture>
+  <div class="hero-blur"></div>
+</div>
       <div class="hero-content container">
         <h1>仁和國中管樂團</h1>
         <p class="sub">
@@ -72,7 +77,10 @@
     <!-- 1. 樂團總指揮 楊宇綸 老師 -->
     <section class="panel profile-section" id="sec-yang" data-theme="yang" aria-labelledby="ttl-yang">
       <div class="container profile">
-        <img class="profile-photo yang" src="assets/yang.jpg" alt="樂團總指揮 楊宇綸 老師">
+        <picture>
+  <source type="image/webp" srcset="assets/assets_webp/yang_300.webp 300w, assets/assets_webp/yang_1200.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
+  <img class="profile-photo yang" src="assets/assets_jpg/yang.jpg" alt="樂團總指揮 楊宇綸 老師" loading="lazy" decoding="async">
+</picture>
         <div class="profile-body">
           <h2 id="ttl-yang" class="profile-title">樂團總指揮　楊宇綸 老師</h2>
           <ul class="profile-list">
@@ -173,7 +181,10 @@
     <!-- 2. 行進樂隊總教練 周健安 老師 -->
     <section class="panel profile-section" id="sec-chou" data-theme="chou" aria-labelledby="ttl-chou">
       <div class="container profile">
-        <img class="profile-photo chou" src="assets/chou.jpg" alt="行進樂隊總教練 周健安 老師">
+        <picture>
+  <source type="image/webp" srcset="assets/assets_webp/chou_300.webp 300w, assets/assets_webp/chou_1200.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
+  <img class="profile-photo chou" src="assets/assets_jpg/chou.jpg" alt="行進樂隊總教練 周健安 老師" loading="lazy" decoding="async">
+</picture>
         <div class="profile-body">
           <h2 id="ttl-chou" class="profile-title">行進樂隊總教練　周健安 老師</h2>
           <ul class="profile-list">
@@ -196,7 +207,10 @@
     <!-- 3. 旗隊教練 簡語彤 老師 -->
     <section class="panel profile-section" id="sec-jian" data-theme="jian" aria-labelledby="ttl-jian">
       <div class="container profile">
-        <img class="profile-photo jian" src="assets/jian.jpg" alt="旗隊教練 簡語彤 老師">
+        <picture>
+  <source type="image/webp" srcset="assets/assets_webp/jian_300.webp 300w, assets/assets_webp/jian_1200.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
+  <img class="profile-photo jian" src="assets/assets_jpg/jian.jpg" alt="旗隊教練 簡語彤 老師" loading="lazy" decoding="async">
+</picture>
         <div class="profile-body">
           <h2 id="ttl-jian" class="profile-title">旗隊教練　簡語彤 老師</h2>
           <ul class="profile-list">

@@ -246,7 +246,8 @@ main.snap{scroll-snap-type: y proximity;}
   clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* ===== 右側懸浮 Liquid Glass 導航 ===== */
 .float-launchers{position: fixed;
-  right: 16px; top: 0; bottom: 0;
+  right: 16px; top: 50%; bottom: auto;
+  transform: translateY(-50%); /* 垂直置中 */
   display: flex; flex-direction: column; justify-content: center;
   gap: 14px;
   z-index: 60;               /* 高於 header/內容 */
@@ -433,24 +434,14 @@ main.snap{scroll-snap-type: y proximity;}
 }
 
 /* 手機保底：寬度很窄時至少保 2 欄（≤520px） */
-@media (max-width: 520px) {
-  .teachers-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;                /* 卡片間距略縮，避免擠壓 */
-  }
-  .teacher-card .name { font-size: 16px; }
+
   .teacher-card .role { font-size: 13px; }
   .teacher-card .content { padding: 12px 12px 14px; }
 }
 
 
 /* 平板保底：寬度介於 521px~1024px 時至少保 3 欄 */
-@media (min-width: 521px) and (max-width: 1024px) {
-  .teachers-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-  }
-}
+
 
 
 /* ===== Achievements page (appended) ===== */
@@ -669,12 +660,7 @@ main.snap{scroll-snap-type: y proximity;}
 }
 
 /* === Fix 2025-09-11: Teachers grid keep 3 cols also in landscape tablets === */
-@media (min-width: 1025px) and (max-width: 1366px){
-  .teachers-grid{
-    grid-template-columns: repeat(3, minmax(0,1fr)) !important;
-    gap: 20px;
-  }
-}
+
 
 
 /* === Fix 2025-09-11: Touch hamburger stays perfectly circular even when menu is open === */
@@ -704,27 +690,12 @@ main.snap{scroll-snap-type: y proximity;}
 }
 
 /* === Fix 2025-09-11: Teachers grid keeps 3 columns on tablet landscape === */
-@media (min-width: 700px) and (max-width: 1180px) and (orientation: landscape){
-  .teachers-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-}
+
 /* Also ensure larger tablets (e.g., 1025–1366px) don't collapse */
-@media (min-width: 1025px) and (max-width: 1366px){
-  .teachers-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-}
+
 
 /* Tablet～大平板：僅師資頁 grid 所在容器放寬，避免外距過大 */
-@media (min-width: 700px) and (max-width: 1366px){
-  /* 只放寬含有 .teachers-grid 的那個 .container */
-  .panel .container:has(.teachers-grid){
-    /* 盡量吃滿視窗，但仍保留左右安全邊距；避免突破 header 的視覺節奏 */
-    max-width: min(1260px, calc(100vw - 2*max(16px, 2.5vw)));
-  }
 
-  /* 3 欄固定，拉高單欄最小寬度避免卡片被壓小（外距自然會小於卡片寬的 1/3） */
-  .teachers-grid{
-    grid-template-columns: repeat(3, minmax(clamp(300px, 28vw, 380px), 1fr)) !important;
-    gap: clamp(16px, 2.2vw, 24px);
-  }
 
   /* 卡片比例稍微偏方，視覺更「有份量」 */
   .teacher-card{
@@ -913,10 +884,6 @@ main.snap{scroll-snap-type: y proximity;}
   }
 }
 
-/* ====================
-   Strict Fix 2025-09-13
-   ==================== */
-
 /* --- Teachers page strict grid --- */
 .teachers-grid{
   display: grid !important;
@@ -960,6 +927,8 @@ main.snap{scroll-snap-type: y proximity;}
 img, video, canvas{ max-width:100%; height:auto }
 .teachers-grid > *, .achievements-grid > *{ min-width:0 }
 html,body{ overflow-x:hidden }
+
+
 
 
 
@@ -1018,40 +987,102 @@ html,body{ overflow-x:hidden }
   #achievements-page .year-card .row{ padding: 8px 0 !important; gap: 8px !important; }
 }
 
-
-/* --- Fix A: root scroll container cleanup --- */
-html{ height: auto; }          /* allow document to grow naturally */
-body{ min-height: 100%; }      /* keep full-height when short content */
-
-
-/* --- Fix C: lock background when overlay is open --- */
-body.modal-open{ overflow: hidden; }
-
-
-/* --- Fix B: unify float-launchers positioning --- */
-.float-launchers{
-  position: fixed;
-  right: 16px;
-  top: 50%;
-  bottom: auto !important;          /* cancel any earlier bottom:0 */
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-height: none;
-  overflow: visible;
-  contain: layout;
-  pointer-events: none;
+@media (max-width: 480px){
+  .profile-section .container{
+    padding-left: 14px;
+    padding-right: 14px;
+  }
 }
-.float-launchers .lg-chip{ pointer-events: auto; }
 
-
-/* --- Fix: extra breathing room for coach cards on narrow screens (index) --- */
+/* 手機：保持現有設定 */
 @media (max-width: 520px){
   .profile-section .container{ padding-inline: clamp(16px,4.5vw,24px); }
   .profile{ margin-inline: 8px; }
 }
 
+/* 平板：520px～1024px 之間也加留白 */
+@media (min-width: 521px) and (max-width: 1024px){
+  .profile-section .container{ padding-inline: max(16px, 4vw); }
+}
 
-/* --- Safety: prevent horizontal scrollbars globally --- */
-html, body { overflow-x: hidden; }
+/* === 2025-09-13: Teachers grid responsive columns (mobile 2; tablet 3~4; desktop auto) === */
+/* Mobile: 2 columns */
+
+
+/* Tablet (narrow): 3 columns */
+
+
+/* Tablet (wide): 4 columns */
+
+
+/* Desktop and above: keep original flexible layout */
+
+
+/* 平板：520px～1024px 時，教練白卡增加外距 */
+@media (min-width: 521px) and (max-width: 1024px){
+  .profile-section .profile{
+    margin-inline: 20px; /* 左右各 20px，可再調大 */
+  }
+}
+
+
+/* === 2025-09-13: Single-scroll & hover-reveal scrollbars (scoped, minimal) === */
+/* 1) Single vertical scrollbar (cancel the early html,body{height:100%}) */
+html{ height: auto !important; }
+body{ min-height: 100% !important; }
+
+/* 2) Hide scrollbars until hovered (page & modal body) */
+/* Firefox */
+html, body, .overlay-body{ scrollbar-width: none; }
+html:hover, body:hover, .overlay-body:hover{ scrollbar-width: thin; }
+/* WebKit (Chrome/Edge/Safari) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.overlay-body::-webkit-scrollbar{
+  width: 0; height: 0;
+}
+html:hover::-webkit-scrollbar,
+body:hover::-webkit-scrollbar,
+.overlay-body:hover::-webkit-scrollbar{
+  width: 10px; height: 10px;
+}
+/* Track/Thumb styling when visible */
+html:hover::-webkit-scrollbar-thumb,
+body:hover::-webkit-scrollbar-thumb,
+.overlay-body:hover::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,.28);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+html:hover::-webkit-scrollbar-track,
+body:hover::-webkit-scrollbar-track,
+.overlay-body:hover::-webkit-scrollbar-track{
+  background: transparent;
+}
+
+/* === Teachers grid: Clean responsive rules === */
+
+/* Mobile: 2 columns */
+@media (max-width: 600px){
+  .teachers-grid{
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+  }
+}
+
+/* Tablet: 3 columns */
+@media (min-width: 601px) and (max-width: 1024px){
+  .teachers-grid{
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 18px !important;
+  }
+}
+
+/* Desktop: 4 columns */
+@media (min-width: 1025px){
+  .teachers-grid{
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
+  }
+}
