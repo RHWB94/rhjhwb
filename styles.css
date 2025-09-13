@@ -872,3 +872,148 @@ main.snap{scroll-snap-type: y proximity;}
   }
 }
 
+
+/* === Unified hero color overrides (non-index) — 2025-09-12 === */
+/* Ensure non-index pages (teachers/courses/achievements) use the same darker title and softer subtitle,
+   regardless of earlier generic `.hero h1/.hero .sub` rules that are white for the index hero. */
+:is(.teachers-hero, .courses-hero, .achievements-hero) h1,
+:is(.teachers-hero, .courses-hero, .achievements-hero) .hero-title{
+  color: var(--fg) !important;
+}
+:is(.teachers-hero, .courses-hero, .achievements-hero) .sub,
+:is(.teachers-hero, .courses-hero, .achievements-hero) .hero-sub{
+  color: var(--muted) !important;
+}
+
+/* === Header 在小螢幕時，中文在上英文在下 === */
+@media (max-width: 600px) {
+  .brand {
+    display: grid;
+    grid-template-columns: auto 1fr; /* 左邊 logo，右邊文字 */
+    grid-template-rows: auto auto;   /* 上：中文，下：英文 */
+    column-gap: 10px;
+    align-items: center;
+  }
+
+  .brand-logo {
+    grid-row: 1 / span 2; /* Logo 佔兩行 */
+    align-self: center;
+  }
+
+  .brand-zh {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 1rem;   /* 比原本大一級 (約20px，可再調整) */
+    margin-top: 6px;      /* 往下壓一點點，避免太貼上緣 */
+  }
+
+  .brand-en {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* ====================
+   Strict Fix 2025-09-13
+   ==================== */
+
+/* --- Teachers page strict grid --- */
+.teachers-grid{
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+}
+.teacher-card{
+  aspect-ratio: 3 / 4 !important;
+  grid-template-rows: 64% 1fr !important;
+}
+.teacher-card .media img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* --- Achievements page strict grid --- */
+#achievements-page .achievements-grid{
+  display: grid !important;
+  gap: 20px !important;
+  grid-template-columns: repeat(2, minmax(320px, 1fr)) !important;
+  align-items: start !important;
+}
+@media (max-width: 820px){
+  #achievements-page .achievements-grid{
+    grid-template-columns: 1fr !important;
+  }
+}
+.year-card{
+  display:flex !important;
+  flex-direction: column !important;
+  min-height: 240px !important;
+}
+.year-card .blocks{
+  display:grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width:680px){
+  .year-card .blocks{ grid-template-columns: 1fr !important; }
+}
+
+/* --- Mobile safeguards --- */
+img, video, canvas{ max-width:100%; height:auto }
+.teachers-grid > *, .achievements-grid > *{ min-width:0 }
+html,body{ overflow-x:hidden }
+
+
+
+/* =========================================================
+   Achievements — FINAL mobile tightening (2025-09-13)
+   Purpose: remove excessive side gaps on phones for cards.
+   ========================================================= */
+
+/* Phone layout: keep stacked inside card (you asked for mobile vertical) */
+@media (max-width: 680px){
+  #achievements-page .year-card .blocks{ grid-template-columns: 1fr !important; }
+}
+
+/* Hard alignments for the cards section (phones) */
+@media (max-width: 680px){
+  /* Remove extra side paddings from the section and container */
+  #achievements-page .cards-panel{ padding-left: 0 !important; padding-right: 0 !important; }
+  #achievements-page .cards-panel > .container{
+    max-width: none !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  /* Make grid itself own the horizontal rhythm */
+  #achievements-page .cards-panel > .container > .achievements-grid{
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    gap: 14px !important;
+    grid-template-columns: 1fr !important; /* single column */
+  }
+}
+
+/* Ultra-narrow phones: use 94% viewport width centered */
+@media (max-width: 520px){
+  #achievements-page .cards-panel > .container > .achievements-grid{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 90vw !important;
+    margin-left: 5vw !important;
+    margin-right: 5vw !important;
+  }
+}
+
+/* Typography (phones) */
+@media (max-width: 680px){
+  /* Column titles larger & bolder */
+  #achievements-page .year-card .block h4{
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    letter-spacing: .01em;
+  }
+  /* Item labels slightly smaller & stable */
+  #achievements-page .year-card .label{ font-size: 14.5px !important; }
+  #achievements-page .year-card .row{ padding: 8px 0 !important; gap: 8px !important; }
+}
