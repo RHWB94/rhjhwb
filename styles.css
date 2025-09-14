@@ -11,7 +11,10 @@
 /* ===== 基礎 ===== */
 *{box-sizing: border-box}
 html,body{height: 100%;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 body{margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, "Noto Sans TC", "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color:var(--fg);
@@ -433,11 +436,7 @@ main.snap{scroll-snap-type: y proximity;}
   .lg-chip:not(.lg-main).is-open{--w: 172px !important;}
 }
 
-/* 手機保底：寬度很窄時至少保 2 欄（≤520px） */
-
-  .teacher-card .role { font-size: 13px; }
-  .teacher-card .content { padding: 12px 12px 14px; }
-}
+.teacher-card .content { padding: 12px 12px 14px; }
 
 
 /* 平板保底：寬度介於 521px~1024px 時至少保 3 欄 */
@@ -702,7 +701,6 @@ main.snap{scroll-snap-type: y proximity;}
     aspect-ratio: 3 / 4;
     grid-template-rows: 64% 1fr;
   }
-}
 
 
 /* ===== LIQUID GLASS (integrated) — 2025-09-11 =====
@@ -883,19 +881,6 @@ main.snap{scroll-snap-type: y proximity;}
     grid-row: 2;
   }
 }
-
-/* --- Teachers page strict grid --- */
-.teachers-grid{
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
-  gap: 20px !important;
-  align-items: stretch !important;
-}
-.teacher-card{
-  aspect-ratio: 3 / 4 !important;
-  grid-template-rows: 64% 1fr !important;
-}
-.teacher-card .media img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* --- Achievements page strict grid --- */
 #achievements-page .achievements-grid{
