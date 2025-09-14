@@ -1071,3 +1071,83 @@ body:hover::-webkit-scrollbar-track,
     gap: 20px !important;
   }
 }
+
+/* =========================================================
+   2025-09-14 — Teachers page card side padding match Index
+   Goal: On phones, teacher cards use same horizontal inset
+         as index page coach cards (.profile-section).
+   ========================================================= */
+@media (max-width: 520px){
+  .teachers-hero + .panel > .container{
+    padding-inline: clamp(16px, 4.5vw, 24px) !important;
+  }
+}
+
+
+/* =========================================================
+   2025-09-14 — Teachers page unify side padding with Index
+   Scope: all containers inside teachers.html (body.teachers-page)
+   ========================================================= */
+@media (max-width: 520px){
+  body.teachers-page .container{
+    padding-inline: clamp(16px, 4.5vw, 24px) !important;
+  }
+}
+
+
+/* =========================================================
+   2025-09-14 — Teachers page HARD override (mobile)
+   Purpose: ensure teachers page side padding exactly matches
+   index coach cards; also neutralize earlier fallback margins.
+   ========================================================= */
+@media (max-width: 600px){
+  /* Ensure ALL sections on teachers page use the same inset */
+  body.teachers-page section.panel > .container{
+    padding-left: clamp(16px, 4.5vw, 24px) !important;
+    padding-right: clamp(16px, 4.5vw, 24px) !important;
+  }
+  /* Neutralize any previous negative margins/paddings on the grid */
+  body.teachers-page .teachers-grid{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+
+/* =========================================================
+   2025-09-14 — Teachers page: mobile 2-col full-fill layout
+   On phones: two cards per row, spacing = side gaps + gap
+   ========================================================= */
+@media (max-width: 520px){
+  body.teachers-page .teachers-grid{
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;           /* 中間間距 */
+    padding-inline: 16px !important;/* 左右間距，與 index 一致 */
+  }
+  body.teachers-page .teacher-card{
+    width: 100% !important; /* 每張卡自動填滿 grid 欄 */
+  }
+}
+
+
+/* === 2025-09-14: Performance & Mobile Hamburger final locks === */
+/* 1) Composite layer + layout containment for smoother frames */
+.float-launchers{ contain: layout style; }
+.float-launchers .lg-chip{
+  will-change: transform, opacity, width;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+
+/* 2) Mobile hamburger: absolutely no animations or transitions */
+@media (pointer: coarse){
+  .float-launchers .lg-main,
+  .float-launchers .lg-main *{
+    transition: none !important;
+    animation: none !important;
+  }
+}

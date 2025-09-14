@@ -116,13 +116,26 @@
           item.style.setProperty('--scale',    scale);
           item.style.setProperty('--driftY',   driftY);
 
-          const img = document.createElement('img');
           const idx = ((placed.length-1)%12) + 1;
+          const pic = document.createElement('picture');
+          const srcLarge = document.createElement('source');
+          srcLarge.type = 'image/webp';
+          srcLarge.srcset = `./course-photo/${key}-${idx}_1200.webp`;
+          srcLarge.media = '(min-width: 800px)';
+          const srcSmall = document.createElement('source');
+          srcSmall.type = 'image/webp';
+          srcSmall.srcset = `./course-photo/${key}-${idx}_360.webp`;
+          const img = document.createElement('img');
           img.src = `./course-photo/${key}-${idx}.jpg`;
           img.alt = `${title} 圖片 ${idx}`;
           img.loading = 'lazy';
+          img.decoding = 'async';
+          img.fetchPriority = 'low';
           img.onerror = ()=> item.remove();
-          item.appendChild(img);
+          pic.appendChild(srcLarge);
+          pic.appendChild(srcSmall);
+          pic.appendChild(img);
+          item.appendChild(pic);
           photoStage.appendChild(item);
 
           const delay = (isPhone ? 140 : 100) + placed.length*75;

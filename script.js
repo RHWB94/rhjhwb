@@ -227,12 +227,13 @@ document.addEventListener('keydown', (e)=>{
       if (stack.classList.contains('is-show')) {
         closeAll(true);
       } else {
-        stack.classList.add('is-show'); main.classList.add('is-open'); setTimeout(()=>main.classList.remove('is-open'), 180);
+        stack.classList.add('is-show'); 
       }
     });
 
     // 3) 點擊外部（非浮動選單區域）→ 收回
     document.addEventListener('click', (ev) => {
+      if (!stack.classList.contains('is-show')) return;
       if (ev.target.closest('.float-launchers')) return;
       closeAll(true);
     });
@@ -249,7 +250,7 @@ document.addEventListener('keydown', (e)=>{
         // 第一次點 → 只展開當前 chip，不跳轉
         e.preventDefault();
         e.stopPropagation();
-        stack.classList.add('is-show'); main.classList.add('is-open'); setTimeout(()=>main.classList.remove('is-open'), 180);
+        stack.classList.add('is-show');
         chips.forEach(c => { if (c !== chip) { c.__armed = false; c.classList.remove('is-open'); } });
         chip.classList.add('is-open');
         chip.__armed = true;
