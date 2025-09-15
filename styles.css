@@ -11,6 +11,7 @@
 /* ===== 基礎 ===== */
 *{box-sizing: border-box}
 html,body{height: 100%;}
+
 html{scroll-behavior:smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -974,15 +975,15 @@ html,body{ overflow-x:hidden }
 
 @media (max-width: 480px){
   .profile-section .container{
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
 }
 
 /* 手機：保持現有設定 */
 @media (max-width: 520px){
   .profile-section .container{ padding-inline: clamp(16px,4.5vw,24px); }
-  .profile{ margin-inline: 8px; }
+  .profile{ margin-inline: 16px; }
 }
 
 /* 平板：520px～1024px 之間也加留白 */
@@ -1150,4 +1151,36 @@ body:hover::-webkit-scrollbar-track,
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* 限制 FAQ 與回覆卡片的寬度，並確保小螢幕有邊距 */
+.faq-page .faq-item,
+.faq-page .faq-form-wrapper {
+  width: 100%;
+  max-width: 720px;   /* 桌機時卡片不會過寬或過窄 */
+  margin: 0 auto 20px auto; /* 置中，底部加間距 */
+  box-sizing: border-box;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* === Scrollbar Custom === */
+html::-webkit-scrollbar {
+  width: 10px;              /* 捲軸寬度 */
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;  /* 軌道透明，等於沒有滑動欄 */
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.35); /* 黑色半透明塊（可改成你喜歡的顏色） */
+  border-radius: 9999px;        /* 圓角，視覺上更細緻 */
+  border: none;                 /* 移除造成「白邊」的邊框 */
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;        /* 窄滑塊 */
+  scrollbar-color: rgba(0,0,0,0.35) transparent; /* 滑塊半透明 + 軌道透明 */
 }
