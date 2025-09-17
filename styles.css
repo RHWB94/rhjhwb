@@ -67,7 +67,7 @@ section.panel{min-height: 100svh;                /* 滿版高 */
 /* ===== Hero（亮色可讀性處理） ===== */
 .hero{position:relative; overflow:hidden}
 .hero-media{position:absolute; inset:0; overflow:hidden}
-.hero-media img{width:100%; height:100%; object-fit:cover; filter:brightness(.9)}
+.hero-media img{width:100%; height:100%; object-fit:cover; filter:brightness(.88);}
 .hero-blur{position:absolute; inset:0; background:rgba(255,255,255,.35); backdrop-filter: blur(10px);}
 .hero-content{position:relative; z-index:1; text-align:center; padding-top:68px;}
 .hero h1{font-size: clamp(28px, 5vw, 56px);
@@ -1183,4 +1183,122 @@ html::-webkit-scrollbar-thumb {
 html {
   scrollbar-width: thin;        /* 窄滑塊 */
   scrollbar-color: rgba(0,0,0,0.35) transparent; /* 滑塊半透明 + 軌道透明 */
+}
+
+
+/* Footer links 區塊 */
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-bottom: 10px;
+  flex-wrap: wrap; /* 手機自動換行 */
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* 圖示與文字間距 */
+  text-decoration: none;
+  color: var(--fg);
+  font-weight: 600;
+  font-size: 13.5px;
+  transition: color .2s ease, transform .15s ease;
+}
+
+.footer-link:hover {
+  color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.footer-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+
+/* === Footer layout (links + copyright) — keeps links together === */
+.site-footer .footer-bar{
+  display: flex;
+  flex-wrap: wrap;              /* 允許自動換行 */
+  justify-content: center;      /* 整體置中 */
+  align-items: center;
+  gap: clamp(16px, 3vw, 28px);
+  text-align: center;
+}
+
+.footer-links{
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(14px, 3vw, 28px);
+  flex-wrap: nowrap;            /* 校網與 YouTube 不換行 */
+  white-space: nowrap;
+}
+
+/* 保證版權也進入 flex 對齊基線 */
+.footer-legal{
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* icon ("徽章") a bit larger */
+.footer-icon{
+  width: 30px;   /* 從 22px -> 26px */
+  height: 30px;
+}
+
+/* touch target & visual rhythm */
+.footer-link{
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+/* When space is tight, allow copyright to wrap to next line naturally.
+   The last item (.footer-legal) will go to the next flex line. No extra rules needed.
+*/
+
+/* === Optical alignment fix for footer legal text === */
+.footer-legal {
+  transform: translateY(-2px); /* 微調版權文字，讓字的中線與連結對齊 */
+}
+
+/* ===== Tablet fluid grid like mobile (821–1024px) ===== */
+@media (min-width: 821px) and (max-width: 1024px){
+
+  /* 1) 版心邊界：與手機邏輯相同，先把左右安全邊界定死 */
+  body.teachers-page .teachers-hero > .container,
+  body.teachers-page .panel > .container{
+    /* 與你手機用的 inline 規則一致：固定左右內距，再讓內容自排 */
+    padding-left: clamp(16px, 4.5vw, 28px);
+    padding-right: clamp(16px, 4.5vw, 28px);
+  }
+
+  /* 2) 卡片間距：固定 gap，其餘寬度交給卡片填滿 */
+  body.teachers-page .teachers-grid{
+    gap: 20px; /* 與現有設計一致 */
+    /* 用 auto-fit + minmax，像手機一樣流動：能塞幾欄就塞幾欄 */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* 防止外溢造成整頁可左右拖 */
+    margin-left: 0; margin-right: 0;
+    padding-left: 0; padding-right: 0;
+  }
+
+  /* 3) 卡片本體不改動外觀，只確保不撐出容器 */
+  body.teachers-page .teacher-card{ max-width: 100%; }
+}
+
+/* 若你的第二屏（師資列表）是 .panel 滿版高，平板先改回自然高度 */
+@media (min-width: 821px) and (max-width: 1024px){
+  body.teachers-page .panel:nth-of-type(2){
+    min-height: auto;
+    scroll-snap-align: none;
+    scroll-snap-stop: auto;
+    display: block;
+    padding-top: calc(12px + 56px); /* 與現有 .panel.is-auto 對齊 */
+    padding-bottom: 16px;
+  }
 }
