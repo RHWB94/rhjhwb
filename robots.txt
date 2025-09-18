@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rhwb94.github.io/rhjhwb/sitemap.xml
