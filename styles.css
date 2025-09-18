@@ -1302,3 +1302,118 @@ html {
     padding-bottom: 16px;
   }
 }
+
+
+/* === PATCH: Teachers page strict layout rhythm (2025-09-18) === */
+/* Base safety: prevent panel centering from shrinking containers on Teachers page */
+body.teachers-page section.panel:not(.teachers-hero){
+  display: block !important;
+  min-height: auto;
+  scroll-snap-align: none;
+  scroll-snap-stop: auto;
+}
+
+/* Ensure the container stretches full width and owns the side padding */
+body.teachers-page section.panel > .container{
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+  padding-left: 50px !important;
+  padding-right: 50px !important;
+  box-sizing: border-box;
+}
+
+/* Grid owns the internal gaps; leave 20px side padding to the container */
+body.teachers-page .teachers-grid{
+  display: grid !important;
+  gap: 15px !important;
+}
+
+/* Tablet portrait: 3 columns */
+@media (min-width: 601px) and (max-width: 1023px){
+  body.teachers-page .teachers-grid{
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Landscape tablet and up: 4 columns */
+@media (min-width: 1024px){
+  body.teachers-page .teachers-grid{
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  body.teachers-page .teacher-card{ width: 100% !important; }
+}
+/* === END PATCH === */
+
+/* === Teachers Hero: 佔滿一屏（扣掉固定 header），避免露出下一區 === */
+:root { --header-h: 56px; } /* 如果之後 header 高度改了，這裡一起調 */
+
+body.teachers-page .teachers-hero {
+  /* 先取消通用 .panel 的最小高，改成本頁專屬的 */
+  min-height: auto !important;
+
+  /* 以動態視窗高為主（iOS/iPadOS 更準確），扣掉 header */
+  height: calc(100dvh - var(--header-h));
+  display: grid;
+  place-items: center;
+  padding-top: calc(12px + var(--header-h));
+  padding-bottom: 24px;
+}
+
+/* 若裝置不支援 dvh，就退回使用 svh */
+@supports not (height: 100dvh) {
+  body.teachers-page .teachers-hero {
+    height: calc(100svh - var(--header-h));
+  }
+}
+
+/* 保險：讓下一區緊貼，不額外外距 */
+body.teachers-page .teachers-hero + .panel {
+  margin-top: 0;
+}
+
+/* 三頁 Hero 都用同一組置中邏輯（tracks 也置中更穩） */
+.teachers-hero,
+.achievements-hero,
+.courses-hero{
+  place-content: center;      /* 讓整個 track 置中 */
+}
+
+/* Hero 高度統一：扣掉固定 header 高度（56px） */
+:root{ --header-h: 56px; }
+.teachers-hero,
+.achievements-hero,
+.courses-hero{
+  min-height: calc(100svh - var(--header-h));
+  padding-top: calc(24px + var(--header-h));
+}
+
+/* === [Hero Unification Patch | 2025-09-18] === */
+:root { --header-h: 56px; }
+
+.teachers-hero,
+.achievements-hero,
+.courses-hero{
+  min-height: calc(100svh - var(--header-h));
+  display: grid;
+  place-content: center;
+  padding-top: 0;             /* 覆蓋 section.panel 的上內距 */
+  padding-bottom: 24px;       /* 保留下緣節奏 */
+}
+
+.teachers-hero .container,
+.achievements-hero .container,
+.courses-hero .container{ text-align: center; }
+
+.hero-title{
+  font-size: clamp(28px, 4.6vw, 48px);
+  line-height: 1.15;
+  margin: 0 0 10px;
+  letter-spacing: .02em;
+}
+
+.hero-sub{
+  margin: 0;
+  color: var(--muted);
+}
+
