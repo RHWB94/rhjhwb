@@ -1417,3 +1417,19 @@ body.teachers-page .teachers-hero + .panel {
   color: var(--muted);
 }
 
+.site-meta {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+  text-align: center;      /* 🔸讓內容置中 */
+  display: block;          /* 🔸確保整行獨立 */
+  width: 100%;             /* 🔸佔滿 footer 寬度 */
+}
+
+.site-meta span {
+  display: inline-block;   /* 🔸讓上架與更新在同一行 */
+}
+
+.site-meta .divider {
+  margin: 0 0.5em;
+}
