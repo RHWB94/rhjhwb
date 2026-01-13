@@ -10,10 +10,10 @@
         "木管五重奏": "優等(86.7)"
       },
       "全國學生音樂比賽": {
-        "管樂合奏": "已晉級",
-        "行進管樂": "已晉級",
-        "銅管五重奏": "已晉級",
-        "木管五重奏": "已晉級"
+        "管樂合奏": "3/7出賽",
+        "行進管樂": "3/1出賽",
+        "銅管五重奏": "3/8出賽",
+        "木管五重奏": "3/9出賽"
       }
     },
     "113學年度": {
@@ -107,10 +107,20 @@
   // === 元件 ===
   const makeBadge = (text) => {
     const span = document.createElement('span');
-    span.className = `badge ${BADGE_CLASS[text] || 'b-無'}`;
+
+    let badgeClass = 'b-無'; // 預設
+
+    if (text.includes('特優')) badgeClass = 'b-特優';
+    else if (text.includes('優等')) badgeClass = 'b-優等';
+    else if (text.includes('甲等')) badgeClass = 'b-甲等';
+    else if (text.includes('尚未出賽') || text.includes('未出賽')) badgeClass = 'b-尚未出賽';
+    else if (text.includes('無')) badgeClass = 'b-無';
+
+    span.className = `badge ${badgeClass}`;
     span.innerHTML = `<span class="dot" aria-hidden="true"></span>${text}`;
     return span;
   };
+
 
   const makeCard = (year, y) => {
     const card = document.createElement('div');
