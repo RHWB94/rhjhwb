@@ -1257,6 +1257,96 @@ html {
   border-radius: 10px;
 }
 
+@media (max-width: 600px){
+  .site-footer .footer-links{
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    white-space: normal;
+  }
+
+  .site-footer .footer-link{
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--card) 88%, white 12%);
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  }
+
+  .site-footer .footer-link span{
+    display: none;
+  }
+
+  .site-footer .footer-icon{
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (pointer: coarse){
+  .float-launchers{
+    contain: layout paint style;
+  }
+
+  .float-launchers .lg-chip{
+    width: var(--w) !important;
+    height: var(--h) !important;
+    animation: none !important;
+    transition:
+      opacity .18s ease,
+      transform .18s ease,
+      width .24s cubic-bezier(.22,.61,.36,1),
+      border-radius .24s cubic-bezier(.22,.61,.36,1),
+      padding .24s cubic-bezier(.22,.61,.36,1) !important;
+    will-change: transform, opacity !important;
+    transform: translate3d(0, 0, 0);
+    box-shadow: none !important;
+  }
+
+  .float-launchers .lg-main,
+  .float-launchers .lg-main:hover,
+  .float-launchers .lg-main.is-open{
+    width: 60px !important;
+    height: 60px !important;
+    --w: 60px !important;
+    --h: 60px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+  }
+
+  .float-launchers:not(.is-show) .lg-chip:not(.lg-main){
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, 8px, 0) scale(.96);
+  }
+
+  .float-launchers.is-show .lg-chip:not(.lg-main){
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  .float-launchers .lg-chip:not(.lg-main).is-open{
+    --w: 172px !important;
+    justify-content: flex-start !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+    box-shadow: none !important;
+  }
+
+  .float-launchers .lg-chip::after{
+    transition: opacity .14s ease, transform .14s ease !important;
+  }
+
+  .float-launchers .lg-chip.is-open{
+    box-shadow: none !important;
+  }
+}
+
 /* When space is tight, allow copyright to wrap to next line naturally.
    The last item (.footer-legal) will go to the next flex line. No extra rules needed.
 */
@@ -1412,6 +1502,33 @@ body.teachers-page .teachers-hero + .panel {
   letter-spacing: .02em;
 }
 
+/* === Teachers mobile final spacing patch (phones only) === */
+@media (max-width: 600px){
+  body.teachers-page section.panel > .container{
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  body.teachers-page .teachers-grid{
+    gap: 12px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body.teachers-page .teacher-card{
+    aspect-ratio: 4 / 5.2 !important;
+    grid-template-rows: 60% 1fr !important;
+  }
+
+  body.teachers-page .teacher-card .content{
+    padding: 12px 14px 24px !important;
+  }
+
+  body.teachers-page .teacher-card .role{
+    margin-bottom: 0 !important;
+  }
+}
+
 .hero-sub{
   margin: 0;
   color: var(--muted);
@@ -1432,4 +1549,40 @@ body.teachers-page .teachers-hero + .panel {
 
 .site-meta .divider {
   margin: 0 0.5em;
+}
+
+/* === Footer final row layout patch === */
+.site-footer .footer-bar{
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: center;
+  align-items: center;
+  row-gap: 10px;
+  text-align: center;
+}
+
+.site-footer .footer-links{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+}
+
+.site-footer .footer-legal{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.site-footer .site-meta{
+  margin-top: 10px;
+}
+
+@media (max-width: 600px){
+  .site-footer .footer-links{
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+  }
 }
