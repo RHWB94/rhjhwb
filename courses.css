@@ -389,8 +389,8 @@ body.course-experience-open .float-launchers{
 }
 
 .course-experience-title-slot{
-  width: min(360px, calc(100vw - 180px));
-  min-width: min(260px, calc(100vw - 180px));
+  width: min(560px, calc(100vw - 72px));
+  min-width: min(320px, calc(100vw - 72px));
   min-height: 64px;
   margin-top: clamp(34px, 7vh, 78px);
 }
@@ -410,13 +410,12 @@ body.course-experience-open .float-launchers{
   display: grid;
   gap: 12px;
   width: 100%;
-  padding: clamp(22px, 3vw, 34px) clamp(20px, 3.6vw, 40px);
-  border-radius: 28px;
-  background:
-    linear-gradient(180deg, rgba(15, 23, 42, 0.84), rgba(15, 23, 42, 0.68));
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.34);
-  backdrop-filter: blur(16px);
+  padding: clamp(12px, 1.8vw, 20px) 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
   opacity: 0;
   transform: translateY(40px);
   transition: opacity .54s ease .16s, transform .62s cubic-bezier(.22,.61,.36,1) .16s;
@@ -439,10 +438,12 @@ body.course-experience-open .float-launchers{
   display: grid;
   place-items: center;
   text-align: center;
-  font-size: clamp(22px, 2.4vw, 32px);
+  font-size: clamp(24px, 3vw, 40px);
   font-weight: 900;
-  line-height: 1.2;
+  line-height: 1.1;
   letter-spacing: .03em;
+  white-space: nowrap;
+  text-wrap: nowrap;
   transition:
     left .52s cubic-bezier(.22,.61,.36,1),
     top .52s cubic-bezier(.22,.61,.36,1),
@@ -542,8 +543,8 @@ body.course-experience-open .float-launchers{
   }
 
   .course-experience-title-slot{
-    width: min(216px, calc(100vw - 148px));
-    min-width: 164px;
+    width: min(360px, calc(100vw - 24px));
+    min-width: min(260px, calc(100vw - 24px));
     min-height: 52px;
     margin-top: clamp(24px, 5vh, 44px);
   }
@@ -555,8 +556,8 @@ body.course-experience-open .float-launchers{
   }
 
   .course-experience-description{
-    padding: 18px 18px 20px;
-    border-radius: 22px;
+    padding: 12px 0 16px;
+    border-radius: 0;
   }
 
   .course-experience-description p{
@@ -565,7 +566,7 @@ body.course-experience-open .float-launchers{
   }
 
   .course-floating-title{
-    font-size: clamp(20px, 5.6vw, 26px);
+    font-size: clamp(22px, 5.8vw, 30px);
   }
 
   .course-experience-photo{
