@@ -7,7 +7,11 @@
   --blue:#2973FF;
   --red:#FF184A;
   --green:#00C65A;
-  --yellow:#F6E862;}
+  --yellow:#F6E862;
+  --home-hero-nudge-desktop: -60px;
+  --home-hero-nudge-mobile: -60px;
+  --home-hero-nudge: var(--home-hero-nudge-desktop);
+  --home-hero-title-gap: 6px;}
 /* ===== 基礎 ===== */
 *{box-sizing: border-box}
 html,body{height: 100%;}
@@ -69,9 +73,9 @@ section.panel{min-height: 100svh;                /* 滿版高 */
 .hero-media{position:absolute; inset:0; overflow:hidden}
 .hero-media img{width:100%; height:100%; object-fit:cover; filter:brightness(.88);}
 .hero-blur{position:absolute; inset:0; background:rgba(255,255,255,.35); backdrop-filter: blur(10px);}
-.hero-content{position:relative; z-index:1; text-align:center; padding-top:68px;}
+.hero-content{position:relative; z-index:1; text-align:center; padding-top:68px; transform: translateY(var(--home-hero-nudge));}
 .hero h1{font-size: clamp(28px, 5vw, 56px);
-  margin:0 0 12px;
+  margin:0 0 var(--home-hero-title-gap);
   letter-spacing:.02em;
   color:#ffffff}
 .hero .sub{max-width:860px; margin:0 auto 0;
@@ -109,11 +113,11 @@ section.panel{min-height: 100svh;                /* 滿版高 */
 /* ===== 進場/退場淡入淡出 ===== */
 .hero .hero-content,
 .profile-section .profile{opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(calc(14px + var(--home-hero-nudge)));
   transition: opacity .45s ease, transform .45s ease;}
 .panel.in-view .hero-content,
 .panel.in-view .profile{opacity: 1;
-  transform: none;}
+  transform: translateY(var(--home-hero-nudge));}
 /* ===== Footer ===== */
 .site-footer{border-top:1px solid var(--border);
   padding:16px 0;
@@ -188,7 +192,7 @@ to{opacity:1}
 @media (max-height: 420px){
 .panel .hero-content,
   .panel .profile{opacity: 1 !important;
-    transform: none !important;}
+    transform: translateY(var(--home-hero-nudge)) !important;}
 main.snap{scroll-snap-type: y proximity;}
 }
 
@@ -844,14 +848,14 @@ main.snap{scroll-snap-type: y proximity;}
 
 
 /* === Unified hero color overrides (non-index) — 2025-09-12 === */
-/* Ensure non-index pages (teachers/courses/achievements) use the same darker title and softer subtitle,
+/* Ensure non-index pages (teachers/courses/achievements/faq) use the same darker title and softer subtitle,
    regardless of earlier generic `.hero h1/.hero .sub` rules that are white for the index hero. */
-:is(.teachers-hero, .courses-hero, .achievements-hero) h1,
-:is(.teachers-hero, .courses-hero, .achievements-hero) .hero-title{
+:is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) h1,
+:is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) .hero-title{
   color: var(--fg) !important;
 }
-:is(.teachers-hero, .courses-hero, .achievements-hero) .sub,
-:is(.teachers-hero, .courses-hero, .achievements-hero) .hero-sub{
+:is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) .sub,
+:is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) .hero-sub{
   color: var(--muted) !important;
 }
 
@@ -1435,24 +1439,30 @@ body.teachers-page .teachers-grid{
 }
 /* === END PATCH === */
 
-/* === Teachers Hero: 佔滿一屏（扣掉固定 header），避免露出下一區 === */
-:root { --header-h: 56px; } /* 如果之後 header 高度改了，這裡一起調 */
+/* === Inner-page Hero: shared viewport layout === */
+:root { --header-h: 56px; }
+:root { --inner-hero-nudge-desktop: -45px; }
+:root { --inner-hero-nudge-mobile: -20px; }
+:root { --inner-hero-nudge: var(--inner-hero-nudge-desktop); }
 
-body.teachers-page .teachers-hero {
-  /* 先取消通用 .panel 的最小高，改成本頁專屬的 */
-  min-height: auto !important;
-
-  /* 以動態視窗高為主（iOS/iPadOS 更準確），扣掉 header */
+.teachers-hero,
+.achievements-hero,
+.courses-hero,
+.faq-hero{
+  min-height: auto;
   height: calc(100dvh - var(--header-h));
   display: grid;
   place-items: center;
-  padding-top: calc(12px + var(--header-h));
-  padding-bottom: 24px;
+  padding-top: var(--header-h);
+  padding-bottom: 24px;       /* 保留下緣節奏 */
 }
 
 /* 若裝置不支援 dvh，就退回使用 svh */
 @supports not (height: 100dvh) {
-  body.teachers-page .teachers-hero {
+  .teachers-hero,
+  .achievements-hero,
+  .courses-hero,
+  .faq-hero{
     height: calc(100svh - var(--header-h));
   }
 }
@@ -1462,38 +1472,27 @@ body.teachers-page .teachers-hero + .panel {
   margin-top: 0;
 }
 
-/* 三頁 Hero 都用同一組置中邏輯（tracks 也置中更穩） */
-.teachers-hero,
-.achievements-hero,
-.courses-hero{
-  place-content: center;      /* 讓整個 track 置中 */
-}
-
-/* Hero 高度統一：扣掉固定 header 高度（56px） */
-:root{ --header-h: 56px; }
-.teachers-hero,
-.achievements-hero,
-.courses-hero{
-  min-height: calc(100svh - var(--header-h));
-  padding-top: calc(24px + var(--header-h));
-}
-
-/* === [Hero Unification Patch | 2025-09-18] === */
-:root { --header-h: 56px; }
-
-.teachers-hero,
-.achievements-hero,
-.courses-hero{
-  min-height: calc(100svh - var(--header-h));
-  display: grid;
-  place-content: center;
-  padding-top: 0;             /* 覆蓋 section.panel 的上內距 */
-  padding-bottom: 24px;       /* 保留下緣節奏 */
-}
-
 .teachers-hero .container,
 .achievements-hero .container,
-.courses-hero .container{ text-align: center; }
+.courses-hero .container,
+.faq-hero .container{
+  text-align: center;
+  transform: translateY(var(--inner-hero-nudge));
+}
+
+@media (max-width: 768px){
+  :root{
+    --inner-hero-nudge: var(--inner-hero-nudge-mobile);
+    --home-hero-nudge: var(--home-hero-nudge-mobile);
+  }
+}
+
+@media (min-width: 769px){
+  :root{
+    --inner-hero-nudge: var(--inner-hero-nudge-desktop);
+    --home-hero-nudge: var(--home-hero-nudge-desktop);
+  }
+}
 
 .hero-title{
   font-size: clamp(28px, 4.6vw, 48px);
@@ -1531,6 +1530,7 @@ body.teachers-page .teachers-hero + .panel {
 
 .hero-sub{
   margin: 0;
+  min-height: calc(2 * 1lh);
   color: var(--muted);
 }
 

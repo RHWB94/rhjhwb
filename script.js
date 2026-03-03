@@ -144,7 +144,11 @@ document.addEventListener('keydown', (event) => {
     document.querySelectorAll('.panel .hero-content, .panel .profile').forEach((element) => {
       element.classList.add('in-view');
       element.style.opacity = '1';
-      element.style.transform = 'none';
+      if (element.classList.contains('hero-content')) {
+        element.style.transform = 'translateY(var(--home-hero-nudge))';
+      } else {
+        element.style.transform = 'none';
+      }
     });
   }
 })();
