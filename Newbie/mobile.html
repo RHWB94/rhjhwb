@@ -7,8 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         html, body { height: 100%; overflow: hidden; position: fixed; width: 100%; overscroll-behavior: none; touch-action: manipulation; }
-        .disabled-overlay { backdrop-filter: grayscale(100%) blur(2px); background: rgba(0,0,0,0.4); display: none; }
-        .disabled-overlay.active { display: flex; }
+        .disabled-overlay { backdrop-filter: grayscale(100%) blur(2px); background: rgba(0,0,0,0.6); display: none !important; }
+        .disabled-overlay.active { display: flex !important; flex-direction: column; align-items: center; justify-content: center; }
+        #selected-card { min-height: 0; max-height: 100%; } /* 確保內容不會撐破外層 */
     </style>
 </head>
 <body class="bg-slate-100 flex flex-col font-sans select-none">
@@ -21,11 +22,7 @@
         <div id="lobby-error" class="text-red-300 mt-4 font-bold text-lg hidden">請輸入密碼</div>
     </div>
 
-    <div id="lock-overlay" class="disabled-overlay active fixed inset-0 z-[100] items-center justify-center flex-col text-white">
-        <span class="text-6xl mb-4">🔒</span>
-        <h2 id="lock-title" class="text-2xl font-bold">活動尚未開始</h2>
-        <p id="lock-desc" class="mt-2 opacity-80">請等待老師開啟跑關模式</p>
-    </div>
+    <!-- Lock Overlay moved inside footer -->
 
     <header class="bg-blue-900 text-white p-3 shadow-md flex justify-between items-center gap-3">
         <!-- 注意：這裡的選單也要跟老師端同步喔！ -->
@@ -64,7 +61,7 @@
         </div>
     </main>
 
-    <footer class="p-4 grid grid-cols-3 gap-4 h-36 bg-white border-t border-gray-100 items-center">
+    <footer class="p-4 grid grid-cols-3 gap-4 h-36 bg-white border-t border-gray-100 items-center relative">
         <button data-score-btn="star" onclick="handleScoreButton('star', event)" class="h-24 bg-amber-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
             <span class="score-label text-5xl leading-none">⭐</span>
         </button>
@@ -74,6 +71,17 @@
         <button data-score-btn="triangle" onclick="handleScoreButton('triangle', event)" class="h-24 bg-rose-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
             <span class="score-label text-5xl leading-none">△</span>
         </button>
+
+        <!-- Localized Lock Overlay -->
+        <div id="lock-overlay" class="disabled-overlay active absolute inset-0 z-[100] text-white rounded-t-3xl border-t border-blue-400">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🔒</span>
+                <div class="text-left">
+                    <h2 id="lock-title" class="text-lg font-black leading-none">活動尚未開始</h2>
+                    <p id="lock-desc" class="text-[10px] font-bold opacity-80 mt-1">活動並非進行中不可改動</p>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script type="module">
@@ -208,8 +216,8 @@
             const scoreCount = INSTRUMENT_ORDER.filter((inst) => normalizedScoreMap.has(inst)).length;
             const titleClass = scoreCount >= 4 ? 'text-4xl' : 'text-6xl';
             const isCompact = window.innerWidth <= 430;
-            const rowClass = isCompact ? 'text-sm px-3 py-2.5' : 'text-base px-4 py-3.5';
-            const badgeClass = isCompact ? 'text-base' : 'text-lg';
+            const rowClass = isCompact ? 'text-xs px-2.5 py-2' : 'text-sm px-3.5 py-3';
+            const badgeClass = isCompact ? 'text-sm' : 'text-base';
 
             const renderItem = (inst) => {
                 const normalized = normalizedScoreMap.get(inst);
@@ -217,16 +225,15 @@
                 const bgColor = normalized === 'star' ? 'bg-amber-100 text-amber-700' : (normalized === 'circle' ? 'bg-sky-100 text-sky-700' : (normalized === 'triangle' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500'));
                 const highlightClass = inst === highlightInstrument ? 'ring-2 ring-red-500' : '';
                 return `
-                    <div class="flex justify-between items-center ${bgColor} ${rowClass} ${highlightClass} rounded-xl whitespace-nowrap">
-                        <span class="font-bold shrink-0 mr-2 whitespace-nowrap">${inst}</span>
-                        <span class="font-black ${badgeClass} text-right whitespace-nowrap">${icon}</span>
+                    <div class="flex justify-between items-center ${bgColor} ${rowClass} ${highlightClass} rounded-xl overflow-hidden">
+                        <span class="font-bold truncate mr-1">${inst}</span>
+                        <span class="font-black ${badgeClass} shrink-0 text-right min-w-[1.2rem]">${icon}</span>
                     </div>
                 `;
             };
 
             let scoreHTML = `
-                <div class="mt-4 w-full border-t-2 border-blue-200 pt-3 px-1 flex flex-col items-center">
-                    <p class="text-[14px] font-bold text-blue-500 mb-3 bg-blue-100 px-4 py-1 rounded-full">關卡紀錄</p>
+                <div class="mt-2 w-full border-t-2 border-blue-200 pt-2 px-1 flex flex-col items-center">
                     <div class="w-full grid grid-cols-2 gap-2">
                         <div class="flex flex-col gap-2">
                             ${renderItem(INSTRUMENT_ORDER[0])}
@@ -290,50 +297,38 @@
 
                 const overlay = document.getElementById('lock-overlay');
                 const lockTitle = document.getElementById('lock-title');
-                const lockDesc = document.getElementById('lock-desc');
 
-                if (!data || data.status === 'setup' || !data.status) {
-                    overlay.classList.add('active');
-                    lockTitle.textContent = '活動尚未開始';
-                    lockDesc.textContent = '請等待老師開啟跑關模式';
-                    return;
-                }
-
-            // 1. 處理鎖定遮罩：running/temp-edit 開放，其他鎖定
-            if (data.status === 'running' || data.status === 'temp-edit') {
-                overlay.classList.remove('active');
-            } else if (data.status === 'finished') {
-                overlay.classList.add('active');
-                lockTitle.textContent = '活動已結算';
-                lockDesc.textContent = '請等待老師再次開放錄入';
-            } else {
-                overlay.classList.add('active');
-                lockTitle.textContent = '活動尚未開始';
-                lockDesc.textContent = '請等待老師開啟跑關模式';
-            }
-
-            // 2. 更新學生名單
-            allStudents = data.students || [];
-            updateDropdown();
-            
-            // 如果當前已有選中學生，更新其顯示畫面（包含新的闖關紀錄）
-            if (selectedIndex !== null) {
-                const s = allStudents[selectedIndex];
-                if (!s) {
-                    selectedIndex = null;
-                    resetActionButtons();
-                } else if (isCurrentStudentLocked() && lastSubmission) {
-                    renderSelectedStudentCard(s, {
-                        highlightInstrument: lastSubmission.instrument,
-                        showPassBadge: true,
-                        recentSubmission: lastSubmission
-                    });
-                    renderScoreButtons();
+                // 1. 處理鎖定遮罩：僅鎖定按鈕區 (running/temp-edit 開放，其他鎖定)
+                const isRunning = (data.status === 'running' || data.status === 'temp-edit');
+                if (isRunning) {
+                    overlay.classList.remove('active');
                 } else {
-                    renderSelectedStudentCard(s);
-                    renderScoreButtons();
+                    overlay.classList.add('active');
+                    lockTitle.textContent = (data.status === 'finished') ? '活動已結算' : '活動尚未開始';
                 }
-            }
+
+                // 2. 更新學生名單 (即使鎖定也更新，以便查看資料)
+                allStudents = data.students || [];
+                updateDropdown();
+                
+                // 3. 如果當前已有選中學生，更新其顯示畫面
+                if (selectedIndex !== null) {
+                    const s = allStudents[selectedIndex];
+                    if (!s) {
+                        selectedIndex = null;
+                        resetActionButtons();
+                    } else if (isCurrentStudentLocked() && lastSubmission) {
+                        renderSelectedStudentCard(s, {
+                            highlightInstrument: lastSubmission.instrument,
+                            showPassBadge: true,
+                            recentSubmission: lastSubmission
+                        });
+                        renderScoreButtons();
+                    } else {
+                        renderSelectedStudentCard(s);
+                        renderScoreButtons();
+                    }
+                }
             }); // end onValue
         } // end enterSystem
 

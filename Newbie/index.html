@@ -24,6 +24,20 @@
             -webkit-user-select: none;
         }
 
+        :root {
+            --font-size-offset: 0;
+        }
+
+        .adjustable-school {
+            font-size: calc(9px + var(--font-size-offset) * 1px) !important;
+        }
+
+        .adjustable-name-xs { font-size: calc(0.75rem + var(--font-size-offset) * 2px) !important; }
+        .adjustable-name-sm { font-size: calc(0.875rem + var(--font-size-offset) * 2px) !important; }
+        .adjustable-name-base { font-size: calc(1rem + var(--font-size-offset) * 2px) !important; }
+        .adjustable-name-lg { font-size: calc(1.125rem + var(--font-size-offset) * 2px) !important; }
+        .adjustable-name-xl { font-size: calc(1.25rem + var(--font-size-offset) * 2px) !important; }
+
         .edit-input,
         input,
         textarea {
@@ -1019,6 +1033,15 @@
                     <button id="menu-logout" onclick="logoutAdmin()"
                         class="text-left px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition">🚪
                         登出主控端</button>
+                    <hr class="my-1 border-gray-100">
+                    <div class="px-4 py-2">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">字體大小調整</p>
+                        <div class="flex items-center justify-between bg-gray-50 rounded-xl p-1 border border-gray-200">
+                            <button onclick="updateFontSizeOffset(-1)" class="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-200 active:scale-95 transition font-black text-lg text-gray-600 hover:bg-gray-50">-</button>
+                            <span id="font-size-display" class="font-black text-blue-600 text-sm">0</span>
+                            <button onclick="updateFontSizeOffset(1)" class="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-200 active:scale-95 transition font-black text-lg text-gray-600 hover:bg-gray-50">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <button id="finish-edit-btn" onclick="disableEditMode()"
@@ -1107,6 +1130,18 @@
                 acc[instrument] = [];
                 return acc;
             }, {});
+        }
+
+        let fontSizeOffset = parseInt(localStorage.getItem('fontSizeOffset') || '0');
+
+        function updateFontSizeOffset(delta) {
+            fontSizeOffset = Math.max(-5, Math.min(5, fontSizeOffset + delta));
+            document.documentElement.style.setProperty('--font-size-offset', fontSizeOffset);
+            localStorage.setItem('fontSizeOffset', fontSizeOffset);
+            const display = document.getElementById('font-size-display');
+            if (display) {
+                display.innerText = (fontSizeOffset > 0 ? '+' : '') + fontSizeOffset;
+            }
         }
 
         function normalizeSettlementAssignments(raw) {
@@ -1642,8 +1677,8 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </button>` : ''}
                             <div class="card-content flex flex-col items-center w-full ${isGodMode ? 'pointer-events-none' : ''}">
-                                <span class="text-[9px] ${isAllFinished ? 'text-emerald-50' : 'text-gray-500'} font-medium truncate w-full text-center">${s.school}</span>
-                                 <span class="${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10">${s.name}</span>
+                                <span class="adjustable-school ${isAllFinished ? 'text-emerald-50' : 'text-gray-500'} font-medium truncate w-full text-center">${s.school}</span>
+                                 <span class="adjustable-name-${fontSize.replace('text-', '')} ${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10">${s.name}</span>
                                 <span class="text-[9px] mt-0.5 font-bold relative z-10 ${isAllFinished ? 'text-yellow-200' : (completedCount > 0 ? 'text-blue-600' : 'invisible')}">${completedCount}/${REQUIRED_STAGES}</span>
                             </div>
                         `;
@@ -2174,8 +2209,9 @@
             const menu = document.getElementById('more-menu');
             const btn = document.getElementById('more-btn');
             if (menu && menu.classList.contains('active')) {
-                // 如果點擊了畫面以外，或是點擊了選單內的某個按鈕，就收合選單
-                if (e.target !== btn && (!menu.contains(e.target) || e.target.closest('button'))) {
+                // 如果點擊了畫面以外，或是點擊了選單內的某個按鈕（且不是字體調整按鈕），就收合選單
+                const isFontSizeBtn = e.target.closest('button') && e.target.closest('button').outerHTML.includes('updateFontSizeOffset');
+                if (e.target !== btn && (!menu.contains(e.target) || (e.target.closest('button') && !isFontSizeBtn))) {
                     menu.classList.remove('active');
                 }
             }
@@ -2253,6 +2289,7 @@
             applyStatus(currentStatus);
             renderStudents();
             startFirebaseSync();
+            updateFontSizeOffset(0);
         }
 
         function logoutAdmin() {
