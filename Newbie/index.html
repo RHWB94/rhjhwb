@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仁和國中第24屆管樂團樂器挑選</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: -apple-system, "Noto Sans TC", sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .edit-input,
+        input,
+        textarea {
+            user-select: auto;
+            -webkit-user-select: auto;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .edit-mode .student-card {
+            animation: shake 0.3s infinite;
+            cursor: move;
+            background-color: #eff6ff;
+            border-color: #60a5fa !important;
+            border-style: dashed !important;
+        }
+
+        .edit-mode .student-card.is-editing-text {
+            animation: none;
+            cursor: default;
+            border-style: solid !important;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(0.4deg);
+            }
+
+            75% {
+                transform: rotate(-0.4deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .menu-pop {
+            transform: translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .menu-pop.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .edit-input {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 1px 2px;
+            text-align: center;
+            background: white;
+            z-index: 20;
+            position: relative;
+        }
+
+        /* 動態液體進度填滿特效 */
+        .card-liquid {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: var(--fill-level, 0%);
+            background-color: var(--liquid-color, #3b82f6);
+            transition: height 0.8s ease-in-out, background-color 0.8s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card-liquid-wave {
+            position: absolute;
+            left: 0;
+            top: -12px;
+            width: 200%;
+            height: 12px;
+            background-color: inherit;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 20' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 C 25 20, 25 0, 50 0 C 75 0, 75 20, 100 20 Z'/%3E%3C/svg%3E");
+            -webkit-mask-size: 50% 100%;
+            -webkit-mask-repeat: repeat-x;
+            mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 20' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 C 25 20, 25 0, 50 0 C 75 0, 75 20, 100 20 Z'/%3E%3C/svg%3E");
+            mask-size: 50% 100%;
+            mask-repeat: repeat-x;
+            animation: wave-slide 1.5s linear infinite;
+        }
+
+        @keyframes wave-slide {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .is-full .card-liquid-wave {
+            display: none;
+        }
+
+        @keyframes godModeFire {
+            0% {
+                background-position: 0% 50%;
+                opacity: 0.3;
+            }
+
+            50% {
+                background-position: 100% 50%;
+                opacity: 0.6;
+            }
+
+            100% {
+                background-position: 0% 50%;
+                opacity: 0.3;
+            }
+        }
+
+        .god-mode-fire-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(120deg, #ffc107, #ff5722, #03a9f4, #3b82f6, #ffeb3b);
+            background-size: 300% 300%;
+            animation: godModeFire 2.5s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+        }
+
+        .student-card {
+            position: relative;
+            background: white;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Ambient Background Blobs */
+        @keyframes blob-float-1 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(6vw, -6vh) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-4vw, 4vh) scale(0.95);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        @keyframes blob-float-2 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(-5vw, 7vh) scale(1.15);
+            }
+
+            66% {
+                transform: translate(4vw, -5vh) scale(0.85);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        @keyframes blob-float-3 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(7vw, 4vh) scale(0.9);
+            }
+
+            66% {
+                transform: translate(-6vw, -4vh) scale(1.1);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        .ambient-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            mix-blend-mode: multiply;
+            opacity: 0.55;
+            transition: background-color 1.5s ease, opacity 1s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ambient-blob.b1 {
+            top: -10%;
+            left: -10%;
+            width: 60vw;
+            height: 60vw;
+            animation: blob-float-1 18s ease-in-out infinite;
+        }
+
+        .ambient-blob.b2 {
+            top: 20%;
+            right: -15%;
+            width: 55vw;
+            height: 55vw;
+            animation: blob-float-2 22s ease-in-out infinite;
+        }
+
+        .ambient-blob.b3 {
+            bottom: -20%;
+            left: 15%;
+            width: 70vw;
+            height: 70vw;
+            animation: blob-float-3 26s ease-in-out infinite;
+        }
+
+        .ambient-static .ambient-blob {
+            animation: none !important;
+            opacity: 0.4;
+        }
+
+        .settlement-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 48%, #f8fbff 100%);
+            display: none;
+        }
+
+        .settlement-overlay.active {
+            display: block;
+        }
+
+        .settlement-shell {
+            height: 100%;
+            padding: 28px 24px;
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr) 220px;
+            gap: 24px;
+        }
+
+        .settlement-shell.expanded-shell {
+            grid-template-columns: 1fr;
+            padding: 16px;
+        }
+
+        .settlement-side {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            justify-content: center;
+        }
+
+        .instrument-white-card {
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid rgba(191, 219, 254, 0.8);
+            border-radius: 24px;
+            min-height: 98px;
+            padding: 14px 16px;
+            box-shadow: 0 18px 45px rgba(59, 130, 246, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #1e3a8a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .instrument-white-card:hover {
+            transform: translateY(-2px);
+            border-color: #93c5fd;
+        }
+
+        .instrument-white-card.active {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 18px 45px rgba(37, 99, 235, 0.18);
+            color: #1d4ed8;
+        }
+
+        .instrument-white-card-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .instrument-white-card-name {
+            font-size: 1.15rem;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+
+        .instrument-white-card-meta {
+            font-size: 0.72rem;
+            line-height: 1.35;
+            color: #475569;
+            font-weight: 700;
+        }
+
+        .settlement-center {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .settlement-panel {
+            flex: 1;
+            min-height: 0;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(147, 197, 253, 0.8);
+            border-radius: 32px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 24px 48px rgba(96, 165, 250, 0.14);
+            padding: 28px;
+            display: grid;
+            grid-template-rows: 2fr 3fr auto;
+            gap: 18px;
+            backdrop-filter: blur(8px);
+        }
+
+        .settlement-panel.results-mode {
+            grid-template-rows: 1fr auto;
+        }
+
+        /* 當切換為全螢幕結果時拔除所有外框與底色 */
+        .settlement-panel.no-frame {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+
+        .settlement-section {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(219, 234, 254, 0.95);
+            border-radius: 28px;
+            padding: 18px 20px;
+            overflow: hidden;
+        }
+
+        .settlement-section h3 {
+            margin: 0 0 12px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #1d4ed8;
+            letter-spacing: 0.08em;
+        }
+
+        .settlement-subtitle {
+            margin: 0;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #1e40af;
+        }
+
+        .settlement-section-header {
+            position: relative;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .settlement-section-header .settlement-subtitle {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .settlement-filter-toggles {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settlement-filter-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%);
+            box-shadow: 0 8px 18px rgba(148, 163, 184, 0.12);
+            font-size: 0.78rem;
+            font-weight: 900;
+            color: #1e40af;
+        }
+
+        .settlement-filter-toggle input {
+            width: 15px;
+            height: 15px;
+            accent-color: #2563eb;
+        }
+
+        .settlement-card-list {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(112px, 112px));
+            grid-auto-rows: 66px;
+            gap: 10px;
+            align-content: start;
+            justify-content: center;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 4px 6px 6px 4px;
+            touch-action: pan-y;
+        }
+
+        .settlement-student-card {
+            position: relative;
+            width: 112px;
+            min-height: 66px;
+            background: #fff;
+            border: 2px solid #dbeafe;
+            border-radius: 16px;
+            padding: 10px 10px;
+            box-shadow: 0 10px 20px rgba(148, 163, 184, 0.12);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .settlement-student-card:hover {
+            border-color: #93c5fd;
+            transform: translateY(-1px);
+        }
+
+        .settlement-student-card.selected {
+            border-color: #2563eb;
+            box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.22), 0 12px 24px rgba(59, 130, 246, 0.18);
+        }
+
+        .settlement-student-card.disabled {
+            background: #e5e7eb;
+            border-color: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .settlement-student-card.disabled:hover {
+            border-color: #cbd5e1;
+            transform: none;
+        }
+
+        .settlement-student-card .school {
+            font-size: 0.66rem;
+            color: #64748b;
+            margin-bottom: 4px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        .settlement-student-card .name {
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 900;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .settlement-student-card.disabled .school,
+        .settlement-student-card.disabled .name {
+            color: #64748b;
+        }
+
+        .settlement-student-card-badge {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: #64748b;
+            color: #fff;
+            font-size: 0.58rem;
+            line-height: 1;
+            padding: 4px 6px;
+            border-radius: 999px;
+            font-weight: 800;
+            max-width: 72px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .settlement-candidate-columns {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            gap: 14px;
+            overflow: hidden;
+        }
+
+        .settlement-candidate-column {
+            min-width: 0;
+            min-height: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(248, 250, 252, 0.88);
+            border: 1px solid #dbeafe;
+            border-radius: 22px;
+            padding: 14px 14px 12px;
+            overflow: hidden;
+        }
+
+        .settlement-candidate-column-title {
+            margin: 0 0 10px;
+            text-align: center;
+            font-size: 1.15rem;
+            line-height: 1;
+            font-weight: 900;
+            color: #1e40af;
+        }
+
+        .settlement-empty {
+            flex: 1;
+            min-height: 0;
+            border: 2px dashed #bfdbfe;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-weight: 700;
+            background: rgba(239, 246, 255, 0.6);
+        }
+
+        .settlement-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .settlement-actions button {
+            border: none;
+            border-radius: 20px;
+            padding: 16px 18px;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15);
+        }
+
+        .settlement-actions button:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .settlement-actions button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .settlement-pick-btn {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .settlement-remove-btn {
+            background: #f97316;
+            color: #fff;
+        }
+
+        .settlement-confirm-btn {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .settlement-floating-back {
+            position: fixed;
+            right: 28px;
+            bottom: 28px;
+            z-index: 230;
+            width: 72px;
+            height: 72px;
+            border-radius: 999px;
+            border: 3px solid #93c5fd;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1d4ed8;
+            font-size: 1rem;
+            font-weight: 900;
+            box-shadow: 0 18px 36px rgba(59, 130, 246, 0.18);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .settlement-export-btn {
+            position: fixed;
+            right: 112px;
+            bottom: 28px;
+            z-index: 230;
+            width: 72px;
+            height: 72px;
+            border-radius: 999px;
+            border: 3px solid #10b981;
+            background: rgba(255, 255, 255, 0.95);
+            color: #059669;
+            font-size: 1rem;
+            font-weight: 900;
+            box-shadow: 0 18px 36px rgba(16, 185, 129, 0.18);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .settlement-export-btn:hover {
+            transform: translateY(-1px);
+            background: #ecfdf5;
+            box-shadow: 0 22px 40px rgba(16, 185, 129, 0.24);
+        }
+
+        .settlement-floating-back:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 22px 40px rgba(59, 130, 246, 0.24);
+        }
+
+        .settlement-results {
+            min-height: 0;
+            display: none;
+            grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 24px;
+            overflow: hidden;
+            padding: 16px 8px;
+            color: #1e3a8a;
+        }
+
+        .settlement-results.active {
+            display: grid;
+        }
+
+        .result-row-top {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            min-height: 0;
+        }
+
+        .result-row-bottom {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px;
+            min-height: 0;
+        }
+
+        .result-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            min-height: 0;
+        }
+
+        .result-col-img-wrapper {
+            height: 60px;
+            /* 將預留給圖片的高度從 100px 大幅縮減至 60px */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 圖片預設置中對齊 */
+            margin-bottom: 4px;
+            /* 縮小與下方標題的間隙 */
+            flex-shrink: 0;
+        }
+
+        .result-col-img {
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+        }
+
+        .result-col-title {
+            font-size: 1.5rem;
+            /* 字體最大的樂器名稱 */
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            margin-bottom: 2px;
+            /* 縮小與下方分隔線的間隙 */
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .result-col-divider {
+            width: 70%;
+            height: 2px;
+            background-color: #1e3a8a;
+            opacity: 0.4;
+            margin-bottom: 8px;
+            /* 縮小名單與分隔線的間隙 */
+            flex-shrink: 0;
+        }
+
+        .result-student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            text-align: center;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .result-student-item {
+            font-size: 1.25rem;
+            /* 姓名縮小1級 */
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .result-student-item .school {
+            font-size: 0.7rem;
+            /* 學校縮小1級 */
+            font-weight: 500;
+            opacity: 0.75;
+        }
+
+        .result-student-grid {
+            display: grid;
+            gap: 2px 16px;
+            justify-content: center;
+            align-content: start;
+            width: 100%;
+        }
+
+        .result-student-grid.cols-1 {
+            grid-auto-flow: row;
+            grid-template-columns: max-content;
+        }
+
+        /* 超過7人時會換欄位，並且由左至右、上至下排列 */
+        .result-student-grid.cols-2 {
+            grid-auto-flow: column;
+            grid-template-rows: repeat(7, max-content);
+            grid-template-columns: max-content max-content;
+        }
+
+        @media (max-width: 1100px) {
+            .settlement-shell {
+                grid-template-columns: 180px minmax(0, 1fr) 180px;
+                padding: 20px 16px;
+                gap: 16px;
+            }
+
+            .instrument-white-card {
+                min-height: 84px;
+            }
+
+            .instrument-white-card-name {
+                font-size: 1rem;
+            }
+
+            .settlement-card-list {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
+                grid-auto-rows: 60px;
+            }
+
+            .settlement-student-card {
+                width: 100px;
+                min-height: 60px;
+                padding: 8px 8px;
+            }
+
+            .settlement-student-card .name {
+                font-size: 0.82rem;
+            }
+
+            .settlement-results {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 flex flex-col">
+
+    <!-- Admin Overlay -->
+    <div id="admin-auth-overlay"
+        class="fixed inset-0 z-[500] bg-blue-900 flex flex-col items-center justify-center text-white p-6">
+        <h1 class="text-4xl font-black mb-8 tracking-widest">系統管理者登入</h1>
+        <input type="password" id="admin-pass-input" placeholder="請輸入主控密碼"
+            class="text-center px-4 py-3 rounded-xl text-blue-900 text-xl font-bold outline-none tracking-widest">
+        <div id="admin-error" class="text-red-300 mt-4 font-bold hidden">密碼錯誤</div>
+        <button onclick="verifyAdmin()"
+            class="mt-6 px-10 py-4 bg-emerald-500 rounded-2xl text-xl font-bold shadow-xl hover:-translate-y-1 transition transform">驗證</button>
+    </div>
+
+    <!-- God Mode Popover -->
+    <div id="god-mode-popover"
+        class="hidden fixed w-[340px] bg-white rounded-2xl shadow-2xl border-2 border-purple-200 overflow-hidden z-[100] flex flex-col transition-all duration-200"
+        style="top:0; left:0;" onclick="event.stopPropagation()">
+        <div
+            class="bg-gradient-to-r from-purple-800 to-purple-600 text-white px-4 py-3 flex items-center justify-between">
+            <div class="flex flex-col">
+                <p id="god-mode-school"
+                    class="text-[11px] font-bold opacity-80 mb-0 tracking-wider uppercase leading-none"></p>
+                <h2 id="god-mode-name" class="text-2xl font-black tracking-widest text-[#f8fafc] leading-none mt-1">
+                </h2>
+            </div>
+            <span class="text-3xl drop-shadow-md">👑</span>
+        </div>
+        <div id="god-mode-form"
+            class="p-3 flex flex-col gap-2 bg-gradient-to-b from-purple-50/50 to-white relative z-0">
+            <!-- Instrument rows will be dynamically injected here -->
+        </div>
+        <div class="px-3 py-3 bg-gray-50 flex justify-between gap-3 border-t border-purple-100">
+            <button onclick="handleGodModeCancel(event)"
+                class="flex-1 py-1.5 bg-white border-2 border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 hover:border-gray-400 rounded-xl font-black text-2xl shadow-sm transition flex items-center justify-center grayscale opacity-80 hover:opacity-100 hover:grayscale-0">❌</button>
+            <button id="god-mode-confirm-btn" onclick="handleGodModeConfirm(event)"
+                class="flex-1 py-1.5 bg-white border-2 border-emerald-500 text-emerald-500 rounded-xl font-black text-2xl shadow-sm transition flex items-center justify-center disabled:opacity-40 disabled:border-gray-300 disabled:text-gray-400 disabled:grayscale disabled:cursor-not-allowed hover:bg-emerald-500 hover:text-white disabled:hover:bg-white disabled:hover:text-gray-400">✅</button>
+        </div>
+    </div>
+
+    <!-- Hover Tooltip -->
+    <div id="student-hover-tooltip"
+        class="fixed hidden bg-white rounded-xl shadow-2xl border border-blue-200 z-[300] pointer-events-none p-3.5 w-[200px]"
+        style="top: 0; left: 0;">
+        <div class="border-b border-gray-100 pb-2 mb-2 font-bold text-center">
+            <span id="tooltip-name" class="text-blue-900 text-lg leading-tight"></span>
+            <span id="tooltip-school"
+                class="text-gray-500 text-[10px] block mt-0.5 truncate uppercase tracking-wider"></span>
+        </div>
+        <div id="tooltip-scores" class="flex flex-col gap-1 text-[13px]">
+        </div>
+    </div>
+
+    <header class="bg-blue-900 text-white py-4 shadow-xl z-10 flex justify-center items-center relative">
+        <h1 id="main-title" class="text-center text-2xl font-black tracking-[0.2em]">仁和國中第24屆管樂團樂器挑選</h1>
+        <button id="god-mode-btn" onclick="toggleGodMode()"
+            class="hidden absolute right-6 bg-purple-900 border-[3px] border-purple-400/50 text-purple-200 hover:bg-purple-800 hover:text-white w-11 h-11 rounded-full font-bold shadow-sm transition flex items-center justify-center active:scale-95"
+            title="啟用上帝模式">
+            <span class="text-2xl leading-none" style="margin-top:-2px;">👑</span>
+        </button>
+    </header>
+
+    <main id="main-content" class="flex-1 relative p-4 flex items-center justify-center overflow-hidden">
+        <!-- Ambient Background Container -->
+        <div id="ambient-bg-container" class="absolute inset-0 pointer-events-none overflow-hidden hidden">
+            <div id="ambient-b1" class="ambient-blob b1"></div>
+            <div id="ambient-b2" class="ambient-blob b2"></div>
+            <div id="ambient-b3" class="ambient-blob b3"></div>
+        </div>
+        <input type="file" id="excel-upload" class="hidden" accept=".xlsx, .xls" />
+        <div id="student-grid" class="w-full h-full grid gap-2 overflow-visible transition-all hidden z-10"></div>
+
+        <div id="empty-state" class="relative z-20">
+            <div class="flex flex-col items-center">
+                <button onclick="togglePlusMenu(event)"
+                    class="w-24 h-24 bg-white border-4 border-dashed border-gray-300 rounded-full flex items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 transition-all shadow-sm">
+                    <span class="text-6xl font-light" style="line-height: 0; margin-top: -6px;">+</span>
+                </button>
+                <div id="pop-menu" class="menu-pop absolute top-full mt-4 flex gap-4">
+                    <button onclick="triggerUpload()"
+                        class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 shadow-xl whitespace-nowrap">📊
+                        匯入 Excel</button>
+                    <button onclick="addManualStudent()"
+                        class="bg-emerald-600 text-white px-5 py-2 rounded-xl hover:bg-emerald-700 shadow-xl whitespace-nowrap">👤
+                        手動添加</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="settlement-overlay" class="settlement-overlay">
+        <div class="settlement-shell">
+            <aside id="settlement-left" class="settlement-side"></aside>
+            <section class="settlement-center">
+                <div id="settlement-panel" class="settlement-panel">
+                    <section id="settlement-assignment-top" class="settlement-section">
+                        <h3 id="settlement-title">正選名單</h3>
+                        <div id="settlement-confirmed-list" class="settlement-card-list"></div>
+                        <div id="settlement-confirmed-empty" class="settlement-empty hidden">尚未加入確認名單</div>
+                    </section>
+                    <section id="settlement-assignment-bottom" class="settlement-section">
+                        <div class="settlement-section-header">
+                            <p class="settlement-subtitle">候選人選</p>
+                            <div class="settlement-filter-toggles">
+                                <label class="settlement-filter-toggle">
+                                    <input id="settlement-show-circle" type="checkbox"
+                                        onchange="toggleSettlementCandidateType('circle', this.checked)">
+                                    <span>○</span>
+                                </label>
+                                <label class="settlement-filter-toggle">
+                                    <input id="settlement-show-triangle" type="checkbox"
+                                        onchange="toggleSettlementCandidateType('triangle', this.checked)">
+                                    <span>△</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="settlement-candidate-list" class="settlement-candidate-columns"></div>
+                        <div id="settlement-candidate-empty" class="settlement-empty hidden">目前沒有可分配的候選人選</div>
+                    </section>
+                    <section id="settlement-results" class="settlement-results"></section>
+                    <div class="settlement-actions">
+                        <button id="settlement-pick-btn" class="settlement-pick-btn"
+                            onclick="moveSelectedToConfirmed()">選擇</button>
+                        <button id="settlement-remove-btn" class="settlement-remove-btn"
+                            onclick="removeSelectedFromConfirmed()">移除</button>
+                        <button id="settlement-result-btn" class="settlement-confirm-btn"
+                            onclick="showSettlementResults()">查看結果</button>
+                    </div>
+                </div>
+            </section>
+            <aside id="settlement-right" class="settlement-side"></aside>
+        </div>
+        <button id="settlement-export-btn" class="settlement-export-btn"
+            onclick="exportSettlementResults()">匯出</button>
+        <button id="settlement-floating-back" class="settlement-floating-back"
+            onclick="returnToMainFromSettlement()">返回</button>
+    </div>
+
+    <footer class="bg-white border-t border-gray-200 p-6 flex justify-center gap-8 shadow-lg z-10 relative">
+        <div id="control-left" class="absolute left-8 bottom-6 flex items-center">
+            <div id="mode-more-menu" class="relative">
+                <button id="more-btn" onclick="toggleMoreMenu(event)"
+                    class="text-gray-400 hover:text-gray-600 text-3xl font-bold p-2 transition-colors">⋮</button>
+                <div id="more-menu"
+                    class="menu-pop absolute bottom-full left-0 mb-4 w-48 bg-white shadow-2xl rounded-2xl border p-2 flex flex-col gap-1">
+                    <button id="menu-upload" onclick="triggerUpload()"
+                        class="text-left px-4 py-2 hover:bg-blue-50 text-blue-700 rounded-xl transition">📊 匯入
+                        Excel</button>
+                    <button onclick="addManualStudent()"
+                        class="text-left px-4 py-2 hover:bg-emerald-50 text-emerald-700 rounded-xl transition">👤
+                        手動添加</button>
+                    <button onclick="restartActivity()"
+                        class="text-left px-4 py-2 hover:bg-amber-50 text-amber-700 rounded-xl transition">🔄
+                        重新開始</button>
+                    <hr class="my-1 border-gray-100">
+                    <button onclick="enableEditMode()"
+                        class="text-left px-4 py-2 hover:bg-blue-50 rounded-xl transition">📝 編輯名單</button>
+                    <hr class="my-1 border-gray-100">
+                    <button id="menu-clear" onclick="clearStudents()"
+                        class="text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-xl transition">🗑️ 清空名單</button>
+                    <button id="menu-reset" onclick="resetSystem()"
+                        class="text-left px-4 py-2 hover:bg-red-50 text-red-700 font-bold rounded-xl transition">⚠️
+                        全部重置</button>
+                    <hr class="my-1 border-gray-100">
+                    <button onclick="manageEventPassword()"
+                        class="text-left px-4 py-2 bg-purple-50 text-purple-700 font-bold rounded-xl hover:bg-purple-100 transition">🔑
+                        活動密碼設定</button>
+                    <button id="menu-logout" onclick="logoutAdmin()"
+                        class="text-left px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition">🚪
+                        登出主控端</button>
+                </div>
+            </div>
+            <button id="finish-edit-btn" onclick="disableEditMode()"
+                class="hidden bg-emerald-600 text-white px-6 py-2 rounded-xl text-lg font-bold shadow-md">✅
+                完成編輯</button>
+        </div>
+
+        <button id="start-btn" onclick="updateSystemStatus('running')"
+            class="bg-white border-2 border-emerald-500 text-emerald-600 px-10 py-3 rounded-full text-lg font-bold hover:bg-emerald-500 hover:text-white transition shadow-md active:scale-95">▶
+            開始跑關</button>
+        <button id="end-btn" onclick="onEndBtnClick()"
+            class="bg-white border-2 border-red-500 text-red-600 px-10 py-3 rounded-full text-lg font-bold hover:bg-red-500 hover:text-white transition shadow-md active:scale-95">■
+            跑關結束</button>
+
+        <div class="absolute right-8 bottom-6 flex flex-col items-end gap-2">
+            <button id="settle-btn" onclick="openSettlement()"
+                class="hidden bg-slate-100 text-slate-700 border border-slate-300 px-6 py-2 rounded-xl text-lg font-bold shadow-sm hover:bg-slate-700 hover:text-white transition">🧾
+                結算</button>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 初始化 Firebase (使用 Compat 寫法)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVmQaD3viLkaUYr2IJPRV_3HHDG29jICI",
+            authDomain: "rhwbnewbie.firebaseapp.com",
+            databaseURL: "https://rhwbnewbie-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "rhwbnewbie",
+            storageBucket: "rhwbnewbie.firebasestorage.app",
+            messagingSenderId: "65957218510",
+            appId: "1:65957218510:web:9a5dec94bc81d578ca689f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 2. 樂器清單與總關數設定
+        const INSTRUMENTS = ["長笛", "豎笛/薩克斯風", "小號/法國號", "長號/上低音號/低音號", "打擊"];
+        const REQUIRED_STAGES = INSTRUMENTS.length;
+        const DETAILED_INSTRUMENT_GROUPS = {
+            left: ["長笛", "豎笛", "薩克斯風", "小號", "法國號"],
+            right: ["長號", "上低音號", "低音號", "打擊"]
+        };
+        const DETAILED_INSTRUMENTS = [...DETAILED_INSTRUMENT_GROUPS.left, ...DETAILED_INSTRUMENT_GROUPS.right];
+        const SETTLEMENT_SCORE_MAP = {
+            "長笛": "長笛",
+            "豎笛": "豎笛/薩克斯風",
+            "薩克斯風": "豎笛/薩克斯風",
+            "小號": "小號/法國號",
+            "法國號": "小號/法國號",
+            "長號": "長號/上低音號/低音號",
+            "上低音號": "長號/上低音號/低音號",
+            "低音號": "長號/上低音號/低音號",
+            "打擊": "打擊"
+        };
+        const SETTLEMENT_GROUP_LABEL = {
+            "長笛": "長笛",
+            "豎笛": "豎笛/薩克斯風",
+            "薩克斯風": "豎笛/薩克斯風",
+            "小號": "小號/法國號",
+            "法國號": "小號/法國號",
+            "長號": "長號/上低音號/低音號",
+            "上低音號": "長號/上低音號/低音號",
+            "低音號": "長號/上低音號/低音號",
+            "打擊": "打擊"
+        };
+
+        // 3. 系統變數
+        let students = [];
+        let isEditMode = false;
+        let currentStatus = 'setup';
+        let currentTextEditingIndex = null;
+        let sortableInstance = null;
+        let settlementState = {
+            isOpen: false,
+            view: 'assignment',
+            activeInstrument: "長笛",
+            selectedSource: null,
+            selectedStudentId: null,
+            showCircle: false,
+            showTriangle: false,
+            assignments: createEmptySettlementAssignments()
+        };
+
+        function createEmptySettlementAssignments() {
+            return DETAILED_INSTRUMENTS.reduce((acc, instrument) => {
+                acc[instrument] = [];
+                return acc;
+            }, {});
+        }
+
+        function normalizeSettlementAssignments(raw) {
+            const base = createEmptySettlementAssignments();
+            if (!raw || typeof raw !== 'object') return base;
+            DETAILED_INSTRUMENTS.forEach((instrument) => {
+                base[instrument] = Array.isArray(raw[instrument]) ? raw[instrument].map(String) : [];
+            });
+            return base;
+        }
+
+        function createStudentId() {
+            return `student_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+        }
+
+        function ensureStudentIds(list) {
+            let changed = false;
+            list.forEach((student) => {
+                if (!student.id) {
+                    student.id = createStudentId();
+                    changed = true;
+                }
+            });
+            return changed;
+        }
+
+        function findStudentById(studentId) {
+            return students.find((student) => student.id === studentId) || null;
+        }
+
+        function getStudentScore(student, instrument) {
+            if (!student || !student.scores) return null;
+            const mappedInstrument = SETTLEMENT_SCORE_MAP[instrument];
+            const value = student.scores[encodeURIComponent(mappedInstrument)] ?? student.scores[mappedInstrument];
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function getAssignedStudentIds(exceptInstrument = null) {
+            const assignedIds = new Set();
+            DETAILED_INSTRUMENTS.forEach((instrument) => {
+                if (instrument === exceptInstrument) return;
+                settlementState.assignments[instrument].forEach((studentId) => assignedIds.add(studentId));
+            });
+            return assignedIds;
+        }
+
+        function getAssignedInstrumentName(studentId, exceptInstrument = null) {
+            for (const instrument of DETAILED_INSTRUMENTS) {
+                if (instrument === exceptInstrument) continue;
+                if (settlementState.assignments[instrument].includes(studentId)) return instrument;
+            }
+            return null;
+        }
+
+        function clearSettlementSelection() {
+            settlementState.selectedSource = null;
+            settlementState.selectedStudentId = null;
+        }
+
+        function toggleSettlementCandidateType(type, checked) {
+            if (type === 'circle') settlementState.showCircle = checked;
+            if (type === 'triangle') settlementState.showTriangle = checked;
+            clearSettlementSelection();
+            renderSettlement();
+        }
+
+        let isGodMode = false;
+        let currentGodModeIndex = null;
+
+        function toggleGodMode() {
+            if (!isGodMode && currentStatus !== 'running' && currentStatus !== 'temp-edit') {
+                alert("只能在「開始跑關」或「臨時修改」狀態下啟用上帝模式喔！");
+                return;
+            }
+            isGodMode = !isGodMode;
+            if (!isGodMode) {
+                closeGodModePopup('force-discard');
+            }
+            renderStudents();
+        }
+
+        // 4. 資料同步邏輯
+        let currentEventPassword = '尚未設定';
+
+        function saveData() {
+            ensureStudentIds(students);
+            localStorage.setItem('music_band_data', JSON.stringify(students));
+            localStorage.setItem('music_band_status', currentStatus);
+            localStorage.setItem('music_band_settlement', JSON.stringify(settlementState.assignments));
+            db.ref('system/').update({ students: students, status: currentStatus, settlement: settlementState.assignments });
+        }
+
+        // ==========================================
+        // 上帝模式 (God Mode)
+        // ==========================================
+
+        function openGodModePopup(index, event) {
+            if (currentGodModeIndex !== null && currentGodModeIndex !== index) {
+                if (!closeGodModePopup('auto')) return; // Could block if cancel
+            }
+
+            currentGodModeIndex = index;
+            godModeHasChanges = false;
+
+            const student = students[index];
+            document.getElementById('god-mode-school').innerText = student.school || '－－';
+            document.getElementById('god-mode-name').innerText = student.name || '未命名學生';
+
+            const scores = student.scores || {};
+            godModeTempScores = {};
+            INSTRUMENTS.forEach(inst => {
+                if (scores[inst]) godModeTempScores[inst] = scores[inst];
+                else if (scores[encodeURIComponent(inst)]) godModeTempScores[inst] = scores[encodeURIComponent(inst)];
+            });
+
+            renderGodModeForm();
+
+            const popover = document.getElementById('god-mode-popover');
+
+            // 先隱藏可見性但加入文檔中，用來強制瀏覽器計算正確高度
+            popover.style.visibility = 'hidden';
+            popover.classList.remove('hidden');
+
+            // 強制重繪以取得最新高度
+            void popover.offsetHeight;
+
+            // Positioning Popover
+            const cardEl = event.currentTarget;
+            const rect = cardEl.getBoundingClientRect();
+
+            const windowW = window.innerWidth;
+            const windowH = window.innerHeight;
+            const popW = popover.offsetWidth || 340;
+            // 由於第一次打開有可能因為內部 padding/margin 還沒撐開，取 scrollHeight 最保險
+            const popH = Math.max(popover.scrollHeight, popover.offsetHeight) || 450;
+
+            let popX, popY;
+            if (windowW - rect.right >= popW + 15) {
+                // Right
+                popX = rect.right + 15;
+                popY = Math.max(10, Math.min(rect.top - 20, windowH - popH - 10));
+            } else if (rect.left >= popW + 15) {
+                // Left
+                popX = rect.left - popW - 15;
+                popY = Math.max(10, Math.min(rect.top - 20, windowH - popH - 10));
+            } else if (windowH - rect.bottom >= popH + 15) {
+                // Bottom
+                popY = rect.bottom + 15;
+                popX = Math.max(10, Math.min(rect.left + rect.width / 2 - popW / 2, windowW - popW - 10));
+            } else if (rect.top >= popH + 15) {
+                // Top
+                popY = rect.top - popH - 15;
+                popX = Math.max(10, Math.min(rect.left + rect.width / 2 - popW / 2, windowW - popW - 10));
+            } else {
+                popX = Math.max(10, (windowW - popW) / 2);
+                popY = Math.max(10, (windowH - popH) / 2);
+            }
+
+            popover.style.left = `${popX}px`;
+            popover.style.top = `${popY}px`;
+
+            // 全部計算完且就定位後，瞬間恢復顯示
+            popover.style.visibility = 'visible';
+
+            // Update Button State
+            document.getElementById('god-mode-confirm-btn').disabled = !godModeHasChanges;
+
+            renderStudents();
+        }
+
+        function updateGodModeCardPreview() {
+            if (currentGodModeIndex === null) return;
+            const card = document.querySelectorAll('#student-grid .student-card')[currentGodModeIndex];
+            if (!card) return;
+
+            const student = students[currentGodModeIndex];
+            let previewScores = {};
+
+            Object.keys(student.scores || {}).forEach(k => {
+                const decoded = decodeURIComponent(k);
+                if (!INSTRUMENTS.includes(decoded) && !INSTRUMENTS.includes(k)) {
+                    previewScores[k] = student.scores[k];
+                }
+            });
+            INSTRUMENTS.forEach(inst => {
+                if (godModeTempScores[inst]) {
+                    previewScores[inst] = godModeTempScores[inst];
+                }
+            });
+
+            const completedCount = Object.keys(previewScores).length;
+            const progressPercent = Math.min((completedCount / REQUIRED_STAGES) * 100, 100);
+            const isAllFinished = completedCount >= REQUIRED_STAGES;
+
+            const progressRatio = progressPercent / 100;
+            const r = Math.round(59 + (34 - 59) * progressRatio);
+            const g = Math.round(130 + (197 - 130) * progressRatio);
+            const b = Math.round(246 + (94 - 246) * progressRatio);
+            const liquidColor = isAllFinished ? 'rgba(34, 197, 94, 0.85)' : `rgba(${r}, ${g}, ${b}, 0.28)`;
+
+            let liquidHolder = card.querySelector('.card-liquid');
+            if (completedCount === 0) {
+                if (liquidHolder) liquidHolder.remove();
+            } else {
+                if (!liquidHolder) {
+                    card.insertAdjacentHTML('afterbegin', `<div class="card-liquid"><div class="card-liquid-wave"></div></div>`);
+                    liquidHolder = card.querySelector('.card-liquid');
+                }
+                liquidHolder.style.setProperty('--fill-level', `${progressPercent}%`);
+                liquidHolder.style.setProperty('--liquid-color', liquidColor);
+                liquidHolder.className = `card-liquid ${isAllFinished ? 'is-full z-0' : 'z-0'}`;
+            }
+
+            const contentDiv = card.querySelector('.card-content');
+            if (contentDiv) {
+                const countSpan = contentDiv.children[2];
+                countSpan.innerText = `${completedCount}/${REQUIRED_STAGES}`;
+                countSpan.className = `text-[9px] mt-0.5 font-bold ${isAllFinished ? 'text-yellow-200' : (completedCount > 0 ? 'text-blue-600' : 'invisible')} relative z-10`;
+
+                const nameSpan = contentDiv.children[1];
+                const fontSizeMatch = nameSpan.className.match(/text-(xs|sm|base|lg|xl)/);
+                const fontSize = fontSizeMatch ? fontSizeMatch[0] : 'text-xl';
+                nameSpan.className = `${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10`;
+
+                const schoolSpan = contentDiv.children[0];
+                schoolSpan.className = `text-[9px] ${isAllFinished ? 'text-emerald-50' : 'text-gray-500'} font-medium truncate w-full text-center relative z-10`;
+            }
+
+            // Border Updates
+            if (isAllFinished) {
+                card.classList.replace('border-gray-200', 'border-yellow-400');
+            } else {
+                card.classList.replace('border-yellow-400', 'border-gray-200');
+            }
+            if (completedCount > 0) card.classList.add('has-progress');
+            else card.classList.remove('has-progress');
+        }
+
+        function renderGodModeForm() {
+            const form = document.getElementById('god-mode-form');
+            form.innerHTML = '';
+
+            INSTRUMENTS.forEach((inst, i) => {
+                let val = godModeTempScores[inst] || '';
+
+                const starActive = val === 'star' ? 'bg-blue-600 text-white border-blue-500 shadow-inner' : 'bg-white hover:bg-gray-100 border-gray-200';
+                const circleActive = val === 'circle' ? 'bg-blue-600 text-white border-blue-500 shadow-inner' : 'bg-white hover:bg-gray-100 border-gray-200';
+                const triangleActive = val === 'triangle' ? 'bg-blue-600 text-white border-blue-500 shadow-inner' : 'bg-white hover:bg-gray-100 border-gray-200';
+
+                let row = document.createElement('div');
+                row.className = "flex items-center justify-between p-2 bg-white rounded-xl border border-purple-100 shadow-sm";
+                row.innerHTML = `
+                    <span class="font-extrabold text-purple-900 truncate w-[38%] text-[14px] px-1">${inst}</span>
+                    <div class="flex items-center gap-1.5 flex-1 justify-end">
+                        <button onclick="setGodModeScore(event, '${inst}', 'star')" class="w-9 h-9 flex items-center justify-center rounded-lg border-[2px] transition active:scale-95 ${starActive}">
+                            <span class="text-xl leading-none" style="margin-top:-2px;">⭐</span>
+                        </button>
+                        <button onclick="setGodModeScore(event, '${inst}', 'circle')" class="w-9 h-9 flex items-center justify-center rounded-lg border-[2px] transition active:scale-95 ${circleActive}">
+                            <span class="text-xl leading-none" style="margin-top:-2px;">○</span>
+                        </button>
+                        <button onclick="setGodModeScore(event, '${inst}', 'triangle')" class="w-9 h-9 flex items-center justify-center rounded-lg border-[2px] transition active:scale-95 ${triangleActive}">
+                            <span class="text-xl leading-none" style="margin-top:-2px;">△</span>
+                        </button>
+                        <div class="w-px h-6 bg-gray-200 mx-1"></div>
+                        <button onclick="clearGodModeScore(event, '${inst}')" class="w-9 h-9 flex items-center justify-center rounded-lg border-[2px] bg-white border-gray-200 text-gray-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition active:scale-95" title="清除成績">
+                            <span class="text-lg leading-none font-black" style="margin-top:-2px;">✕</span>
+                        </button>
+                    </div>
+                `;
+                form.appendChild(row);
+            });
+        }
+
+        function setGodModeScore(e, inst, score) {
+            e.stopPropagation();
+            godModeTempScores[inst] = score;
+            godModeHasChanges = true;
+            document.getElementById('god-mode-confirm-btn').disabled = false;
+            renderGodModeForm();
+            updateGodModeCardPreview();
+        }
+
+        function clearGodModeScore(e, inst) {
+            e.stopPropagation();
+            if (confirm(`確認清除「${inst}」的成績？`)) {
+                delete godModeTempScores[inst];
+                godModeHasChanges = true;
+                document.getElementById('god-mode-confirm-btn').disabled = false;
+                renderGodModeForm();
+                updateGodModeCardPreview();
+            }
+        }
+
+        function handleGodModeConfirm(e) {
+            if (e) e.stopPropagation();
+            closeGodModePopup('force-save');
+        }
+
+        function handleGodModeCancel(e) {
+            if (e) e.stopPropagation();
+            closeGodModePopup('force-discard');
+        }
+
+        function closeGodModePopup(action) {
+            if (currentGodModeIndex === null) return true;
+
+            if (action === 'auto' || action === 'force-discard') {
+                if (godModeHasChanges) {
+                    if (confirm('是否捨棄所做的改動？')) {
+                        // User chose to discard
+                    } else {
+                        return false; // User cancelled discard -> Stay open!
+                    }
+                }
+            } else if (action === 'force-save') {
+                if (!godModeHasChanges) return true;
+                if (!confirm('確認改動？')) return false; // Cancel stay open
+                performGodModeSave();
+
+                godModeHasChanges = false;
+                document.getElementById('god-mode-confirm-btn').disabled = true;
+                return true; // Keep popover open
+            }
+
+            document.getElementById('god-mode-popover').classList.add('hidden');
+            currentGodModeIndex = null;
+            godModeHasChanges = false;
+            renderStudents();
+            return true;
+        }
+
+        function performGodModeSave() {
+            try {
+                const student = students[currentGodModeIndex];
+                if (!student.scores) student.scores = {};
+                let newScores = {};
+
+                Object.keys(student.scores).forEach(k => {
+                    let decoded = k;
+                    try { decoded = decodeURIComponent(k); } catch (e) { }
+                    if (!INSTRUMENTS.includes(decoded) && !INSTRUMENTS.includes(k)) {
+                        newScores[k] = student.scores[k];
+                    }
+                });
+
+                INSTRUMENTS.forEach(inst => {
+                    if (godModeTempScores[inst]) {
+                        newScores[encodeURIComponent(inst)] = godModeTempScores[inst];
+                    }
+                });
+
+                student.scores = newScores;
+                saveData();
+            } catch (e) {
+                console.error("Save error: ", e);
+            }
+        }
+
+        // External click listener to auto-trigger god mode close
+        document.addEventListener('click', (e) => {
+            if (!isGodMode || currentGodModeIndex === null) return;
+            const popover = document.getElementById('god-mode-popover');
+            if (!popover.contains(e.target)) {
+                closeGodModePopup('auto');
+            }
+        });
+
+        // ==========================================
+        // Hover Tooltip
+        // ==========================================
+        let hoverTooltipTimeout = null;
+        const HOVER_DELAY_MS = 200; // 停留延遲時間 (毫秒)，可自行在此調整 (例如 100 = 0.1秒)
+
+        function showStudentTooltip(index, cardEl) {
+            if (isEditMode || isGodMode || settlementState.isOpen || currentStatus === 'setup') return;
+            const student = students[index];
+            const tooltip = document.getElementById('student-hover-tooltip');
+
+            document.getElementById('tooltip-name').innerText = student.name || '未命名';
+            document.getElementById('tooltip-school').innerText = student.school || '－－';
+
+            const scoresContainer = document.getElementById('tooltip-scores');
+            scoresContainer.innerHTML = INSTRUMENTS.map(inst => {
+                let rawVal = student.scores ? (student.scores[inst] || student.scores[encodeURIComponent(inst)]) : null;
+                let icon = '<span class="text-gray-300 text-xs font-normal">未登記</span>';
+                if (rawVal === 'star') icon = '⭐';
+                else if (rawVal === 'circle') icon = '<span class="text-blue-600 font-black text-base leading-none">○</span>';
+                else if (rawVal === 'triangle') icon = '<span class="text-emerald-500 font-black text-sm leading-none">△</span>';
+
+                return `
+                    <div class="flex justify-between items-center text-gray-700 font-bold bg-gray-50 px-2 py-1.5 rounded-lg border border-gray-100">
+                        <span class="truncate w-[65%] text-blue-900">${inst}</span>
+                        <span class="w-[30%] text-right flex items-center justify-end">${icon}</span>
+                    </div>
+                `;
+            }).join('');
+
+            tooltip.style.visibility = 'hidden';
+            tooltip.classList.remove('hidden');
+            void tooltip.offsetHeight; // force reflow
+
+            const rect = cardEl.getBoundingClientRect();
+            const wW = window.innerWidth;
+            const wH = window.innerHeight;
+            const tW = tooltip.offsetWidth;
+            const tH = Math.max(tooltip.scrollHeight, tooltip.offsetHeight);
+
+            let tX = rect.left + (rect.width / 2) - (tW / 2);
+            let tY = rect.top - tH - 12; // Default above card
+
+            // Boundary checks
+            if (tY < 10) {
+                tY = rect.bottom + 12; // Try below
+                if (tY + tH > wH - 10) tY = 10;
+            }
+            if (tX < 10) tX = 10;
+            if (tX + tW > wW - 10) tX = wW - tW - 10;
+
+            tooltip.style.left = `${tX}px`;
+            tooltip.style.top = `${tY}px`;
+            tooltip.style.visibility = 'visible';
+        }
+
+        function hideStudentTooltip() {
+            if (hoverTooltipTimeout) clearTimeout(hoverTooltipTimeout);
+            document.getElementById('student-hover-tooltip').classList.add('hidden');
+        }
+
+        function startFirebaseSync() {
+            db.ref('system/').on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+
+                // 處理活動密碼
+                currentEventPassword = (data.auth && data.auth.pin) || null;
+                if (!currentEventPassword) { // 若無則自動產生
+                    currentEventPassword = Math.floor(100000 + Math.random() * 900000).toString();
+                    db.ref('system/auth/pin').set(currentEventPassword);
+                }
+
+                students = data.students || [];
+                ensureStudentIds(students);
+                currentStatus = data.status || 'setup';
+                settlementState.assignments = normalizeSettlementAssignments(data.settlement);
+                renderStudents();
+                applyStatus(currentStatus);
+                if (settlementState.isOpen) renderSettlement();
+            });
+        }
+
+        // 5. 畫面渲染邏輯
+        function renderStudents() {
+            const grid = document.getElementById('student-grid');
+            const empty = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            if (students.length > 0) {
+                grid.classList.remove('hidden');
+                empty.classList.add('hidden');
+
+                const count = students.length;
+                let cols = 5, fontSize = 'text-xl', padding = 'p-2.5';
+                if (count > 80) { cols = 12; fontSize = 'text-xs'; padding = 'p-0.5'; }
+                else if (count > 60) { cols = 10; fontSize = 'text-sm'; padding = 'p-1'; }
+                else if (count > 40) { cols = 8; fontSize = 'text-base'; padding = 'p-1.5'; }
+                else if (count > 20) { cols = 6; fontSize = 'text-lg'; padding = 'p-2'; }
+
+                grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+
+                let totalStages = 0;
+                let completedStages = 0;
+
+                students.forEach((s, index) => {
+                    const isTextEditing = (index === currentTextEditingIndex);
+                    const card = document.createElement('div');
+
+                    const completedCount = s.scores ? Object.keys(s.scores).length : 0;
+                    totalStages += REQUIRED_STAGES;
+                    if (s.scores) completedStages += Math.min(completedCount, REQUIRED_STAGES);
+                    const progressPercent = Math.min((completedCount / REQUIRED_STAGES) * 100, 100);
+                    const isAllFinished = completedCount >= REQUIRED_STAGES;
+
+                    const isSelectedGodMode = (isGodMode && currentGodModeIndex === index);
+
+                    card.className = `student-card border-2 ${padding} rounded-lg shadow-sm flex flex-col items-center justify-center transition-all overflow-hidden ${isAllFinished ? 'border-yellow-400 ring-2 ring-yellow-400 z-10' : 'border-gray-200'} ${isTextEditing ? 'is-editing-text ring-2 ring-blue-400 z-50 bg-white' : ''} ${completedCount > 0 ? 'has-progress' : ''} ${isGodMode ? `god-mode-fire-bg ${isSelectedGodMode ? 'ring-4 ring-red-500 border-red-500/0 scale-[1.05] shadow-red-200 shadow-2xl z-40 cursor-pointer' : 'cursor-pointer ring-4 ring-purple-400/30 border-purple-400/0 scale-[1.02] shadow-purple-200 shadow-xl z-20'}` : ''}`;
+
+                    // Clear previous handlers
+                    card.ondblclick = null;
+                    card.onclick = null;
+                    card.onmouseenter = null;
+                    card.onmouseleave = null;
+
+                    if (isGodMode) {
+                        card.ondblclick = (e) => { e.stopPropagation(); hideStudentTooltip(); openGodModePopup(index, e); };
+                        card.onclick = (e) => { hideStudentTooltip(); };
+                    } else if (!isEditMode && !settlementState.isOpen && currentStatus !== 'setup') {
+                        card.onmouseenter = (e) => {
+                            clearTimeout(hoverTooltipTimeout);
+                            const cardEl = e.currentTarget;
+                            hoverTooltipTimeout = setTimeout(() => showStudentTooltip(index, cardEl), HOVER_DELAY_MS);
+                        };
+                        card.onmouseleave = hideStudentTooltip;
+                        card.onclick = hideStudentTooltip;
+                    }
+
+                    // 液體色彩漸層：Blue (59, 130, 246) 到 Green (34, 197, 94)
+                    const progressRatio = progressPercent / 100;
+                    const r = Math.round(59 + (34 - 59) * progressRatio);
+                    const g = Math.round(130 + (197 - 130) * progressRatio);
+                    const b = Math.round(246 + (94 - 246) * progressRatio);
+                    // 滿點時綠色更加濃烈，未滿時保持半透明讓波浪較清透
+                    const liquidColor = isAllFinished ? 'rgba(34, 197, 94, 0.85)' : `rgba(${r}, ${g}, ${b}, 0.28)`;
+
+                    const liquidHTML = completedCount > 0 ? `
+                        <div class="card-liquid ${isAllFinished ? 'is-full' : ''}" style="--fill-level: ${progressPercent}%; --liquid-color: ${liquidColor};">
+                            <div class="card-liquid-wave"></div>
+                        </div>
+                    ` : '';
+
+                    if (isTextEditing) {
+                        card.innerHTML = `
+                            <button onclick="saveStudentTextChanges(${index})" class="absolute top-1 left-1 bg-emerald-600 text-white w-6 h-6 rounded-full flex items-center justify-center z-30 shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                            </button>
+                            <input type="text" id="edit-school-${index}" class="edit-input text-[9px] mb-1" value="${s.school}">
+                            <input type="text" id="edit-name-${index}" class="edit-input font-bold ${fontSize}" value="${s.name}">
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            ${liquidHTML}
+                            ${(isEditMode && !isGodMode) ? `
+                                <button onclick="deleteStudent(event, ${index})" class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center z-30">✕</button>
+                                <button onclick="startStudentTextEdit(event, ${index})" class="absolute top-1 left-1 bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center z-30">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                </button>` : ''}
+                            <div class="card-content flex flex-col items-center w-full ${isGodMode ? 'pointer-events-none' : ''}">
+                                <span class="text-[9px] ${isAllFinished ? 'text-emerald-50' : 'text-gray-500'} font-medium truncate w-full text-center">${s.school}</span>
+                                 <span class="${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10">${s.name}</span>
+                                <span class="text-[9px] mt-0.5 font-bold relative z-10 ${isAllFinished ? 'text-yellow-200' : (completedCount > 0 ? 'text-blue-600' : 'invisible')}">${completedCount}/${REQUIRED_STAGES}</span>
+                            </div>
+                        `;
+                        // 滿水位的背景色現在由 card-liquid 完全負責，不再需要手動覆蓋卡片背景色
+                    }
+                    grid.appendChild(card);
+                });
+
+                // 全域背景動態特效 (Ambient Blobs)
+                const globalPercent = totalStages > 0 ? Math.min((completedStages / totalStages) * 100, 100) : 0;
+                const globalProgressRatio = globalPercent / 100;
+
+                // Blob 1: Base color (Blue -> Emerald)
+                const r1 = Math.round(186 + (167 - 186) * globalProgressRatio);
+                const g1 = Math.round(230 + (243 - 230) * globalProgressRatio);
+                const b1 = Math.round(253 + (208 - 253) * globalProgressRatio); // sky-100 to green-100
+
+                // Blob 2: Secondary color (Indigo -> Teal)
+                const r2 = Math.round(191 + (153 - 191) * globalProgressRatio);
+                const g2 = Math.round(219 + (246 - 219) * globalProgressRatio);
+                const b2 = Math.round(254 + (228 - 254) * globalProgressRatio); // blue-200 to teal-100
+
+                // Blob 3: Accent color (Cyan -> Emerald-200)
+                const r3 = Math.round(165 + (167 - 165) * globalProgressRatio);
+                const g3 = Math.round(243 + (243 - 243) * globalProgressRatio);
+                const b3 = Math.round(252 + (208 - 252) * globalProgressRatio); // cyan-100 to green-200
+
+                const ambientContainer = document.getElementById('ambient-bg-container');
+                const b1El = document.getElementById('ambient-b1');
+                const b2El = document.getElementById('ambient-b2');
+                const b3El = document.getElementById('ambient-b3');
+
+                if (currentStatus === 'running' || currentStatus === 'temp-edit') {
+                    b1El.style.backgroundColor = `rgb(${r1}, ${g1}, ${b1})`;
+                    b2El.style.backgroundColor = `rgb(${r2}, ${g2}, ${b2})`;
+                    b3El.style.backgroundColor = `rgb(${r3}, ${g3}, ${b3})`;
+
+                    ambientContainer.classList.remove('hidden');
+                    if (globalProgressRatio >= 1) ambientContainer.classList.add('ambient-static');
+                    else ambientContainer.classList.remove('ambient-static');
+                } else {
+                    ambientContainer.classList.add('hidden');
+                }
+                updateSortableInstance();
+            } else {
+                grid.classList.add('hidden');
+                empty.classList.remove('hidden');
+            }
+        }
+
+        function updateSortableInstance() {
+            const gridEl = document.getElementById('student-grid');
+            if (isEditMode && currentTextEditingIndex === null && !isGodMode) {
+                gridEl.classList.add('edit-mode');
+                if (!sortableInstance) {
+                    sortableInstance = Sortable.create(gridEl, {
+                        animation: 150, onEnd: (evt) => {
+                            const item = students.splice(evt.oldIndex, 1)[0];
+                            students.splice(evt.newIndex, 0, item);
+                            saveData(); renderStudents();
+                        }
+                    });
+                } else { sortableInstance.option("disabled", false); }
+            } else {
+                gridEl.classList.remove('edit-mode');
+                if (sortableInstance) sortableInstance.option("disabled", true);
+            }
+        }
+
+        // 6. UI 按鈕事件 (現在全部都可以直接被 HTML 呼叫了)
+        function togglePlusMenu(e) { e.stopPropagation(); if (currentStatus !== 'running') document.getElementById('pop-menu').classList.toggle('active'); }
+
+        // 原有 toggleMoreMenu 與 window.onclick 的 more-menu 阻擋已經轉移至檔案底部處理
+        window.onclick = (e) => {
+            const popMenu = document.getElementById('pop-menu');
+            if (popMenu && !popMenu.contains(e.target)) popMenu.classList.remove('active');
+        };
+
+        function triggerUpload() { document.getElementById('excel-upload').click(); }
+
+        function enableEditMode() {
+            isEditMode = true;
+            document.getElementById('mode-more-menu').classList.add('hidden');
+            document.getElementById('finish-edit-btn').classList.remove('hidden');
+            document.getElementById('god-mode-btn').classList.remove('hidden');
+            renderStudents();
+        }
+        function disableEditMode() {
+            if (currentTextEditingIndex !== null) saveStudentTextChanges(currentTextEditingIndex);
+            isEditMode = false;
+            if (isGodMode) toggleGodMode(); // Safe exit 
+            currentTextEditingIndex = null;
+            document.getElementById('mode-more-menu').classList.remove('hidden');
+            document.getElementById('finish-edit-btn').classList.add('hidden');
+            document.getElementById('god-mode-btn').classList.add('hidden');
+            renderStudents();
+        }
+
+        function startStudentTextEdit(e, i) { e.stopPropagation(); if (currentTextEditingIndex !== null) saveStudentTextChanges(currentTextEditingIndex); currentTextEditingIndex = i; renderStudents(); setTimeout(() => { const input = document.getElementById(`edit-name-${i}`); if (input) { input.focus(); input.select(); } }, 50); }
+        function saveStudentTextChanges(i) { const n = document.getElementById(`edit-name-${i}`).value.trim(); const s = document.getElementById(`edit-school-${i}`).value.trim(); if (n) { students[i].name = n; students[i].school = s; saveData(); } currentTextEditingIndex = null; renderStudents(); }
+        function deleteStudent(e, i) {
+            e.stopPropagation();
+            if (confirm(`確定要刪除「${students[i].name}」嗎？`)) {
+                const deletedId = students[i].id;
+                students.splice(i, 1);
+                DETAILED_INSTRUMENTS.forEach((instrument) => {
+                    settlementState.assignments[instrument] = settlementState.assignments[instrument].filter((id) => id !== deletedId);
+                });
+                saveData();
+                renderStudents();
+            }
+        }
+
+        function clearStudents() {
+            if (confirm("確定要清空所有資料嗎？")) {
+                students = [];
+                settlementState.assignments = createEmptySettlementAssignments();
+                localStorage.removeItem('music_band_data');
+                saveData();
+                renderStudents();
+            }
+        }
+        function resetSystem() { if (confirm("確定要重置系統嗎？所有進度將消失。")) { localStorage.removeItem('music_band_data'); localStorage.removeItem('music_band_status'); localStorage.removeItem('music_band_settlement'); db.ref('system/students').set(null); db.ref('system/settlement').set(null); location.reload(); } }
+        function restartActivity() {
+            if (!students.length) return alert("目前沒有名單可重新開始。");
+            if (!confirm("確定重新開始嗎？會保留名單，但清除所有闖關紀錄。")) return;
+            students = students.map(s => ({ ...s, scores: {} }));
+            settlementState.assignments = createEmptySettlementAssignments();
+            currentStatus = 'setup';
+            applyStatus(currentStatus);
+            saveData();
+            renderStudents();
+        }
+
+        function updateSystemStatus(status) {
+            if (status === 'running' && students.length === 0) return alert("請先匯入名單！");
+            if (status === 'finished' && !confirm("確定結束跑關嗎？名單將鎖定。")) return;
+            currentStatus = status;
+            applyStatus(status);
+            saveData();
+        }
+
+        function openSettlement() {
+            if (!students.length) return alert("目前沒有名單可以結算。");
+            ensureStudentIds(students);
+            settlementState.isOpen = true;
+            settlementState.view = 'assignment';
+            clearSettlementSelection();
+            document.getElementById('settlement-overlay').classList.add('active');
+            renderSettlement();
+        }
+
+        function closeSettlement() {
+            settlementState.isOpen = false;
+            clearSettlementSelection();
+            document.getElementById('settlement-overlay').classList.remove('active');
+        }
+
+        function returnToMainFromSettlement() {
+            if (settlementState.view === 'results') {
+                settlementState.view = 'assignment';
+                clearSettlementSelection();
+                renderSettlement();
+                return;
+            }
+            if (!confirm("確認跳轉?")) return;
+            saveData();
+            closeSettlement();
+        }
+
+        function selectSettlementInstrument(instrument) {
+            settlementState.activeInstrument = instrument;
+            clearSettlementSelection();
+            renderSettlement();
+        }
+
+        function selectSettlementStudent(source, studentId) {
+            if (source === 'candidate') {
+                const assignedInstrument = getAssignedInstrumentName(studentId, settlementState.activeInstrument);
+                if (assignedInstrument) return;
+            }
+            const isSame = settlementState.selectedSource === source && settlementState.selectedStudentId === studentId;
+            if (isSame) {
+                clearSettlementSelection();
+            } else {
+                settlementState.selectedSource = source;
+                settlementState.selectedStudentId = studentId;
+            }
+            renderSettlement();
+        }
+
+        function moveSelectedToConfirmed() {
+            if (settlementState.selectedSource !== 'candidate' || !settlementState.selectedStudentId) return;
+            const instrument = settlementState.activeInstrument;
+            const studentId = settlementState.selectedStudentId;
+            DETAILED_INSTRUMENTS.forEach((name) => {
+                settlementState.assignments[name] = settlementState.assignments[name].filter((id) => id !== studentId);
+            });
+            settlementState.assignments[instrument].push(studentId);
+            clearSettlementSelection();
+            saveData();
+            renderSettlement();
+        }
+
+        function removeSelectedFromConfirmed() {
+            if (settlementState.selectedSource !== 'confirmed' || !settlementState.selectedStudentId) return;
+            const instrument = settlementState.activeInstrument;
+            settlementState.assignments[instrument] = settlementState.assignments[instrument].filter((id) => id !== settlementState.selectedStudentId);
+            clearSettlementSelection();
+            saveData();
+            renderSettlement();
+        }
+
+        function showSettlementResults() {
+            saveData();
+            settlementState.view = 'results';
+            clearSettlementSelection();
+            renderSettlement();
+        }
+
+        function renderSettlementInstrumentCards(containerId, instruments) {
+            const activeInstrument = settlementState.activeInstrument;
+            const container = document.getElementById(containerId);
+            container.innerHTML = instruments.map((instrument) => {
+                const fitCount = students.filter((student) => getStudentScore(student, instrument) === 'star').length;
+                const groupLabel = SETTLEMENT_GROUP_LABEL[instrument];
+                return `
+                    <button class="instrument-white-card ${instrument === activeInstrument ? 'active' : ''}" onclick="selectSettlementInstrument('${instrument}')">
+                        <div class="instrument-white-card-inner">
+                            <div class="instrument-white-card-name">${instrument}</div>
+                            <div class="instrument-white-card-meta">${groupLabel} ${fitCount}人極適合</div>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderSettlementStudentCards(containerId, emptyId, items, source) {
+            const container = document.getElementById(containerId);
+            const empty = document.getElementById(emptyId);
+            if (!items.length) {
+                container.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+            container.innerHTML = items.map((student) => {
+                const isSelected = settlementState.selectedSource === source && settlementState.selectedStudentId === student.id;
+                const assignedInstrument = source === 'candidate' ? getAssignedInstrumentName(student.id, settlementState.activeInstrument) : null;
+                const isDisabled = Boolean(assignedInstrument);
+                return `
+                    <button class="settlement-student-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" onclick="selectSettlementStudent('${source}', '${student.id}')" ${isDisabled ? 'disabled' : ''}>
+                        ${assignedInstrument ? `<span class="settlement-student-card-badge">已分配${assignedInstrument}</span>` : ''}
+                        <div class="school">${student.school || '未填學校'}</div>
+                        <div class="name">${student.name}</div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function buildSettlementStudentCardsMarkup(items, source) {
+            if (!items.length) {
+                return '<div class="settlement-empty">目前沒有名單</div>';
+            }
+            return `<div class="settlement-card-list" style="height:100%;">${items.map((student) => {
+                const isSelected = settlementState.selectedSource === source && settlementState.selectedStudentId === student.id;
+                const assignedInstrument = source === 'candidate' ? getAssignedInstrumentName(student.id, settlementState.activeInstrument) : null;
+                const isDisabled = Boolean(assignedInstrument);
+                return `
+                    <button class="settlement-student-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" onclick="selectSettlementStudent('${source}', '${student.id}')" ${isDisabled ? 'disabled' : ''}>
+                        ${assignedInstrument ? `<span class="settlement-student-card-badge">已分配${assignedInstrument}</span>` : ''}
+                        <div class="school">${student.school || '未填學校'}</div>
+                        <div class="name">${student.name}</div>
+                    </button>
+                `;
+            }).join('')}</div>`;
+        }
+
+        function renderSettlementResults() {
+            const resultsEl = document.getElementById('settlement-results');
+
+            // ===================================
+            // 這裡可以手動調整每個圖片的大小與檔名
+            // 因為剛剛壓縮了預留空間，所以預設改為 50px
+            // ===================================
+            const imgConfig = {
+                "長笛": { src: "Flute.png", size: 50 },
+                "豎笛": { src: "Clarinet.png", size: 50 },
+                "薩克斯風": { src: "Saxophone.png", size: 50 },
+                "小號": { src: "Trumpet.png", size: 50 },
+                "法國號": { src: "Horn.png", size: 50 },
+                "長號": { src: "Trombone.png", size: 50 },
+                "上低音號": { src: "Euphonium.png", size: 50 },
+                "低音號": { src: "Tuba.png", size: 50 },
+                "打擊": { src: "Percussion.png", size: 50 }
+            };
+
+            const topRowInsts = ["長笛", "豎笛", "薩克斯風", "小號"];
+            const bottomRowInsts = ["法國號", "長號", "上低音號", "低音號", "打擊"];
+
+            const buildCol = (instrument) => {
+                const assignedStudents = (settlementState.assignments[instrument] || []).map(findStudentById).filter(Boolean);
+
+                // 單行：<姓名> - <學校>，並分離兩者的字體級別
+                const studentsMarkup = assignedStudents.length ? assignedStudents.map(student => `
+                    <div class="result-student-item">
+                        <span>${student.name}</span>${student.school ? `<span class="school"> - ${student.school}</span>` : ''}
+                    </div>
+                `).join('') : `<div class="result-student-item" style="opacity:0.4;">無</div>`;
+
+                const config = imgConfig[instrument] || { src: '', size: 50 };
+                const isDoubleCol = assignedStudents.length > 7;
+
+                return `
+                    <div class="result-col">
+                        <div class="result-col-img-wrapper">
+                            <img src="${config.src}" alt="${instrument}" class="result-col-img" style="height: ${config.size}px;" onerror="this.style.opacity='0'">
+                        </div>
+                        <div class="result-col-title">${instrument}(${assignedStudents.length})</div>
+                        <div class="result-col-divider"></div>
+                        <div class="result-student-list no-scrollbar">
+                            <div class="result-student-grid ${isDoubleCol ? 'cols-2' : 'cols-1'}">
+                                ${studentsMarkup}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+
+            resultsEl.innerHTML = `
+                <div class="result-row-top">
+                    ${topRowInsts.map(buildCol).join('')}
+                </div>
+                <div class="result-row-bottom">
+                    ${bottomRowInsts.map(buildCol).join('')}
+                </div>
+            `;
+        }
+
+        function exportSettlementResults() {
+            const data = [];
+            DETAILED_INSTRUMENTS.forEach(inst => {
+                const studentIds = settlementState.assignments[inst] || [];
+                studentIds.forEach(id => {
+                    const student = findStudentById(id);
+                    if (student) {
+                        data.push({
+                            "姓名": student.name,
+                            "分配樂器": inst
+                        });
+                    }
+                });
+            });
+
+            if (data.length === 0) {
+                alert("目前尚無分配結果可匯出。");
+                return;
+            }
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "分配結果");
+            XLSX.writeFile(wb, "仁和管樂24屆新生樂器分配結果.xlsx");
+        }
+
+        function renderSettlement() {
+            // 在重新渲染前，紀錄當前所有名單的滾動條位置
+            const scrollStates = {};
+            const confirmedListEl = document.getElementById('settlement-confirmed-list');
+            if (confirmedListEl) {
+                scrollStates['confirmed'] = confirmedListEl.scrollTop;
+            }
+            document.querySelectorAll('.settlement-candidate-column .settlement-card-list').forEach((el, index) => {
+                scrollStates[`candidate-${index}`] = el.scrollTop;
+            });
+
+            const instrument = settlementState.activeInstrument;
+            const confirmedIds = settlementState.assignments[instrument] || [];
+            const confirmedStudents = confirmedIds.map(findStudentById).filter(Boolean);
+            const candidateStarStudents = students.filter((student) => {
+                if (confirmedIds.includes(student.id)) return false;
+                return getStudentScore(student, instrument) === 'star';
+            });
+            const candidateColumns = [
+                { key: 'star', title: '★', items: candidateStarStudents }
+            ];
+            if (settlementState.showCircle) {
+                candidateColumns.push({
+                    key: 'circle',
+                    title: '○',
+                    items: students.filter((student) => !confirmedIds.includes(student.id) && getStudentScore(student, instrument) === 'circle')
+                });
+            }
+            if (settlementState.showTriangle) {
+                candidateColumns.push({
+                    key: 'triangle',
+                    title: '△',
+                    items: students.filter((student) => !confirmedIds.includes(student.id) && getStudentScore(student, instrument) === 'triangle')
+                });
+            }
+
+            document.getElementById('settlement-title').textContent = `${instrument}正選名單`;
+            document.getElementById('settlement-show-circle').checked = settlementState.showCircle;
+            document.getElementById('settlement-show-triangle').checked = settlementState.showTriangle;
+            renderSettlementInstrumentCards('settlement-left', DETAILED_INSTRUMENT_GROUPS.left);
+            renderSettlementInstrumentCards('settlement-right', DETAILED_INSTRUMENT_GROUPS.right);
+            renderSettlementStudentCards('settlement-confirmed-list', 'settlement-confirmed-empty', confirmedStudents, 'confirmed');
+            const candidateContainer = document.getElementById('settlement-candidate-list');
+            const candidateEmpty = document.getElementById('settlement-candidate-empty');
+            const hasAnyCandidate = candidateColumns.some((column) => column.items.length > 0);
+            if (!hasAnyCandidate) {
+                candidateContainer.innerHTML = '';
+                candidateContainer.style.gridTemplateColumns = '';
+                candidateEmpty.classList.remove('hidden');
+            } else {
+                candidateEmpty.classList.add('hidden');
+                candidateContainer.style.gridTemplateColumns = `repeat(${candidateColumns.length}, minmax(0, 1fr))`;
+                candidateContainer.innerHTML = candidateColumns.map((column) => `
+                    <section class="settlement-candidate-column">
+                        <h4 class="settlement-candidate-column-title">${column.title}</h4>
+                        ${buildSettlementStudentCardsMarkup(column.items, 'candidate')}
+                    </section>
+                `).join('');
+            }
+
+            document.getElementById('settlement-pick-btn').disabled = settlementState.selectedSource !== 'candidate';
+            document.getElementById('settlement-remove-btn').disabled = settlementState.selectedSource !== 'confirmed';
+
+            const isResultsView = settlementState.view === 'results';
+            document.getElementById('settlement-assignment-top').style.display = isResultsView ? 'none' : 'flex';
+            document.getElementById('settlement-assignment-bottom').style.display = isResultsView ? 'none' : 'flex';
+            document.getElementById('settlement-left').style.display = isResultsView ? 'none' : 'flex';
+            document.getElementById('settlement-right').style.display = isResultsView ? 'none' : 'flex';
+            document.getElementById('settlement-pick-btn').style.display = isResultsView ? 'none' : 'block';
+            document.getElementById('settlement-remove-btn').style.display = isResultsView ? 'none' : 'block';
+            document.getElementById('settlement-result-btn').style.display = isResultsView ? 'none' : 'block';
+
+            document.querySelector('.settlement-shell').classList.toggle('expanded-shell', isResultsView);
+            document.getElementById('settlement-panel').classList.toggle('no-frame', isResultsView);
+            document.getElementById('settlement-panel').classList.toggle('results-mode', isResultsView);
+            document.getElementById('settlement-results').classList.toggle('active', isResultsView);
+            document.getElementById('settlement-export-btn').style.display = isResultsView ? 'flex' : 'none';
+
+            if (isResultsView) {
+                renderSettlementResults();
+            } else {
+                // 在所有內部 DOM 建立完畢且顯示後，復原剛才紀錄的滾動位置
+                const newConfirmedListEl = document.getElementById('settlement-confirmed-list');
+                if (newConfirmedListEl && scrollStates['confirmed']) {
+                    newConfirmedListEl.scrollTop = scrollStates['confirmed'];
+                }
+                document.querySelectorAll('.settlement-candidate-column .settlement-card-list').forEach((el, index) => {
+                    if (scrollStates[`candidate-${index}`]) {
+                        el.scrollTop = scrollStates[`candidate-${index}`];
+                    }
+                });
+            }
+        }
+
+        function onEndBtnClick() {
+            if (currentStatus === 'running' || currentStatus === 'temp-edit') {
+                if (isEditMode) disableEditMode();
+                updateSystemStatus('finished');
+            } else if (currentStatus === 'finished') {
+                updateSystemStatus('temp-edit');
+            }
+        }
+
+        function applyStatus(status) {
+            const startBtn = document.getElementById('start-btn'), endBtn = document.getElementById('end-btn'), settleBtn = document.getElementById('settle-btn'), title = document.getElementById('main-title'), moreBtn = document.getElementById('more-btn');
+
+            // 重置全部按鈕狀態 (跑關狀態)
+            startBtn.innerText = "▶ 開始跑關";
+            startBtn.classList.remove('hidden', 'bg-emerald-500', 'text-white', 'opacity-60', 'pointer-events-none');
+            endBtn.classList.remove('hidden', 'bg-red-500', 'text-white', 'opacity-60', 'pointer-events-none', 'bg-orange-100', 'text-orange-700', 'border-orange-300', 'hover:bg-orange-500', 'hover:text-white');
+            endBtn.classList.add('bg-white', 'border-red-500', 'text-red-600', 'hover:bg-red-500'); // 回復原本的跑關結束樣式
+            endBtn.innerText = "■ 跑關結束";
+            settleBtn.classList.add('hidden');
+            document.body.classList.remove('status-finished');
+
+            // 處理左側 More 選單 disabled
+            const moreMenuIds = ['menu-upload', 'menu-clear', 'menu-reset', 'menu-logout'];
+            moreMenuIds.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    if (status === 'running' || status === 'temp-edit') {
+                        btn.style.opacity = '0.3';
+                        btn.disabled = true; // 放棄 pointer-events 改用原生 disabled
+                    } else {
+                        btn.style.opacity = '1';
+                        btn.disabled = false;
+                    }
+                }
+            });
+
+            if (status === 'running') {
+                startBtn.classList.add('hidden');
+                title.innerText = "跑關狀態：進行中";
+            } else if (status === 'finished') {
+                startBtn.classList.add('hidden');
+                // 將 endBtn 轉變為 "臨時修改" 按鈕
+                endBtn.classList.remove('bg-white', 'border-red-500', 'text-red-600', 'hover:bg-red-500');
+                endBtn.classList.add('bg-orange-100', 'text-orange-700', 'border-orange-300', 'hover:bg-orange-500', 'hover:text-white');
+                endBtn.innerText = "▶ 臨時修改";
+                settleBtn.classList.remove('hidden');
+                document.body.classList.add('status-finished');
+                title.innerText = "跑關狀態：已結束";
+            } else if (status === 'temp-edit') {
+                startBtn.classList.add('hidden');
+                title.innerText = "跑關狀態：臨時修改中";
+                // 此時 endBtn 維持 "■ 跑關結束"
+            } else {
+                title.innerText = "仁和國中第24屆管樂團樂器挑選";
+            }
+        }
+
+        // 處理左下角更多選單的開關邏輯
+        function toggleMoreMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('more-menu');
+            if (menu) {
+                menu.classList.toggle('active');
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            const menu = document.getElementById('more-menu');
+            const btn = document.getElementById('more-btn');
+            if (menu && menu.classList.contains('active')) {
+                // 如果點擊了畫面以外，或是點擊了選單內的某個按鈕，就收合選單
+                if (e.target !== btn && (!menu.contains(e.target) || e.target.closest('button'))) {
+                    menu.classList.remove('active');
+                }
+            }
+        });
+
+        // 支援 Esc 鍵退出全螢幕
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.fullscreenElement) {
+                document.exitFullscreen().catch(() => { });
+            }
+        });
+
+        // 7. 檔案讀取 (防呆修正版：允許重複選同一個檔案)
+        document.getElementById('excel-upload').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                students = json.map(row => ({
+                    id: createStudentId(),
+                    name: String(row['姓名'] || row['Name'] || Object.values(row)[1] || "未知").trim(),
+                    school: String(row['國小'] || row['School'] || Object.values(row)[0] || "").trim(),
+                    scores: {}
+                }));
+                saveData(); renderStudents();
+            };
+            reader.readAsArrayBuffer(file);
+            e.target.value = ''; // 關鍵！清空選擇，允許下次選同一份檔案
+        });
+
+        function addManualStudent() {
+            const n = prompt("姓名："), s = prompt("國小：");
+            if (n) { students.push({ id: createStudentId(), school: s || "", name: n.trim(), scores: {} }); saveData(); renderStudents(); }
+        }
+
+        // 啟動初始化與權限驗證
+        function verifyAdmin() {
+            const val = document.getElementById('admin-pass-input').value;
+            if (val === '060923') {
+                sessionStorage.setItem('admin_verified', 'true');
+                document.getElementById('admin-auth-overlay').classList.add('hidden');
+                enterSystem();
+            } else {
+                document.getElementById('admin-error').classList.remove('hidden');
+            }
+        }
+
+        function manageEventPassword() {
+            const newPin = prompt(`目前的活動密碼是：${currentEventPassword}\n若要修改，請直接於下方輸入新密碼。\n(若不想修改請直接點取消關閉)`, currentEventPassword);
+            if (newPin !== null && newPin.trim() !== '') {
+                db.ref('system/auth/pin').set(newPin.trim());
+                alert('活動密碼已更新！手機端若輸入舊密碼將被退出。');
+            }
+        }
+
+        function enterSystem() {
+            const savedData = localStorage.getItem('music_band_data'), savedStatus = localStorage.getItem('music_band_status');
+            if (savedData) {
+                try {
+                    students = JSON.parse(savedData);
+                } catch (e) { students = []; }
+            } else {
+                students = [];
+            }
+            ensureStudentIds(students);
+
+            if (savedStatus) currentStatus = savedStatus;
+            else currentStatus = 'setup';
+
+            settlementState.assignments = normalizeSettlementAssignments(JSON.parse(localStorage.getItem('music_band_settlement') || 'null'));
+
+            applyStatus(currentStatus);
+            renderStudents();
+            startFirebaseSync();
+        }
+
+        function logoutAdmin() {
+            if (!confirm('確定要登出嗎？')) return;
+            sessionStorage.removeItem('admin_verified');
+            location.reload();
+        }
+
+        window.onload = () => {
+            const isVerified = sessionStorage.getItem('admin_verified') === 'true';
+
+            if (isVerified) {
+                document.getElementById('admin-auth-overlay').classList.add('hidden');
+                enterSystem();
+            } else {
+                document.getElementById('admin-auth-overlay').classList.remove('hidden');
+            }
+        };
+
+    </script>
+</body>
+
+</html>
