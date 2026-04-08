@@ -1,24 +1,55 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>錄入端 - 仁和管樂</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        html, body { height: 100%; overflow: hidden; position: fixed; width: 100%; overscroll-behavior: none; touch-action: manipulation; }
-        .disabled-overlay { backdrop-filter: grayscale(100%) blur(2px); background: rgba(0,0,0,0.6); display: none !important; }
-        .disabled-overlay.active { display: flex !important; flex-direction: column; align-items: center; justify-content: center; }
-        #selected-card { min-height: 0; max-height: 100%; } /* 確保內容不會撐破外層 */
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            overscroll-behavior: none;
+            touch-action: manipulation;
+        }
+
+        .disabled-overlay {
+            backdrop-filter: grayscale(100%) blur(2px);
+            background: rgba(0, 0, 0, 0.6);
+            display: none !important;
+        }
+
+        .disabled-overlay.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #selected-card {
+            min-height: 0;
+            max-height: 100%;
+        }
+
+        /* 確保內容不會撐破外層 */
     </style>
 </head>
+
 <body class="bg-slate-100 flex flex-col font-sans select-none">
 
-    <div id="mobile-lobby-overlay" class="fixed inset-0 z-[500] bg-blue-900 flex flex-col items-center justify-center text-white p-6">
+    <div id="mobile-lobby-overlay"
+        class="fixed inset-0 z-[500] bg-blue-900 flex flex-col items-center justify-center text-white p-6">
         <h1 class="text-4xl font-black mb-8 tracking-widest">錄入端連線</h1>
         <span class="text-lg mb-4 opacity-80">請輸入活動密碼</span>
-        <input type="text" inputmode="numeric" pattern="[0-9]*" id="mobile-room-pin-input" placeholder="密碼" class="text-center w-64 px-4 py-3 rounded-xl text-blue-900 text-3xl font-bold outline-none mb-6 tracking-widest">
-        <button onclick="window.joinRoom()" class="px-12 py-4 bg-amber-400 text-amber-900 rounded-3xl text-2xl font-black shadow-xl hover:bg-amber-300 transition transform hover:-translate-y-1">連線</button>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" id="mobile-room-pin-input" placeholder="密碼"
+            class="text-center w-64 px-4 py-3 rounded-xl text-blue-900 text-3xl font-bold outline-none mb-6 tracking-widest">
+        <button onclick="window.joinRoom()"
+            class="px-12 py-4 bg-amber-400 text-amber-900 rounded-3xl text-2xl font-black shadow-xl hover:bg-amber-300 transition transform hover:-translate-y-1">連線</button>
         <div id="lobby-error" class="text-red-300 mt-4 font-bold text-lg hidden">請輸入密碼</div>
     </div>
 
@@ -26,34 +57,44 @@
 
     <header class="bg-blue-900 text-white p-3 shadow-md flex justify-between items-center gap-3">
         <!-- 注意：這裡的選單也要跟老師端同步喔！ -->
-        <select id="inst-select" class="bg-blue-800 text-white font-bold px-3 py-2 rounded-lg outline-none border border-blue-700">
+        <select id="inst-select"
+            class="bg-blue-800 text-white font-bold px-3 py-2 rounded-lg outline-none border border-blue-700">
             <option value="長笛">長笛</option>
             <option value="豎笛/薩克斯風">豎笛/薩克斯風</option>
             <option value="小號/法國號">小號/法國號</option>
             <option value="長號/上低音號/低音號">長號/上低音號/低音號</option>
             <option value="打擊">打擊</option>
+            <option value="音感/視譜">音感/視譜(1-5)</option>
         </select>
         <div class="flex items-center gap-2">
             <span class="text-[10px] font-medium opacity-60 whitespace-nowrap">仁和管樂錄入端</span>
-            <button onclick="location.reload()" class="bg-blue-800 w-10 h-10 flex items-center justify-center rounded-xl active:bg-blue-700 shadow-inner">
+            <button onclick="location.reload()"
+                class="bg-blue-800 w-10 h-10 flex items-center justify-center rounded-xl active:bg-blue-700 shadow-inner">
                 <svg width="24px" height="24px" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" fill="white">
-                    <path d="M25 38c-7.2 0-13-5.8-13-13 0-3.2 1.2-6.2 3.3-8.6l1.5 1.3C15 19.7 14 22.3 14 25c0 6.1 4.9 11 11 11 1.6 0 3.1-.3 4.6-1l.8 1.8c-1.7.8-3.5 1.2-5.4 1.2z"/><path d="M34.7 33.7l-1.5-1.3c1.8-2 2.8-4.6 2.8-7.3 0-6.1-4.9-11-11-11-1.6 0-3.1.3-4.6 1l-.8-1.8c1.7-.8 3.5-1.2 5.4-1.2 7.2 0 13 5.8 13 13 0 3.1-1.2 6.2-3.3 8.6z"/><path d="M18 24h-2v-6h-6v-2h8z"/><path d="M40 34h-8v-8h2v6h6z"/>
+                    <path
+                        d="M25 38c-7.2 0-13-5.8-13-13 0-3.2 1.2-6.2 3.3-8.6l1.5 1.3C15 19.7 14 22.3 14 25c0 6.1 4.9 11 11 11 1.6 0 3.1-.3 4.6-1l.8 1.8c-1.7.8-3.5 1.2-5.4 1.2z" />
+                    <path
+                        d="M34.7 33.7l-1.5-1.3c1.8-2 2.8-4.6 2.8-7.3 0-6.1-4.9-11-11-11-1.6 0-3.1.3-4.6 1l-.8-1.8c1.7-.8 3.5-1.2 5.4-1.2 7.2 0 13 5.8 13 13 0 3.1-1.2 6.2-3.3 8.6z" />
+                    <path d="M18 24h-2v-6h-6v-2h8z" />
+                    <path d="M40 34h-8v-8h2v6h6z" />
                 </svg>
             </button>
         </div>
     </header>
 
     <main class="flex-1 min-h-0 p-4 flex flex-col gap-4">
-        
+
         <div class="flex flex-row gap-2">
-            <select id="name-dropdown" class="w-[60%] p-3 bg-white border-2 border-white rounded-xl shadow-sm text-lg outline-none cursor-pointer">
+            <select id="name-dropdown"
+                class="w-[60%] p-3 bg-white border-2 border-white rounded-xl shadow-sm text-lg outline-none cursor-pointer">
                 <option value="">選擇學生...</option>
             </select>
-            <input type="text" id="search-input" placeholder="🔍 搜尋" 
-                   class="w-[40%] min-w-0 p-3 border-2 border-white rounded-xl shadow-sm focus:border-blue-400 outline-none text-lg">
+            <input type="text" id="search-input" placeholder="🔍 搜尋"
+                class="w-[40%] min-w-0 p-3 border-2 border-white rounded-xl shadow-sm focus:border-blue-400 outline-none text-lg">
         </div>
 
-        <div id="selected-card" class="flex-1 min-h-0 bg-white rounded-3xl shadow-sm border-2 border-blue-100 flex flex-col items-center justify-center p-4 transition-all relative">
+        <div id="selected-card"
+            class="flex-1 min-h-0 bg-white rounded-3xl shadow-sm border-2 border-blue-100 flex flex-col items-center justify-center p-4 transition-all relative">
             <div id="selected-inner" class="text-center w-full">
                 <p class="text-gray-300 text-lg mb-2">尚未選擇學生</p>
                 <div class="w-16 h-1 border-t-2 border-gray-100 mx-auto"></div>
@@ -61,19 +102,66 @@
         </div>
     </main>
 
-    <footer class="p-4 grid grid-cols-3 gap-4 h-36 bg-white border-t border-gray-100 items-center relative">
-        <button data-score-btn="star" onclick="handleScoreButton('star', event)" class="h-24 bg-amber-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
-            <span class="score-label text-5xl leading-none">⭐</span>
-        </button>
-        <button data-score-btn="circle" onclick="handleScoreButton('circle', event)" class="h-24 bg-sky-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
-            <span class="score-label text-5xl leading-none">○</span>
-        </button>
-        <button data-score-btn="triangle" onclick="handleScoreButton('triangle', event)" class="h-24 bg-rose-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
-            <span class="score-label text-5xl leading-none">△</span>
-        </button>
+    <!-- 音感/視譜 修改操作列（放在狀態卡與按鈕區之間） -->
+    <div id="special-edit-actions-bar"
+        class="hidden fixed left-0 right-0 z-[120] px-4 pointer-events-none"
+        style="bottom: calc(9rem + 12px + env(safe-area-inset-bottom));">
+        <div class="max-w-xl mx-auto flex justify-center">
+            <div class="flex gap-3 pointer-events-auto">
+                <button id="special-edit-cancel-btn"
+                    class="px-5 py-2 bg-slate-200 text-slate-800 rounded-xl shadow font-black active:scale-95">
+                    取消
+                </button>
+                <button id="special-edit-confirm-btn"
+                    class="px-5 py-2 bg-indigo-600 text-white rounded-xl shadow font-black active:scale-95">
+                    確認
+                </button>
+            </div>
+        </div>
+    </div>
 
-        <!-- Localized Lock Overlay -->
-        <div id="lock-overlay" class="disabled-overlay active absolute inset-0 z-[100] text-white rounded-t-3xl border-t border-blue-400">
+    <footer id="footer-container" class="p-4 h-36 bg-white border-t border-gray-100 relative">
+        <div id="footer-normal" class="grid grid-cols-3 gap-4 h-full items-center">
+            <button data-score-btn="star" onclick="handleScoreButton('star', event)"
+                class="h-24 bg-amber-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
+                <span class="score-label text-5xl leading-none">⭐</span>
+            </button>
+            <button data-score-btn="circle" onclick="handleScoreButton('circle', event)"
+                class="h-24 bg-sky-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
+                <span class="score-label text-5xl leading-none">○</span>
+            </button>
+            <button data-score-btn="triangle" onclick="handleScoreButton('triangle', event)"
+                class="h-24 bg-rose-400 text-white rounded-2xl shadow-lg active:scale-90 transition flex items-center justify-center">
+                <span class="score-label text-5xl leading-none">△</span>
+            </button>
+        </div>
+
+        <div id="footer-special" class="hidden flex-col gap-2 h-full justify-center">
+            <div class="flex items-center gap-2 h-1/2">
+                <span class="font-black text-slate-500 w-10 text-sm">音感</span>
+                <div class="grid grid-cols-5 gap-2 flex-1 h-full" id="pitch-btns"></div>
+            </div>
+            <div class="flex items-center gap-2 h-1/2">
+                <span class="font-black text-slate-500 w-10 text-sm">視譜</span>
+                <div class="grid grid-cols-5 gap-2 flex-1 h-full" id="sight-btns"></div>
+            </div>
+
+            <!--
+                音感/視譜修改流程：
+                1) 未進入修改：通關後顯示紅色「修改」遮罩，禁止直接改兩格
+                2) 進入修改：遮罩只顯示「確認/取消」，允許在下方選值
+            -->
+            <div id="special-edit-overlay-modify"
+                class="hidden absolute inset-0 z-[90] flex items-center justify-center bg-white/60 backdrop-blur-[2px] pointer-events-auto">
+                <button id="special-edit-modify-btn"
+                    class="px-6 py-3 bg-red-500 text-white rounded-2xl shadow-lg font-black text-xl active:scale-95">
+                    修改
+                </button>
+            </div>
+        </div>
+
+        <div id="lock-overlay"
+            class="disabled-overlay active absolute inset-0 z-[100] text-white rounded-t-3xl border-t border-blue-400">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">🔒</span>
                 <div class="text-left">
@@ -101,8 +189,15 @@
         let allStudents = [];
         let selectedIndex = null;
         let pendingScoreType = null;
+        let pendingSpecial = { pitch: null, sight: null };
+        // 音感/視譜修改流程狀態
+        let specialEditMode = false; // 進入修改後才允許選值並送出
+        let specialEditDraft = { pitch: null, sight: null }; // 尚未送出的編輯值
+        let specialEditWasActivated = false; // 控制「修改/重新修改」按鈕文案
         let lockedStudentIndex = null;
         let lastSubmission = null;
+        let lastValidStudentIdx = "";
+        let lastValidInst = "長笛";
 
         let currentEventPassword = null;
         let firebaseListenerUnsubscribe = null;
@@ -156,33 +251,31 @@
             return selectedIndex !== null && lockedStudentIndex === selectedIndex;
         }
 
-        function renderScoreButtons() {
-            const disabled = selectedIndex === null || isCurrentStudentLocked();
-            getScoreButtons().forEach((btn) => {
-                const type = btn.dataset.scoreBtn;
-                const label = btn.querySelector('.score-label');
-                const isPending = pendingScoreType === type;
-
-                btn.disabled = disabled;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed', 'ring-4', 'ring-offset-2', 'ring-slate-400');
-
-                if (disabled) {
-                    btn.classList.add('opacity-50', 'cursor-not-allowed');
-                    label.textContent = SCORE_META[type].icon;
-                    label.className = 'score-label text-5xl leading-none';
-                    return;
-                }
-
-                if (isPending) {
-                    btn.classList.add('ring-4', 'ring-offset-2', 'ring-slate-400');
-                    label.textContent = '送出';
-                    label.className = 'score-label text-2xl font-black tracking-[0.2em]';
-                } else {
-                    label.textContent = SCORE_META[type].icon;
-                    label.className = 'score-label text-5xl leading-none';
-                }
-            });
+        function isValidSpecialScore(v) {
+            const n = Number(v);
+            return Number.isInteger(n) && n >= 1 && n <= 5;
         }
+
+        function getSpecialScoreFromStudent(student, key) {
+            if (!student || !student.scores) return null;
+            const direct = student.scores[key];
+            if (isValidSpecialScore(direct)) return Number(direct);
+            const encodedKey = encodeURIComponent(key);
+            const encodedVal = student.scores[encodedKey];
+            if (isValidSpecialScore(encodedVal)) return Number(encodedVal);
+            return null;
+        }
+
+        function getSpecialCompletionFromStudent(student) {
+            const pitch = getSpecialScoreFromStudent(student, '音感');
+            const sight = getSpecialScoreFromStudent(student, '視譜');
+            return {
+                pitch,
+                sight,
+                hasCompleted: isValidSpecialScore(pitch) && isValidSpecialScore(sight)
+            };
+        }
+
 
         function clearPendingScore() {
             pendingScoreType = null;
@@ -191,6 +284,10 @@
 
         function resetActionButtons() {
             pendingScoreType = null;
+            pendingSpecial = { pitch: null, sight: null };
+            specialEditMode = false;
+            specialEditDraft = { pitch: null, sight: null };
+            specialEditWasActivated = false;
             lockedStudentIndex = null;
             lastSubmission = null;
             renderScoreButtons();
@@ -201,23 +298,23 @@
             const showPassBadge = !!options.showPassBadge;
             const recentSubmission = options.recentSubmission || null;
             const inner = document.getElementById('selected-inner');
-            inner.style.width = '100%';
-            inner.style.height = '100%';
-            inner.style.padding = '4px'; // 增加內邊距避免內容貼邊裁切框線
+            inner.style.width = '100%'; inner.style.height = '100%'; inner.style.padding = '4px';
+
             const normalizedScoreMap = new Map();
             for (const [rawInstKey, rawGrade] of flattenScoreEntries(student.scores)) {
                 const inst = instrumentFromScoreKey(rawInstKey);
                 const grade = normalizeScoreType(rawGrade);
                 if (grade) normalizedScoreMap.set(inst, grade);
+                // 讀取特殊指標分數 (1-5)
+                if (inst === '音感' || inst === '視譜') normalizedScoreMap.set(inst, rawGrade);
             }
-            if (recentSubmission && recentSubmission.instrument && recentSubmission.scoreType) {
+            if (recentSubmission && recentSubmission.instrument) {
                 normalizedScoreMap.set(recentSubmission.instrument, recentSubmission.scoreType);
             }
+
             const scoreCount = INSTRUMENT_ORDER.filter((inst) => normalizedScoreMap.has(inst)).length;
-            const titleClass = scoreCount >= 4 ? 'text-4xl' : 'text-6xl';
-            const isCompact = window.innerWidth <= 430;
-            const rowClass = isCompact ? 'text-xs px-2.5 py-2' : 'text-sm px-3.5 py-3';
-            const badgeClass = isCompact ? 'text-sm' : 'text-base';
+            const titleClass = scoreCount >= 4 ? 'text-4xl' : 'text-5xl';
+            const rowClass = 'text-sm px-3 py-2';
 
             const renderItem = (inst) => {
                 const normalized = normalizedScoreMap.get(inst);
@@ -227,14 +324,23 @@
                 return `
                     <div class="flex justify-between items-center ${bgColor} ${rowClass} ${highlightClass} rounded-xl overflow-hidden">
                         <span class="font-bold truncate mr-1">${inst}</span>
-                        <span class="font-black ${badgeClass} shrink-0 text-right min-w-[1.2rem]">${icon}</span>
+                        <span class="font-black text-base shrink-0 text-right min-w-[1.2rem]">${icon}</span>
                     </div>
                 `;
             };
 
+            // 組合音感與視譜文字
+            const pitchRaw = normalizedScoreMap.get('音感');
+            const sightRaw = normalizedScoreMap.get('視譜');
+            // 這關比較特別：未同時完成「音感 + 視譜」時，中間狀態框不顯示部分成績
+            const showSpecialResult = isValidSpecialScore(pitchRaw) && isValidSpecialScore(sightRaw);
+            const pitchVal = showSpecialResult ? (pitchRaw ?? '無') : '無';
+            const sightVal = showSpecialResult ? (sightRaw ?? '無') : '無';
+            const specialHighlight = highlightInstrument === '音感/視譜' ? 'ring-2 ring-red-500' : '';
+
             let scoreHTML = `
                 <div class="mt-2 w-full border-t-2 border-blue-200 pt-2 px-1 flex flex-col items-center">
-                    <div class="w-full grid grid-cols-2 gap-2">
+                    <div class="w-full grid grid-cols-2 gap-2 mb-2">
                         <div class="flex flex-col gap-2">
                             ${renderItem(INSTRUMENT_ORDER[0])}
                             ${renderItem(INSTRUMENT_ORDER[1])}
@@ -243,6 +349,10 @@
                         <div class="flex flex-col gap-2">
                             ${renderItem(INSTRUMENT_ORDER[3])}
                             ${renderItem(INSTRUMENT_ORDER[4])}
+                            <div class="flex justify-between items-center bg-indigo-50 text-indigo-700 ${rowClass} ${specialHighlight} rounded-xl overflow-hidden">
+                                <span class="font-bold truncate mr-1">音感/視譜</span>
+                                <span class="font-black text-sm shrink-0 text-right">音感${pitchVal};&nbsp;視譜${sightVal}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,13 +390,13 @@
         function enterSystem(pin) {
             currentEventPassword = pin;
             document.getElementById('mobile-lobby-overlay').classList.add('hidden');
-            
+
             if (firebaseListenerUnsubscribe) firebaseListenerUnsubscribe();
-            
+
             firebaseListenerUnsubscribe = onValue(ref(db, 'system'), (snapshot) => {
                 const data = snapshot.val() || {};
                 const serverPin = (data.auth && data.auth.pin) ? data.auth.pin : null;
-                
+
                 // 動態驗證密碼：如果密碼被主控端修改或不符合，退出大廳
                 if (serverPin && serverPin !== currentEventPassword) {
                     document.getElementById('mobile-lobby-overlay').classList.remove('hidden');
@@ -310,7 +420,7 @@
                 // 2. 更新學生名單 (即使鎖定也更新，以便查看資料)
                 allStudents = data.students || [];
                 updateDropdown();
-                
+
                 // 3. 如果當前已有選中學生，更新其顯示畫面
                 if (selectedIndex !== null) {
                     const s = allStudents[selectedIndex];
@@ -337,18 +447,18 @@
         function updateDropdown(query = '') {
             const dropdown = document.getElementById('name-dropdown');
             const currentVal = dropdown.value;
-            
-            let filtered = [...allStudents].map((s, idx) => ({...s, idx}));
+
+            let filtered = [...allStudents].map((s, idx) => ({ ...s, idx }));
             if (query) {
                 // 支援姓名或學校的關鍵字搜尋
                 filtered = filtered.filter(s => s.name.includes(query) || (s.school && s.school.includes(query)));
             }
-            
+
             filtered.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
 
-            dropdown.innerHTML = '<option value="">選擇學生...</option>' + 
+            dropdown.innerHTML = '<option value="">選擇學生...</option>' +
                 filtered.map(s => `<option value="${s.idx}">${s.name} (${s.school || '無'})</option>`).join('');
-            
+
             if (Array.from(dropdown.options).some(opt => opt.value === String(currentVal))) {
                 dropdown.value = currentVal;
             }
@@ -362,10 +472,10 @@
 
         // 實際選擇下拉選項時：鎖定學生並恢復所有選項
         document.getElementById('name-dropdown').addEventListener('change', (e) => {
-            if(e.target.value !== "") {
+            if (e.target.value !== "") {
                 const selectedVal = e.target.value;
                 selectStudent(parseInt(selectedVal));
-                
+
                 // 清空搜尋並且重繪清單，讓其他人也跑出來
                 document.getElementById('search-input').value = '';
                 updateDropdown();
@@ -384,7 +494,7 @@
             selectedIndex = idx;
             const s = allStudents[idx];
             const card = document.getElementById('selected-card');
-            
+
             card.classList.replace('border-blue-100', 'border-blue-500');
             card.classList.add('bg-blue-50');
             renderSelectedStudentCard(s);
@@ -442,13 +552,302 @@
         document.addEventListener('gesturechange', (event) => event.preventDefault());
 
         renderScoreButtons();
-        
+
         window.onload = () => {
             const savedPin = sessionStorage.getItem('mobile_room_pin');
             if (savedPin) {
                 enterSystem(savedPin);
             }
         };
+
+
+        // 防呆驗證：檢查是否只送出一個
+        function checkSpecialCompletion() {
+            if (selectedIndex === null) return true;
+            const s = allStudents[selectedIndex];
+            if (!s || !s.scores) return true;
+            const { pitch, sight } = getSpecialCompletionFromStudent(s);
+            const hasPitch = pitch !== null;
+            const hasSight = sight !== null;
+            // 只有當一個有一、一個沒有時，才阻擋
+            if ((hasPitch && !hasSight) || (!hasPitch && hasSight)) return false;
+            return true;
+        }
+
+        document.getElementById('name-dropdown').addEventListener('change', (e) => {
+            if (e.target.value !== "") {
+                if (!checkSpecialCompletion()) {
+                    alert('⚠️ 請將「音感」與「視譜」的成績都送出後，才能切換學生！');
+                    e.target.value = lastValidStudentIdx;
+                    return;
+                }
+                const selectedVal = e.target.value;
+                lastValidStudentIdx = selectedVal;
+                selectStudent(parseInt(selectedVal));
+                document.getElementById('search-input').value = '';
+                updateDropdown();
+                document.getElementById('name-dropdown').value = selectedVal;
+            }
+        });
+
+        document.getElementById('inst-select').addEventListener('change', (e) => {
+            if (!checkSpecialCompletion()) {
+                alert('⚠️ 請將「音感」與「視譜」的成績都送出後，才能切換關卡！');
+                e.target.value = lastValidInst;
+                return;
+            }
+            lastValidInst = e.target.value;
+            resetActionButtons();
+            if (selectedIndex !== null && allStudents[selectedIndex]) {
+                renderSelectedStudentCard(allStudents[selectedIndex]);
+            }
+        });
+
+        // 動態生成 1-5 按鈕
+        function createSpecialBtns() {
+            const pitchContainer = document.getElementById('pitch-btns');
+            const sightContainer = document.getElementById('sight-btns');
+            pitchContainer.innerHTML = ''; sightContainer.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                pitchContainer.innerHTML += `<button onclick="handleSpecialScore('pitch', ${i}, event)" data-type="pitch" data-val="${i}" class="bg-indigo-100 text-indigo-700 font-black text-xl rounded-xl shadow-sm active:scale-90 transition disabled:opacity-50">${i}</button>`;
+                sightContainer.innerHTML += `<button onclick="handleSpecialScore('sight', ${i}, event)" data-type="sight" data-val="${i}" class="bg-indigo-100 text-indigo-700 font-black text-xl rounded-xl shadow-sm active:scale-90 transition disabled:opacity-50">${i}</button>`;
+            }
+        }
+        createSpecialBtns(); // 初始化
+
+        window.startSpecialEditMode = (event) => {
+            event.stopPropagation();
+            if (selectedIndex === null) return;
+            const student = allStudents[selectedIndex];
+            if (!student) return;
+
+            const { pitch, sight, hasCompleted } = getSpecialCompletionFromStudent(student);
+            if (!hasCompleted) return; // 未通關不需要進入修改模式
+
+            specialEditMode = true;
+            specialEditWasActivated = true;
+            pendingSpecial = { pitch: null, sight: null };
+            specialEditDraft = { pitch, sight };
+            renderScoreButtons();
+        };
+
+        window.cancelSpecialEditMode = (event) => {
+            event.stopPropagation();
+            if (selectedIndex === null) return;
+
+            specialEditMode = false;
+            specialEditWasActivated = false;
+            pendingSpecial = { pitch: null, sight: null };
+            specialEditDraft = { pitch: null, sight: null };
+            renderScoreButtons();
+        };
+
+        window.confirmSpecialEditMode = (event) => {
+            event.stopPropagation();
+            if (selectedIndex === null) return;
+
+            const student = allStudents[selectedIndex];
+            if (!student) return;
+            if (!student.scores || typeof student.scores !== 'object') student.scores = {};
+
+            if (!isValidSpecialScore(specialEditDraft.pitch) || !isValidSpecialScore(specialEditDraft.sight)) {
+                alert('請先選擇完整的音感與視譜分數（1-5）。');
+                return;
+            }
+
+            const pitchVal = Number(specialEditDraft.pitch);
+            const sightVal = Number(specialEditDraft.sight);
+            const updates = {};
+            updates[`system/students/${selectedIndex}/scores/音感`] = pitchVal;
+            updates[`system/students/${selectedIndex}/scores/視譜`] = sightVal;
+
+            update(ref(db), updates).then(() => {
+                // 同步本地資料（同時寫入 unencoded/encoded，避免讀取端只取其中一種）
+                student.scores['音感'] = pitchVal;
+                student.scores[encodeURIComponent('音感')] = pitchVal;
+                student.scores['視譜'] = sightVal;
+                student.scores[encodeURIComponent('視譜')] = sightVal;
+
+                specialEditMode = false;
+                pendingSpecial = { pitch: null, sight: null };
+                specialEditDraft = { pitch: pitchVal, sight: sightVal };
+                lockedStudentIndex = selectedIndex;
+                lastSubmission = { instrument: '音感/視譜', scoreType: '完成' };
+
+                renderSelectedStudentCard(student, {
+                    highlightInstrument: '音感/視譜',
+                    showPassBadge: true
+                });
+                renderScoreButtons();
+            });
+        };
+
+        // 綁定按鈕（修改在按鈕區內；確認/取消在 actions bar）
+        const specialEditModifyBtn = document.getElementById('special-edit-modify-btn');
+        const specialEditCancelBtn = document.getElementById('special-edit-cancel-btn');
+        const specialEditConfirmBtn = document.getElementById('special-edit-confirm-btn');
+        if (specialEditModifyBtn) specialEditModifyBtn.addEventListener('click', window.startSpecialEditMode);
+        if (specialEditCancelBtn) specialEditCancelBtn.addEventListener('click', window.cancelSpecialEditMode);
+        if (specialEditConfirmBtn) specialEditConfirmBtn.addEventListener('click', window.confirmSpecialEditMode);
+
+        window.handleSpecialScore = (category, val, event) => {
+            event.stopPropagation();
+            if (selectedIndex === null) return;
+            const student = allStudents[selectedIndex];
+            if (!student) return;
+
+            const dbKey = category === 'pitch' ? '音感' : '視譜';
+
+            // 修改模式：只更新草稿，真正送出在「確認」按鈕
+            if (specialEditMode) {
+                specialEditDraft[category] = val;
+                renderScoreButtons();
+                return;
+            }
+
+            // 已通關的學生：未進入修改模式時不允許直接送出
+            const { hasCompleted } = getSpecialCompletionFromStudent(student);
+            if (hasCompleted) return;
+
+            if (isCurrentStudentLocked()) return;
+
+            // 雙擊驗證（未通關流程）
+            if (pendingSpecial[category] !== val) {
+                pendingSpecial[category] = val;
+                renderScoreButtons();
+                return;
+            }
+
+            // 確認送出
+            const updates = {};
+            updates[`system/students/${selectedIndex}/scores/${dbKey}`] = val;
+
+            update(ref(db), updates).then(() => {
+                pendingSpecial[category] = null;
+
+                // 先同步本地資料，確保卡片能立即顯示最新結果
+                if (!student.scores || typeof student.scores !== 'object') student.scores = {};
+                student.scores[dbKey] = val;
+                student.scores[encodeURIComponent(dbKey)] = val;
+
+                // 兩項都送出後才鎖定並顯示通關
+                const { hasCompleted: nowHasCompleted } = getSpecialCompletionFromStudent(student);
+                if (nowHasCompleted) {
+                    lockedStudentIndex = selectedIndex;
+                }
+
+                // 未完成前不更新中間狀態框的高亮（只讓按鈕流程正常走）
+                if (nowHasCompleted) {
+                    lastSubmission = { instrument: '音感/視譜', scoreType: '完成' };
+                    renderSelectedStudentCard(student, {
+                        highlightInstrument: '音感/視譜',
+                        showPassBadge: true
+                    });
+                }
+                renderScoreButtons();
+            });
+        };
+
+        function renderScoreButtons() {
+            const inst = document.getElementById('inst-select').value;
+            const normalFooter = document.getElementById('footer-normal');
+            const specialFooter = document.getElementById('footer-special');
+            const disabled = selectedIndex === null || isCurrentStudentLocked();
+            const isSystemLocked = document.getElementById('lock-overlay')?.classList.contains('active');
+
+            if (inst === '音感/視譜') {
+                normalFooter.classList.add('hidden');
+                specialFooter.classList.remove('hidden');
+                specialFooter.classList.add('flex');
+
+                const student = allStudents[selectedIndex];
+                const { pitch, sight, hasCompleted } = selectedIndex !== null ? getSpecialCompletionFromStudent(student) : {
+                    pitch: null,
+                    sight: null,
+                    hasCompleted: false
+                };
+
+                // 控制覆蓋層顯示
+                const modifyOverlay = document.getElementById('special-edit-overlay-modify');
+                const actionsBar = document.getElementById('special-edit-actions-bar');
+                const modifyBtn = document.getElementById('special-edit-modify-btn');
+
+                // 系統鎖定時：所有修改 UI 都必須消失（避免跑到鎖定層上方）
+                if (isSystemLocked) {
+                    if (modifyOverlay) modifyOverlay.classList.add('hidden');
+                    if (actionsBar) actionsBar.classList.add('hidden');
+                } else {
+                    if (modifyOverlay) modifyOverlay.classList.toggle('hidden', !(hasCompleted && !specialEditMode));
+                    if (actionsBar) actionsBar.classList.toggle('hidden', !(hasCompleted && specialEditMode));
+                }
+
+                if (modifyBtn) modifyBtn.innerText = specialEditWasActivated ? '重新修改' : '修改';
+
+                ['pitch', 'sight'].forEach(cat => {
+                    const dbKey = cat === 'pitch' ? '音感' : '視譜';
+                    const dbVal = selectedIndex !== null ? getSpecialScoreFromStudent(allStudents[selectedIndex], dbKey) : null;
+
+                    document.querySelectorAll(`button[data-type="${cat}"]`).forEach(btn => {
+                        const val = parseInt(btn.dataset.val);
+
+                        // 未進修改模式時：通關後禁止直接修改
+                        // 未通關時：若該項已送出（dbVal 存在），禁用該項，避免只改一項就造成狀態混亂
+                        const categoryAlreadyCompleted = !hasCompleted && dbVal !== null;
+                        btn.disabled = selectedIndex === null || isSystemLocked || (!specialEditMode && (hasCompleted || categoryAlreadyCompleted || isCurrentStudentLocked()));
+
+                        // 重置樣式
+                        btn.className = `bg-indigo-100 text-indigo-700 font-black text-xl rounded-xl shadow-sm active:scale-90 transition disabled:opacity-40 disabled:cursor-not-allowed`;
+                        btn.innerText = val;
+
+                        // 修改模式：以草稿值為準
+                        const draftVal = specialEditMode ? (specialEditDraft[cat] ?? dbVal) : null;
+                        const highlightVal = specialEditMode ? draftVal : dbVal;
+
+                        // 已存入/已選取的高亮
+                        if (highlightVal == val) {
+                            btn.classList.replace('bg-indigo-100', 'bg-indigo-500');
+                            btn.classList.replace('text-indigo-700', 'text-white');
+                        }
+
+                        // 未通關的 Pending 狀態（只在未進修改模式時顯示）
+                        else if (!specialEditMode && pendingSpecial[cat] === val) {
+                            btn.classList.add('ring-4', 'ring-indigo-300');
+                            btn.innerText = "確認";
+                            btn.classList.replace('text-xl', 'text-sm');
+                        }
+                    });
+                });
+            } else {
+                normalFooter.classList.remove('hidden');
+                specialFooter.classList.add('hidden');
+                specialFooter.classList.remove('flex');
+
+                getScoreButtons().forEach((btn) => {
+                    const type = btn.dataset.scoreBtn;
+                    const label = btn.querySelector('.score-label');
+                    const isPending = pendingScoreType === type;
+                    btn.disabled = disabled;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed', 'ring-4', 'ring-offset-2', 'ring-slate-400');
+                    if (disabled) {
+                        btn.classList.add('opacity-50', 'cursor-not-allowed');
+                        label.textContent = SCORE_META[type].icon;
+                        label.className = 'score-label text-5xl leading-none';
+                        return;
+                    }
+                    if (isPending) {
+                        btn.classList.add('ring-4', 'ring-offset-2', 'ring-slate-400');
+                        label.textContent = '送出';
+                        label.className = 'score-label text-2xl font-black tracking-[0.2em]';
+                    } else {
+                        label.textContent = SCORE_META[type].icon;
+                        label.className = 'score-label text-5xl leading-none';
+                    }
+                });
+            }
+        }
+
+
     </script>
 </body>
+
 </html>
