@@ -92,8 +92,10 @@
     '特優': 'b-特優',
     '優等': 'b-優等',
     '甲等': 'b-甲等',
+    '未出賽': 'b-尚未出賽',
     '無': 'b-無',
-    '尚未出賽': 'b-尚未出賽'
+    '尚未出賽': 'b-尚未出賽',
+    '疫情停辦': 'b-無'
   };
 
   // === DOM 參照 ===
@@ -107,14 +109,7 @@
   // === 元件 ===
   const makeBadge = (text) => {
     const span = document.createElement('span');
-
-    let badgeClass = 'b-無'; // 預設
-
-    if (text.includes('特優')) badgeClass = 'b-特優';
-    else if (text.includes('優等')) badgeClass = 'b-優等';
-    else if (text.includes('甲等')) badgeClass = 'b-甲等';
-    else if (text.includes('尚未出賽') || text.includes('未出賽')) badgeClass = 'b-尚未出賽';
-    else if (text.includes('無')) badgeClass = 'b-無';
+    const badgeClass = Object.entries(BADGE_CLASS).find(([label]) => text.includes(label))?.[1] ?? 'b-無';
 
     span.className = `badge ${badgeClass}`;
     span.innerHTML = `<span class="dot" aria-hidden="true"></span>${text}`;

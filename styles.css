@@ -1,4 +1,4 @@
-/* ===== äº®è‰²ä¸»é?è®Šæ•¸ ===== */
+
 :root{--bg:#FAFAFA;
   --fg:#1F2937;
   --muted:#6B7280;
@@ -12,7 +12,7 @@
   --home-hero-nudge-mobile: -60px;
   --home-hero-nudge: var(--home-hero-nudge-desktop);
   --home-hero-title-gap: 6px;}
-/* ===== ?ºç? ===== */
+
 *{box-sizing: border-box}
 html,body{height: 100%;}
 
@@ -29,46 +29,46 @@ body{margin:0;
     radial-gradient(800px  500px at 50%  120%, rgba(0,198,90,.08),  transparent 60%),
     var(--bg);
   line-height:1.6;}
-/* ?ˆå? */
+
 .container{max-width:1120px;margin:0 auto;padding:0 20px}
-/* ===== Headerï¼šå›ºå®šä?? å?ç¬¬ä?å±?===== */
+
 .site-header{position: fixed; top:0; left:0; right:0; z-index:20;
   background: rgba(255,255,255,.65);
   backdrop-filter: saturate(180%) blur(10px);
   border-bottom: 1px solid var(--border);}
 .site-header .container{display:flex; align-items:center; gap:16px; padding:12px 20px}
-/* ä»?Grid ?²è??ˆé¢?‡é? */
+
 .brand{display:grid;
-  grid-template-columns: auto 1fr; /* å·¦ï?logo ?³ï??‡å? */
-  grid-template-rows: auto auto;   /* ä¸Šï?ä¸­æ? ä¸‹ï??±æ? */
+  grid-template-columns: auto 1fr; 
+  grid-template-rows: auto auto;   
   column-gap:12px;
-  align-items:stretch;             /* è®?logo ?½æ?æ»¿å…©è¡Œç¸½é«˜åº¦ */
+  align-items:stretch;             
   text-decoration:none;
   color:var(--fg);
   min-width:0;}
-/* ?©è??‡å??†åˆ¥?½åœ¨ç¬?2 æ¬„ã€ç¬¬ 1/2 ??*/
+
 .brand-zh{grid-column: 2; grid-row: 1;
   font-weight: 800;
   letter-spacing: .02em;
-  line-height: 1.15;       /* å»ºè­°?Žç¢ºè¨­å?è¡Œé?ï¼Œé¿?å¹³?°å·®??*/
-  margin: 0;               /* ?²æ­¢?è¨­å¤–è?å½±éŸ¿é«˜åº¦è¨ˆç? */}
+  line-height: 1.15;       
+  margin: 0;               }
 .brand-en{grid-column: 2; grid-row: 2;
   font-size: .75rem;
   color: var(--muted);
   line-height: 1.15;
   margin: 0;}
-/* ===== ä¸»å®¹?¨å??¨æ²?•å?é½?===== */
-main.snap{scroll-snap-type: y mandatory;     /* æ»¿è¶³ #1ï¼šä?æ»‘å°±å°é?ä¸‹ä?å±?*/}
-/* ===== æ¯å€‹é¢?¿æ»¿?ˆé??ç½®ä¸­å¡??===== */
-section.panel{min-height: 100svh;                /* æ»¿ç?é«?*/
-  scroll-snap-align: start;          /* å°é??‚ç«¯ */
+
+main.snap{scroll-snap-type: y mandatory;     }
+
+section.panel{min-height: 100svh;                
+  scroll-snap-align: start;          
   scroll-snap-stop: always;
   display: grid;
-  place-items: center;               /* æ»¿è¶³ #2ï¼šç??¢ç½®ä¸?*/
+  place-items: center;               
   margin: 0;
   padding-block: 24px;
-  padding-top: calc(24px + 56px);    /* ç²—ä¼° header é«˜åº¦ï¼Œé¿?è?ä½å…§å®?*/}
-/* ===== Heroï¼ˆäº®?²å¯è®€?§è??†ï? ===== */
+  padding-top: calc(24px + 56px);    }
+
 .hero{position:relative; overflow:hidden}
 .hero-media{position:absolute; inset:0; overflow:hidden}
 .hero-media img{width:100%; height:100%; object-fit:cover; filter:brightness(.88);}
@@ -81,7 +81,7 @@ section.panel{min-height: 100svh;                /* æ»¿ç?é«?*/
 .hero .sub{max-width:860px; margin:0 auto 0;
   font-size: clamp(14px, 1.9vw, 18px);
   color:#ffffff;}
-/* ===== Profile ?€å¡Šï?ä¹¾æ·¨ï¼?===== */
+
 .profile{display:grid;
   grid-template-columns: 420px 1fr;
   gap:28px;
@@ -97,7 +97,7 @@ section.panel{min-height: 100svh;                /* æ»¿ç?é«?*/
   border-radius:16px;
   border:1px solid var(--border);
   background:#F3F4F6;}
-/* çµ±ä?æ¯”ä?ï¼šä?ä½è€å¸«?†ç‚º 4:3 */
+
 .profile-photo.yang{aspect-ratio: 4 / 3; max-width: 500px; justify-self: center;}
 .profile-photo.chou{aspect-ratio: 3 / 5; max-width: 350px; justify-self: center;}
 .profile-photo.jian{aspect-ratio: 4 / 3; max-width: 500px; justify-self: center;}
@@ -110,7 +110,6 @@ section.panel{min-height: 100svh;                /* æ»¿ç?é«?*/
     padding:20px;}
 }
 
-/* ===== ?²å ´/?€?´æ·¡?¥æ·¡??===== */
 .hero .hero-content,
 .profile-section .profile{opacity: 0;
   transform: translateY(calc(14px + var(--home-hero-nudge)));
@@ -118,18 +117,20 @@ section.panel{min-height: 100svh;                /* æ»¿ç?é«?*/
 .panel.in-view .hero-content,
 .panel.in-view .profile{opacity: 1;
   transform: translateY(var(--home-hero-nudge));}
-/* ===== Footer ===== */
+
 .site-footer{border-top:1px solid var(--border);
   padding:16px 0;
   color:var(--muted);}
-/* ===== è¦†è?å±¤ï?å®Œæ•´ç¶“æ­·ï¼?===== */
+
 .overlay[hidden]{display:none;}
 .overlay{position: fixed; inset:0; z-index:50;
   display:grid; place-items:center;
   background: rgba(17,24,39,.55);
   animation: fadeIn .25s ease;}
-from{opacity:0}
-to{opacity:1}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
 .overlay-card{width:min(880px, 92vw);
   max-height: 82vh;
   background: var(--card);
@@ -156,25 +157,25 @@ to{opacity:1}
 .btn-primary{background:var(--blue); color:white;}
 .btn-primary:hover{filter:brightness(.95);}
 .bio-trigger-wrap{margin-top:10px;}
-/* ===== ?¡é?ç¤™éŒ¨é»?===== */
+
 .sr-anchor{position: absolute; inset:0 auto auto 0; width:1px; height:1px; overflow:hidden;}
 .brand{display: flex;
   align-items: center;
-  gap: 12px;  /* ?–ç??Œæ?å­—ç??“è? */
+  gap: 12px;  
   text-decoration: none;
   color: var(--fg);}
-.brand-logo{display: block;                  /* ç§»é™¤?ºç?ç©ºé? */
-  width: clamp(32px, 4vw, 48px);   /* ?‹æ?å°ï?æ¡Œæ?å¤§ï??ªå?èª¿ç? */
-  height: auto;                    /* é«˜åº¦ä¾æ?ä¾‹ç¸®??*/
-  object-fit: contain;             /* ç¸®æ”¾?°æ??§ï?ä¸è???*/}
-/* ?‡å??©è?ï¼šä?ä¸‹å???*/
+.brand-logo{display: block;                  
+  width: clamp(32px, 4vw, 48px);   
+  height: auto;                    
+  object-fit: contain;             }
+
 .brand-text{display:flex;
   flex-direction:column;
-  line-height:1.1;              /* ?ä?è¡Œé?ï¼Œé¿?ç?èµ·ä??ä??–å?ä¸?*/}
-/* ===== ?Œæ™¯?»ç?å±¤ï??ƒä??²å??¹è‰²ï¼?===== */
+  line-height:1.1;              }
+
 .bg-glass{position:fixed; inset:0; z-index:-1;
   pointer-events:none;
-  /* ä»¥ä¸»é¡Œè‰²?ºä¸»?„æ¼¸å±¤ï?å¢žå?å­˜åœ¨??*/
+  
   background:
     radial-gradient(1200px 600px at 20% -10%,  rgba(var(--theme-rgb, 41,115,255), .22), transparent 60%),
     radial-gradient(900px  500px at 110% 0%,  rgba(var(--theme-rgb, 41,115,255), .18), transparent 65%),
@@ -182,11 +183,11 @@ to{opacity:1}
     var(--bg);
   backdrop-filter: blur(14px) saturate(140%);
   transition: background 60ms linear;}
-/* ä¸å??™ç·´ä¸»é??²ï??¯æ›¿?›ç‚º txt ?§æ?å®šè‰²?Ÿï? */
-:root{--yang: 41,115,255;   /* ??*/
-  --chou: 0,198,90;     /* ç¶?*/
-  --jian: 255,24,74;    /* ç´?*/
-  /* ?®å?ä¸»é??²ï???JS å¯«å…¥ï¼?*/
+
+:root{--yang: 41,115,255;   
+  --chou: 0,198,90;     
+  --jian: 255,24,74;    
+  
   --theme-rgb: var(--yang);}
 
 @media (max-height: 420px){
@@ -196,16 +197,15 @@ to{opacity:1}
 main.snap{scroll-snap-type: y proximity;}
 }
 
-/* ===== Features ?€å¡?===== */
-:root{--yellow:#F6E862; /* ?²è??‡å?ï¼šé???*/}
-/* ?´å€‹å?æ®µè??¯ç™½?²ï??‡é?æ±‚ä??´ï? */
+:root{--yellow:#F6E862; }
+
 .features-section{background: #FFFFFF;}
-/* 2?2 ?„å¡?‡æ ¼ï¼›æ?æ©Ÿæ”¹ 1 æ¬?*/
+
 .features-grid{display: grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
   gap: 70px;
   align-items: stretch;
-  /* ?Œæ­¥?²å ´?•ç•«ï¼ˆå?å¼µå¡ä¸€èµ·ï? */
+  
   opacity: 0;
   transform: translateY(14px);
   transition: opacity .45s ease, transform .45s ease;}
@@ -216,7 +216,6 @@ main.snap{scroll-snap-type: y proximity;}
 .features-grid{grid-template-columns: 1fr;}
 }
 
-/* ?¡ç??¬é?ï¼šç™½åº•ã€å?è§’ã€é?æ¡†ï??ã€Œå¤©?±æ¿?ˆã€å???*/
 .feature-card{background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -226,7 +225,6 @@ main.snap{scroll-snap-type: y proximity;}
   line-height: 1.5;
   box-shadow: 0 12px 28px rgba(31,41,55,.08);}
 
-/* ===== Recruit Floating Entry ===== */
 .recruit-float-entry{
   position: fixed;
   top: var(--recruit-top, 140px);
@@ -258,7 +256,6 @@ body.no-scroll .recruit-float-entry{
   pointer-events: none;
 }
 
-/* ===== Recruit Page ===== */
 body.recruit-page{
   background:
     radial-gradient(1000px 520px at 5% 0%, rgba(41,115,255,.12), transparent 58%),
@@ -572,8 +569,8 @@ body.recruit-page{
 }
 .feature-card p{margin: 0;
   font-size: clamp(16px, 2.1vw, 20px);}
-/* ?›ç¨®?Œå??å??ï?é»ƒã€è??ç??ç? */
-.glow-yellow{/* ?§å??”å? + å¤–å??´æ•£ */
+
+.glow-yellow{
   box-shadow:
     0 12px 28px rgba(31,41,55,.08),
     0 0 28px rgba(246,232,98,.45),
@@ -590,37 +587,37 @@ body.recruit-page{
     0 12px 28px rgba(31,41,55,.08),
     0 0 28px rgba(255,24,74,.45),
     0 0 90px rgba(255,24,74,.28);}
-/* ?¡é?ç¤™éš±?ç”¨?¨å?å¡Šæ?é¡Œï?ä¿ç?èªžæ??ˆä?ä½”ç???*/
+
 .sr-only{position:absolute !important;
   width:1px; height:1px;
   padding:0; margin:-1px;
   overflow:hidden;
   clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-/* ===== ?³å´?¸æµ® Liquid Glass å°Žèˆª ===== */
+
 .float-launchers{position: fixed;
   right: 16px; top: 50%; bottom: auto;
-  transform: translateY(-50%); /* ?‚ç›´ç½®ä¸­ */
+  transform: translateY(-50%); 
   display: flex; flex-direction: column; justify-content: center;
   gap: 14px;
-  z-index: 60;               /* é«˜æ–¼ header/?§å®¹ */
-  pointer-events: none;      /* å¤–å±¤ä¸å?é»žæ?ï¼Œäº¤çµ¦å??ƒç? */}
-/* ?®ä??“å½¢?‰é?ï¼ˆé?è¨?56px ?“ï? */
+  z-index: 60;               
+  pointer-events: none;      }
+
 .lg-chip{--size: 56px;
   --w: var(--size);
   --h: var(--size);
-  --glass: rgba(255,255,255,.28);      /* ?»ç??§é¢ */
+  --glass: rgba(255,255,255,.28);      
   --border: rgba(255,255,255,.45);
   --shadow: 0 10px 24px rgba(17,24,39,.10);
-  --txt: #0f172a;                       /* å±•é??‚ç??‡å?é¡è‰² */
+  --txt: #0f172a;                       
 
   display: inline-flex; align-items: center; justify-content: center;
   width: var(--w); height: var(--h);
   border-radius: 9999px;
   position: relative;
-  pointer-events: auto;                 /* ?¯é???*/
+  pointer-events: auto;                 
   color: #111827; text-decoration: none;
   backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%); /* iOS Safari */
+  -webkit-backdrop-filter: blur(14px) saturate(160%); 
   background:
     radial-gradient(140% 140% at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,.08) 55%),
     radial-gradient(100% 100% at 70% 75%, rgba(255,255,255,.35), transparent 60%),
@@ -628,26 +625,26 @@ body.recruit-page{
   border: 1px solid var(--border);
   box-shadow:
     var(--shadow),
-    0 0 24px rgba(var(--glow, 41,115,255), .35),   /* å½©è‰²å¤–å???*/
-    inset 0 1px 0 rgba(255,255,255,.35);           /* ?§ç·£é«˜å? */
+    0 0 24px rgba(var(--glow, 41,115,255), .35),   
+    inset 0 1px 0 rgba(255,255,255,.35);           
   transition:
     width .28s cubic-bezier(.22,.61,.36,1),
     border-radius .28s cubic-bezier(.22,.61,.36,1),
     box-shadow .28s linear,
     backdrop-filter .28s ease,
     -webkit-backdrop-filter .28s ease;
-  overflow: hidden;                   /* è®“æ?å­—åªå¾žå·¦?´æ???*/}
-/* ?³å???+ å·¦å»¶å±•ï??Šå®¹?¨é??³ã€å»¶å±•é•·åº¦å?å·¦é•· */
+  overflow: hidden;                   }
+
 .float-launchers{align-items: flex-end;;}
-/* ä½¿å??ƒç?? å³?Šå?é½?*/
+
 .lg-chip:hover,
-.lg-chip.is-open{--w: 172px;                          /* å±•é?å¯¬åº¦ï¼ˆå¯èª¿ï? */
+.lg-chip.is-open{--w: 172px;                          
   border-radius: 9999px;}
-/* ?§æ?ï¼ˆç”± data-label ?ä?ï¼?*/
+
 .lg-chip::after{content: attr(data-label);
   position: absolute;
-  right: 22px;                        /* ?‡å?æ¨™é?è·?*/
-  left: 56px;                         /* è®“æ?å­—å??“å·¦ç·??å§‹é¡¯ç¤?*/
+  right: 22px;                        
+  left: 56px;                         
   display: block;
   font-weight: 800;
   white-space: nowrap;
@@ -656,18 +653,18 @@ body.recruit-page{
   transform: translateX(6px);
   transition: opacity .22s ease .08s, transform .22s ease .08s;}
 .lg-chip:hover,
-.lg-chip.is-open{--w: 172px;                 /* ä½ ç?å±•é?å¯¬åº¦ */
-  justify-content: flex-start;/* ?–æ??¹é?å·?*/
-  padding-left: 18px;         /* å·¦å´?§è?ï¼Œé¿?è²¼??*/
-  padding-right: 18px;        /* ?³å´?§è? */}
-/* ?‡å?ï¼šhover/å±•é??‚é¡¯ç¤ºï??è¨­?¯é€æ??„ï? */
+.lg-chip.is-open{--w: 172px;                 
+  justify-content: flex-start;
+  padding-left: 18px;         
+  padding-right: 18px;        }
+
 .lg-chip:hover::after,
 .lg-chip.is-open::after{opacity: 1;
   transform: none;}
-/* ï¼ˆå¯?¸ï?å±•é??‚çµ¦ icon ä¸€é»žè?è¦ºé?è·?*/
+
 .lg-chip svg{margin-right: 0;}
-.ig-chip:hover svg
-.ig-chip.is-open svg{margin-right: 8px;}
+.lg-chip:hover svg,
+.lg-chip.is-open svg{margin-right: 8px;}
 
 @media (pointer: coarse){
 .lg-chip{--size: 60px;}
@@ -678,23 +675,22 @@ body.recruit-page{
 .lg-chip::after{transition: none;}
 }
 
-/* ?µç›¤?¦é??‚è?è¦ºå?å±•é??€?‹ï??¡é?ç¤™ï? */
 .lg-chip.is-hovering{--w: 172px; justify-content:flex-start; padding-left:18px; padding-right:18px;}
 .lg-chip.is-hovering::after{opacity:1; transform:none;}
-/* ===== teachers page ===== */
+
 .teachers-hero .container{text-align: center;}
 .teachers-hero h1{font-size: clamp(28px, 4.2vw, 42px);
   margin: 0 0 8px;
   letter-spacing: .02em;}
 .teachers-hero .sub{color: var(--muted);
   margin: 0;}
-/* === Teachers: ?†å??ºå?ï¼‹å°ºå¯¸è‡ª?©æ? === */
+
 .teachers-grid{display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  grid-auto-flow: row;         /* ä¾?DOM ?†å??±å·¦?³å³?å??›è? */
+  grid-auto-flow: row;         
   align-items: stretch;
   gap: 20px;}
-/* ?½å¡ï¼šæ²¿?¨å…¨?Ÿè‰²ç¥¨è??°å½±èªžè? */
+
 .teacher-card{position: relative;
   display: grid; 
   flex-direction: column;
@@ -704,35 +700,35 @@ body.recruit-page{
   box-shadow: 0 8px 28px rgba(31,41,55,.08);
   overflow: hidden;
   transition: transform .15s ease, box-shadow .15s ease;
-  grid-template-rows: 62% 1fr;  /* ä¸Šæ–¹åª’é??€ç´?62%ï¼Œä??¹æ?å­—å??ªå? */
+  grid-template-rows: 62% 1fr;  
   aspect-ratio: 4 / 5;}
 .teacher-card:hover{transform: translateY(-2px);
   box-shadow: 0 14px 42px rgba(31,41,55,.12);}
-/* ?±å??¨å?ä¸Šã€Œé€å‡º?‰è‰²?ï??›ç¨®é¡žåˆ¥ */
+
 .teacher-card::after{content:"";
   position: absolute; inset: auto 0 0 0;
   height: 46px;
   pointer-events: none;
-  opacity: .28;                 /* å¹³æ?ä½Žå½©åº?*/
+  opacity: .28;                 
   filter: blur(12px);
-  transform: translateY(14px);  /* è®“å??ˆä¸»è¦åœ¨?¡ç??§å´ */
+  transform: translateY(14px);  
   transition: opacity .2s ease;
   background:
     radial-gradient(120% 100% at 50% 120%,
       var(--glow, transparent) 0%,
       transparent 70%);}
 .teacher-card:hover::after{opacity: .36;}
-/* é¡žåˆ¥å°æ?ï¼ˆä½¿?¨å…¨?Ÿè‰²ç¥¨è??¸ï? */
+
 .teacher-card.-woodwind{--glow: rgba( var(--red-rgb, 255,24,74), .75 );}
 .teacher-card.-brass{--glow: rgba( var(--blue-rgb,41,115,255), .75 );}
 .teacher-card.-perc{--glow: rgba( var(--green-rgb,0,198,90), .75 );}
 .teacher-card.-other{--glow: rgba( var(--yellow-rgb,246,232,98), .85 );}
-/* è®?rgb ?ˆæœ¬?¯è¢« JS ?–æœªä¾†æ¨£å¼åˆ©?¨ï??™æ´ï¼šå? hex ?¨ä¼°?„é?è¨?rgbï¼?*/
+
 :root{--blue-rgb: 41,115,255;
   --red-rgb: 255,24,74;
   --green-rgb: 0,198,90;
   --yellow-rgb: 246,232,98;}
-/* ?§æ??‡å?é«?*/
+
 .teacher-card .media{width: 100%;
   aspect-ratio: auto;
   background: #F3F4F6;
@@ -746,7 +742,7 @@ body.recruit-page{
 .teacher-card .role{margin: 0 0 8px;
   font-size: 14px;
   color: var(--muted);}
-/* å¾½ç?ä¿ç?ï¼Œä?ä½Žå½©åº¦ä»¥ç¬¦å?é¦–é?æ°?³ª */
+
 .teacher-card .badge{display: inline-block;
   font-size: 12px; font-weight: 700;
   padding: 4px 10px;
@@ -757,46 +753,38 @@ body.recruit-page{
 @media (pointer: coarse) {
 .float-launchers{align-items: flex-end;}
 .float-launchers .lg-chip{transition: opacity .2s ease, transform .2s ease;}
-/* ?è¨­?ªé¡¯ç¤ºä¸»?‰é?ï¼›å…¶ä»?chip ?ˆéš±??*/
+
   .float-launchers:not(.is-show) .lg-chip:not(.lg-main){opacity: 0;
     pointer-events: none;
     transform: translateY(6px);}
-/* å±•é??‚é¡¯ç¤ºæ???chip */
+
   .float-launchers.is-show .lg-chip{opacity: 1;
     transform: none;}
 }
 
 @media (pointer: coarse) {
 .lg-chip{--w: 56px !important;}
-/* base circle size (matches your design) */
+
   .lg-chip:hover,
   .lg-chip.is-open{--w: 56px !important;}
-/* keep circle even when 'armed' */
-  /* Optional: armed glow for feedback */
+
+  
   .lg-chip.is-open{box-shadow: 0 0 0 3px rgba(0,0,0,.06), 0 0 0 6px rgba(var(--glow, 41,115,255), .25);}
 }
 
 @media (pointer: coarse) {
-/* Hamburger keeps circle always */
+
   .lg-main,
   .lg-main:hover,
   .lg-main.is-open{--w: 56px !important;}
-/* Other chips: circle by default, widen on first tap (.is-open) */
+
   .lg-chip:not(.lg-main).is-open{--w: 172px !important;}
 }
 
 .teacher-card .content { padding: 12px 12px 14px; }
 
-
-/* å¹³æ¿ä¿å?ï¼šå¯¬åº¦ä???521px~1024px ?‚è‡³å°‘ä? 3 æ¬?*/
-
-
-
-/* ===== Achievements page (appended) ===== */
-/* Use red theme on this page */
 #achievements-page .bg-glass{ --theme-rgb: var(--red-rgb); }
 
-/* Non-fullheight sections for this page */
 .panel.is-auto{
   min-height: auto;
   scroll-snap-align: none;
@@ -806,17 +794,14 @@ body.recruit-page{
   padding-bottom: 16px;
 }
 
-/* Generic card (align to site language) */
 .card{background: var(--card); border:1px solid var(--border); border-radius:16px;
   box-shadow: 0 8px 28px rgba(31,41,55,.08);}
 .card.pad{padding:18px}
 
-/* Hero text alignment */
 .achievements-hero .container{text-align:center;}
 .achievements-hero h1{font-size:clamp(28px,4.2vw,42px);margin:0 0 8px;letter-spacing:.02em; color:#fff;}
 .achievements-hero .sub{color:#fff;margin:0;}
 
-/* Toolbar & filters */
 .achievements-toolbar{display:grid;gap: 14px;padding:14px;}
 .achievements-toolbar .legend{display:flex;flex-wrap:wrap;gap:8px;}
 .achievements-toolbar .filters{display:flex;gap:8px;flex-wrap:wrap;}
@@ -825,18 +810,16 @@ body.recruit-page{
   padding:8px 12px;font-weight:700;font-size:14px;cursor:pointer;}
 .achievements-toolbar .btn[aria-pressed="true"]{outline:2px solid #ffccd5;}
 
-/* Badges ??light metallic */
 .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;
   border-radius:999px;font-size:12px;font-weight:600;border:1px solid transparent; background:#f9fafb;}
 .badge .dot{width:10px;height:10px;border-radius:50%;background:currentColor;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);}
-.b-?¹å„ª{color:#7d6922;background:linear-gradient(180deg,#fffbef,#fff5da);border-color:#f3e9c8;}
-.b-?ªç?{color:#7a7a7a;background:linear-gradient(180deg,#fcfcfd,#f3f5f8);border-color:#e8ebf0;}
-.b-?²ç?{color:#865236;background:linear-gradient(180deg,#fff5ee,#ffe6d1);border-color:#f2ddc9;}
-.b-?¡{color:#6b7280;background:#f3f4f6;border-color:#e5e7eb;}
-.b-å°šæœª?ºè³½{color:#6b7280;background:#f9fafb;border-color:#e5e7eb;opacity:.75;}
+.b-\7279\512A{color:#7d6922;background:linear-gradient(180deg,#fffbef,#fff5da);border-color:#f3e9c8;}
+.b-\512A\7B49{color:#7a7a7a;background:linear-gradient(180deg,#fcfcfd,#f3f5f8);border-color:#e8ebf0;}
+.b-\7532\7B49{color:#865236;background:linear-gradient(180deg,#fff5ee,#ffe6d1);border-color:#f2ddc9;}
+.b-\7121{color:#6b7280;background:#f3f4f6;border-color:#e5e7eb;}
+.b-\5C1A\672A\51FA\8CFD{color:#6b7280;background:#f9fafb;border-color:#e5e7eb;opacity:.75;}
 
-/* Cards grid */
 .achievements-grid{display:grid;gap:16px;padding:16px;
   grid-template-columns:repeat(auto-fit, minmax(360px, 1fr));
 }
@@ -846,11 +829,6 @@ body.recruit-page{
   padding:8px 0;border-top:1px dashed #eee;}
 .year-card .rows .row:first-child{border-top:0;}
 
-/* ?‹æ?ä¿å??å¹³?¿ä?åº•ï?teacher grid å·²æ?ï¼?*/
-
-/* === Achievements: çµ±ä?è¨­è? + ?©æ??ˆé¢ + æ¿¾é¡æ·¡å…¥ï¼?025-09-10ï¼?=== */
-
-/* Sticky å·¥å…·?—ï?ä¸å???headerï¼?*/
 #achievements-page .achievements-toolbar{
   position: sticky;
   top: calc(56px + 8px);
@@ -859,11 +837,9 @@ body.recruit-page{
   z-index: 5;
 }
 
-/* å¹´åº¦?½å¡ï¼šæ?é¡Œè??¯æ?ï¼ˆæ??’å?ï¼å…¨?‹ï? */
 .year-card .hd{display:flex; align-items:baseline; gap:10px; margin-bottom:8px;}
 .year-card .hd .desc{color: var(--muted); font-size: 13px}
 
-/* ?©æ?ç¾¤ç?ï¼šå·¦?Œæ??’å??ã€å³?Œå…¨?‹ã€?*/
 .year-card .blocks{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -873,12 +849,10 @@ body.recruit-page{
   .year-card .blocks{grid-template-columns: 1fr;}
 }
 
-/* æ¯ä?æ¬„ï?æ¯”è³½ç¯„ç?ï¼‰æ?é¡?*/
 .year-card .block{background: #fff; border: 1px solid var(--border);
   border-radius: 12px; padding: 12px;}
 .year-card .block h4{margin: 0 0 8px; font-weight: 800; color: #374151}
 
-/* ?®å?ï¼šå·¦?²ç›®?å³å¾½ç? */
 .year-card .rows{display: grid; gap: 0;}
 .year-card .row{
   display: grid;
@@ -891,23 +865,15 @@ body.recruit-page{
 .year-card .row:first-child{border-top: 0;}
 .year-card .label{color: #111827;}
 
-/* ?ç¸¾å¾½ç?ï¼šæ²¿?¨å…¨ç«?.badge + ç­‰ç¬¬?²ç³»ï¼ˆå·²å®šç¾©ï¼?*/
 .year-card .badge{font-weight: 700;}
 
-/* ?‡æ?å¹´åº¦?‚ç?æ·¡å…¥?•ç•«ï¼ˆé?æ±?4ï¼?*/
 .achievements-grid.anim-enter .year-card{opacity: 0; transform: translateY(8px);}
 .achievements-grid.anim-enter .year-card.anim-in{
   opacity: 1; transform: none;
   transition: opacity .35s ease, transform .35s ease;
 }
 
-/* === Achievements grid: Desktop/Tablet 2 cols; Mobile 1 col (2025-09-10) === */
-
-
-
-/* Toolbar title (achievements) */
 .cta-title{font-weight:800;font-size:16px;line-height:1.2;margin:0;}
-
 
 #achievements-page .achievements-grid{
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -918,23 +884,20 @@ body.recruit-page{
   }
 }
 
-/* ?‹æ??‚å??´å?ä¸€é»?*/
 @media (max-width: 520px) {
   #achievements-page .achievements-toolbar {
-    max-width: 88%;        /* ?¥è??¨å¯¬ï¼Œä?ä¿ç??Šè? */
-    padding: 16px 12px;    /* ä¸Šä?å·¦å³?§è? */
+    max-width: 88%;        
+    padding: 16px 12px;    
   }
 }
 
-/* ?ŒæŸ¥?‹æ­·å±†æ?ç¸¾ã€æ?é¡Œè?ä¸‹é¢?‰é??„è???*/
 #achievements-page .cta-link {
-  margin-bottom: 10px;     /* å¢žå??“è? */
-  pointer-events: none;    /* ä¸èƒ½é»žæ? */
+  margin-bottom: 10px;     
+  pointer-events: none;    
 }
 
-/* === Mobile hamburger circle & flow animation (2025-09-11) === */
 @media (pointer: coarse){
-  /* keep hamburger perfectly round on all devices */
+  
   .lg-main{
     --size: 56px;
     width: var(--size) !important;
@@ -943,10 +906,10 @@ body.recruit-page{
     border-radius: 50% !important;
     flex: 0 0 auto;
     padding: 0 !important;
-    transform: translateZ(0); /* iOS/Safari raster hint to avoid distortion */
+    transform: translateZ(0); 
   }
 
-  /* stage-in sequence: hamburger visible, other chips fade+lift in */
+  
   .float-launchers .lg-chip{
     opacity: 0;
     transform: translateY(6px) scale(.98);
@@ -962,38 +925,34 @@ body.recruit-page{
     opacity: 1;
     transform: none;
   }
-  /* staggered timing (DOM order: 1=hamburger, 2..N=chips) */
+  
   .float-launchers.is-show .lg-chip:nth-of-type(2){ transition-delay: 40ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(3){ transition-delay: 80ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(4){ transition-delay: 120ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(5){ transition-delay: 160ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(6){ transition-delay: 200ms; }
 
-  /* first tap on a chip -> widen & show label a beat later for smoothness */
+  
   .lg-chip:not(.lg-main).is-open{ --w: 172px !important; padding-left: 18px; padding-right: 18px; }
   .lg-chip.is-open::after{ transition-delay: .06s; }
 
-  /* hamburger never widens; remains a circle even when menu is open */
+  
   .lg-main,
   .lg-main:hover,
   .lg-main.is-open{ --w: 56px !important; }
 }
 
-
-/* === Hotfix 2025-09-11: keep hamburger icon centered on touch devices === */
 @media (pointer: coarse){
   .lg-main,
   .lg-main:hover,
   .lg-main.is-open{
-    --w: 56px !important;          /* width stays circular */
-    justify-content: center !important;  /* never shift left */
+    --w: 56px !important;          
+    justify-content: center !important;  
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 }
 
-
-/* === Fix 2025-09-11: Force hamburger always circular on touch devices === */
 @media (pointer: coarse){
   .lg-main,
   .lg-main.is-open,
@@ -1007,11 +966,6 @@ body.recruit-page{
   }
 }
 
-/* === Fix 2025-09-11: Teachers grid keep 3 cols also in landscape tablets === */
-
-
-
-/* === Fix 2025-09-11: Touch hamburger stays perfectly circular even when menu is open === */
 @media (pointer: coarse){
   .float-launchers .lg-main,
   .float-launchers .lg-main:hover,
@@ -1026,9 +980,9 @@ body.recruit-page{
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
-  /* other chips remain circles by default when menu opens; only widen on .is-open */
+  
   .float-launchers.is-show .lg-chip{ --w: 60px !important; }
-  .float-launchers .lg-chip svg{ display:block; } /* avoid baseline shift */
+  .float-launchers .lg-chip svg{ display:block; } 
   .float-launchers .lg-chip:not(.lg-main).is-open{
     --w: 172px !important;
     justify-content: flex-start !important;
@@ -1037,24 +991,12 @@ body.recruit-page{
   }
 }
 
-/* === Fix 2025-09-11: Teachers grid keeps 3 columns on tablet landscape === */
-
-/* Also ensure larger tablets (e.g., 1025??366px) don't collapse */
-
-
-/* Tabletï½žå¤§å¹³æ¿ï¼šå?å¸«è???grid ?€?¨å®¹?¨æ”¾å¯¬ï??¿å?å¤–è??Žå¤§ */
-
-
-  /* ?¡ç?æ¯”ä?ç¨å¾®?æ–¹ï¼Œè?è¦ºæ›´?Œæ?ä»½é???*/
+  
   .teacher-card{
     aspect-ratio: 3 / 4;
     grid-template-rows: 64% 1fr;
   }
 
-
-/* ===== LIQUID GLASS (integrated) ??2025-09-11 =====
-   iOS-like glossy transparent glass for .lg-chip; keep ::after for labels
-==================================================== */
 .float-launchers .lg-chip{
   background:
     radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.25), rgba(255,255,255,.02) 60%),
@@ -1088,27 +1030,26 @@ body.recruit-page{
     0 0 32px rgba(var(--glow, 41,115,255), .42);
 }
 
-/* entry/exit keyframes for mobile open/close */
 @keyframes lgIn   { from{opacity:0; transform: translateY(6px) scale(.98)} to{opacity:1; transform:none} }
 @keyframes lgOut  { from{opacity:1; transform:none} to{opacity:0; transform: translateY(6px) scale(.98)} }
 
 @media (pointer: coarse){
-  /* make sure hamburger shows by default on touch */
+  
   .float-launchers .lg-main{ opacity:1; transform:none; }
 
-  /* when closed, hide other chips */
+  
   .float-launchers:not(.is-show) .lg-chip:not(.lg-main){
     opacity:0; pointer-events:none; transform: translateY(6px) scale(.98);
   }
 
-  /* opening sequence */
+  
   .float-launchers.is-show .lg-chip{ animation: lgIn .26s cubic-bezier(.22,.61,.36,1) forwards; }
   .float-launchers.is-show .lg-chip:nth-of-type(2){ animation-delay: 40ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(3){ animation-delay: 80ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(4){ animation-delay:120ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(5){ animation-delay:160ms; }
 
-  /* closing sequence (JS adds .is-closing then removes is-show after anim) */
+  
   .float-launchers.is-closing .lg-chip{ animation: lgOut .22s ease forwards; }
   .float-launchers.is-closing .lg-chip:nth-of-type(2){ animation-delay: 0ms;  }
   .float-launchers.is-closing .lg-chip:nth-of-type(3){ animation-delay: 30ms; }
@@ -1116,13 +1057,9 @@ body.recruit-page{
   .float-launchers.is-closing .lg-chip:nth-of-type(5){ animation-delay: 90ms; }
 }
 
+.float-launchers .lg-chip{ --txt: rgba(15,23,42,.82); }               
+.float-launchers .lg-chip.is-open::after{ color: rgba(15,23,42,.72);} 
 
-/* === 2025-09-12: Liquid label color tuning === */
-.float-launchers .lg-chip{ --txt: rgba(15,23,42,.82); }               /* default label */
-.float-launchers .lg-chip.is-open::after{ color: rgba(15,23,42,.72);} /* opened: slightly lighter */
-
-
-/* === 2025-09-12: Touch transitions for real widen animation === */
 @media (pointer: coarse){
   .float-launchers .lg-chip{
     transition:
@@ -1131,9 +1068,9 @@ body.recruit-page{
       width .28s cubic-bezier(.22,.61,.36,1),
       border-radius .28s cubic-bezier(.22,.61,.36,1),
       padding .28s cubic-bezier(.22,.61,.36,1);
-    transform-origin: 90% 50%; /* feel like split from hamburger */
+    transform-origin: 90% 50%; 
   }
-  /* widen when armed */
+  
   .float-launchers .lg-chip:not(.lg-main).is-open{
     --w: 172px !important;
     padding-left: 18px !important;
@@ -1141,21 +1078,19 @@ body.recruit-page{
   }
 }
 
-
-/* === 2025-09-12: Bubble split/merge animation === */
 @keyframes bubbleOut { from{opacity:0; transform: translateY(10px) scale(.72)} to{opacity:1; transform:none} }
 @keyframes bubbleIn  { from{opacity:1; transform:none} to{opacity:0; transform: translateY(10px) scale(.72)} }
 
 @media (pointer: coarse){
-  /* Opening: chips pop out like bubbles (hamburger stays) */
+  
   .float-launchers.is-show .lg-chip:not(.lg-main){
     animation: bubbleOut .28s cubic-bezier(.22,.61,.36,1) both;
   }
-  /* Closing: chips merge back */
+  
   .float-launchers.is-closing .lg-chip:not(.lg-main){
     animation: bubbleIn .24s ease both;
   }
-  /* Stagger */
+  
   .float-launchers.is-show .lg-chip:nth-of-type(2),
   .float-launchers.is-closing .lg-chip:nth-of-type(5){ animation-delay: 40ms; }
   .float-launchers.is-show .lg-chip:nth-of-type(3),
@@ -1166,17 +1101,15 @@ body.recruit-page{
   .float-launchers.is-closing .lg-chip:nth-of-type(2){ animation-delay: 160ms; }
 }
 
-
-/* === Mobile/touch graceful close sequence & hamburger stability (2025-09-12) === */
 @media (pointer: coarse){
-  /* ?‹å??œé??‚ï??ˆè??‡å?æ·¡å‡ºï¼Œä?ç¶­æ?å¯¬åº¦ä¸€å°æ®µ?‚é?ï¼ˆç”± JS ç§»é™¤ .is-open å¾Œæ??¶å??å?ï¼?*/
+  
   .lg-chip.is-closing::after{
     opacity: 0;
     transform: translateX(6px);
     transition: opacity .12s ease, transform .12s ease;
   }
 
-  /* æ¼¢å ¡ä¸»é?ä¸è??ƒè?ä»»ä?æ·¡å…¥/æ·¡å‡º?–ä?ç§»ç??Žå ´ï¼Œé¿?é???*/
+  
   .float-launchers .lg-main{
     transition: none !important;
     opacity: 1 !important;
@@ -1190,10 +1123,6 @@ body.recruit-page{
   }
 }
 
-
-/* === Unified hero color overrides (non-index) ??2025-09-12 === */
-/* Ensure non-index pages (teachers/courses/achievements/faq) use the same darker title and softer subtitle,
-   regardless of earlier generic `.hero h1/.hero .sub` rules that are white for the index hero. */
 :is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) h1,
 :is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) .hero-title{
   color: var(--fg) !important;
@@ -1203,26 +1132,25 @@ body.recruit-page{
   color: var(--muted) !important;
 }
 
-/* === Header ?¨å??¢å??‚ï?ä¸­æ??¨ä??±æ??¨ä? === */
 @media (max-width: 600px) {
   .brand {
     display: grid;
-    grid-template-columns: auto 1fr; /* å·¦é? logoï¼Œå³?Šæ?å­?*/
-    grid-template-rows: auto auto;   /* ä¸Šï?ä¸­æ?ï¼Œä?ï¼šè‹±??*/
+    grid-template-columns: auto 1fr; 
+    grid-template-rows: auto auto;   
     column-gap: 10px;
     align-items: center;
   }
 
   .brand-logo {
-    grid-row: 1 / span 2; /* Logo ä½”å…©è¡?*/
+    grid-row: 1 / span 2; 
     align-self: center;
   }
 
   .brand-zh {
     grid-column: 2;
     grid-row: 1;
-    font-size: 1rem;   /* æ¯”å??¬å¤§ä¸€ç´?(ç´?0pxï¼Œå¯?èª¿?? */
-    margin-top: 6px;      /* å¾€ä¸‹å?ä¸€é»žé?ï¼Œé¿?å¤ªè²¼ä?ç·?*/
+    font-size: 1rem;   
+    margin-top: 6px;      
   }
 
   .brand-en {
@@ -1231,7 +1159,6 @@ body.recruit-page{
   }
 }
 
-/* --- Achievements page strict grid --- */
 #achievements-page .achievements-grid{
   display: grid !important;
   gap: 20px !important;
@@ -1257,28 +1184,16 @@ body.recruit-page{
   .year-card .blocks{ grid-template-columns: 1fr !important; }
 }
 
-/* --- Mobile safeguards --- */
 img, video, canvas{ max-width:100%; height:auto }
 .teachers-grid > *, .achievements-grid > *{ min-width:0 }
 html,body{ overflow-x:hidden }
 
-
-
-
-
-/* =========================================================
-   Achievements ??FINAL mobile tightening (2025-09-13)
-   Purpose: remove excessive side gaps on phones for cards.
-   ========================================================= */
-
-/* Phone layout: keep stacked inside card (you asked for mobile vertical) */
 @media (max-width: 680px){
   #achievements-page .year-card .blocks{ grid-template-columns: 1fr !important; }
 }
 
-/* Hard alignments for the cards section (phones) */
 @media (max-width: 680px){
-  /* Remove extra side paddings from the section and container */
+  
   #achievements-page .cards-panel{ padding-left: 0 !important; padding-right: 0 !important; }
   #achievements-page .cards-panel > .container{
     max-width: none !important;
@@ -1288,16 +1203,15 @@ html,body{ overflow-x:hidden }
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-  /* Make grid itself own the horizontal rhythm */
+  
   #achievements-page .cards-panel > .container > .achievements-grid{
     padding-left: 10px !important;
     padding-right: 10px !important;
     gap: 14px !important;
-    grid-template-columns: 1fr !important; /* single column */
+    grid-template-columns: 1fr !important; 
   }
 }
 
-/* Ultra-narrow phones: use 94% viewport width centered */
 @media (max-width: 520px){
   #achievements-page .cards-panel > .container > .achievements-grid{
     padding-left: 0 !important;
@@ -1308,15 +1222,14 @@ html,body{ overflow-x:hidden }
   }
 }
 
-/* Typography (phones) */
 @media (max-width: 680px){
-  /* Column titles larger & bolder */
+  
   #achievements-page .year-card .block h4{
     font-size: 18px !important;
     font-weight: 900 !important;
     letter-spacing: .01em;
   }
-  /* Item labels slightly smaller & stable */
+  
   #achievements-page .year-card .label{ font-size: 14.5px !important; }
   #achievements-page .year-card .row{ padding: 8px 0 !important; gap: 8px !important; }
 }
@@ -1328,48 +1241,27 @@ html,body{ overflow-x:hidden }
   }
 }
 
-/* ?‹æ?ï¼šä??ç¾?‰è¨­å®?*/
 @media (max-width: 520px){
   .profile-section .container{ padding-inline: clamp(16px,4.5vw,24px); }
   .profile{ margin-inline: 16px; }
 }
 
-/* å¹³æ¿ï¼?20pxï½?024px ä¹‹é?ä¹Ÿå??™ç™½ */
 @media (min-width: 521px) and (max-width: 1024px){
   .profile-section .container{ padding-inline: max(16px, 4vw); }
 }
 
-/* === 2025-09-13: Teachers grid responsive columns (mobile 2; tablet 3~4; desktop auto) === */
-/* Mobile: 2 columns */
-
-
-/* Tablet (narrow): 3 columns */
-
-
-/* Tablet (wide): 4 columns */
-
-
-/* Desktop and above: keep original flexible layout */
-
-
-/* å¹³æ¿ï¼?20pxï½?024px ?‚ï??™ç·´?½å¡å¢žå?å¤–è? */
 @media (min-width: 521px) and (max-width: 1024px){
   .profile-section .profile{
-    margin-inline: 20px; /* å·¦å³??20pxï¼Œå¯?èª¿å¤?*/
+    margin-inline: 20px; 
   }
 }
 
-
-/* === 2025-09-13: Single-scroll & hover-reveal scrollbars (scoped, minimal) === */
-/* 1) Single vertical scrollbar (cancel the early html,body{height:100%}) */
 html{ height: auto !important; }
 body{ min-height: 100% !important; }
 
-/* 2) Hide scrollbars until hovered (page & modal body) */
-/* Firefox */
 html, body, .overlay-body{ scrollbar-width: none; }
 html:hover, body:hover, .overlay-body:hover{ scrollbar-width: thin; }
-/* WebKit (Chrome/Edge/Safari) */
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 .overlay-body::-webkit-scrollbar{
@@ -1380,7 +1272,7 @@ body:hover::-webkit-scrollbar,
 .overlay-body:hover::-webkit-scrollbar{
   width: 10px; height: 10px;
 }
-/* Track/Thumb styling when visible */
+
 html:hover::-webkit-scrollbar-thumb,
 body:hover::-webkit-scrollbar-thumb,
 .overlay-body:hover::-webkit-scrollbar-thumb{
@@ -1395,9 +1287,6 @@ body:hover::-webkit-scrollbar-track,
   background: transparent;
 }
 
-/* === Teachers grid: Clean responsive rules === */
-
-/* Mobile: 2 columns */
 @media (max-width: 600px){
   .teachers-grid{
     grid-template-columns: repeat(2, 1fr) !important;
@@ -1405,7 +1294,6 @@ body:hover::-webkit-scrollbar-track,
   }
 }
 
-/* Tablet: 3 columns */
 @media (min-width: 601px) and (max-width: 1024px){
   .teachers-grid{
     grid-template-columns: repeat(3, 1fr) !important;
@@ -1413,7 +1301,6 @@ body:hover::-webkit-scrollbar-track,
   }
 }
 
-/* Desktop: 4 columns */
 @media (min-width: 1025px){
   .teachers-grid{
     grid-template-columns: repeat(4, 1fr) !important;
@@ -1421,41 +1308,25 @@ body:hover::-webkit-scrollbar-track,
   }
 }
 
-/* =========================================================
-   2025-09-14 ??Teachers page card side padding match Index
-   Goal: On phones, teacher cards use same horizontal inset
-         as index page coach cards (.profile-section).
-   ========================================================= */
 @media (max-width: 520px){
   .teachers-hero + .panel > .container{
     padding-inline: clamp(16px, 4.5vw, 24px) !important;
   }
 }
 
-
-/* =========================================================
-   2025-09-14 ??Teachers page unify side padding with Index
-   Scope: all containers inside teachers.html (body.teachers-page)
-   ========================================================= */
 @media (max-width: 520px){
   body.teachers-page .container{
     padding-inline: clamp(16px, 4.5vw, 24px) !important;
   }
 }
 
-
-/* =========================================================
-   2025-09-14 ??Teachers page HARD override (mobile)
-   Purpose: ensure teachers page side padding exactly matches
-   index coach cards; also neutralize earlier fallback margins.
-   ========================================================= */
 @media (max-width: 600px){
-  /* Ensure ALL sections on teachers page use the same inset */
+  
   body.teachers-page section.panel > .container{
     padding-left: clamp(16px, 4.5vw, 24px) !important;
     padding-right: clamp(16px, 4.5vw, 24px) !important;
   }
-  /* Neutralize any previous negative margins/paddings on the grid */
+  
   body.teachers-page .teachers-grid{
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -1464,26 +1335,18 @@ body:hover::-webkit-scrollbar-track,
   }
 }
 
-
-/* =========================================================
-   2025-09-14 ??Teachers page: mobile 2-col full-fill layout
-   On phones: two cards per row, spacing = side gaps + gap
-   ========================================================= */
 @media (max-width: 520px){
   body.teachers-page .teachers-grid{
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 14px !important;           /* ä¸­é??“è? */
-    padding-inline: 16px !important;/* å·¦å³?“è?ï¼Œè? index ä¸€??*/
+    gap: 14px !important;           
+    padding-inline: 16px !important;
   }
   body.teachers-page .teacher-card{
-    width: 100% !important; /* æ¯å¼µ?¡è‡ª?•å¡«æ»?grid æ¬?*/
+    width: 100% !important; 
   }
 }
 
-
-/* === 2025-09-14: Performance & Mobile Hamburger final locks === */
-/* 1) Composite layer + layout containment for smoother frames */
 .float-launchers{ contain: layout style; }
 .float-launchers .lg-chip{
   will-change: transform, opacity, width;
@@ -1492,7 +1355,6 @@ body:hover::-webkit-scrollbar-track,
           backface-visibility: hidden;
 }
 
-/* 2) Mobile hamburger: absolutely no animations or transitions */
 @media (pointer: coarse){
   .float-launchers .lg-main,
   .float-launchers .lg-main *{
@@ -1501,52 +1363,47 @@ body:hover::-webkit-scrollbar-track,
   }
 }
 
-/* ?åˆ¶ FAQ ?‡å?è¦†å¡?‡ç?å¯¬åº¦ï¼Œä¸¦ç¢ºä?å°èž¢å¹•æ??Šè? */
 .faq-page .faq-item,
 .faq-page .faq-form-wrapper {
   width: 100%;
-  max-width: 720px;   /* æ¡Œæ??‚å¡?‡ä??ƒé?å¯¬æ??Žç? */
-  margin: 0 auto 20px auto; /* ç½®ä¸­ï¼Œå??¨å??“è? */
+  max-width: 720px;   
+  margin: 0 auto 20px auto; 
   box-sizing: border-box;
   padding-left: 12px;
   padding-right: 12px;
 }
 
-/* === Scrollbar Custom === */
 html::-webkit-scrollbar {
-  width: 10px;              /* ?²è»¸å¯¬åº¦ */
+  width: 10px;              
 }
 
 html::-webkit-scrollbar-track {
-  background: transparent;  /* è»Œé??æ?ï¼Œç??¼æ??‰æ??•æ? */
+  background: transparent;  
 }
 
 html::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.35); /* é»‘è‰²?Šé€æ?å¡Šï??¯æ”¹?ä??œæ­¡?„é??²ï? */
-  border-radius: 9999px;        /* ?“è?ï¼Œè?è¦ºä??´ç´°ç·?*/
-  border: none;                 /* ç§»é™¤? æ??Œç™½?Šã€ç??Šæ? */
+  background: rgba(0,0,0,0.35); 
+  border-radius: 9999px;        
+  border: none;                 
 }
 
-/* Firefox */
 html {
-  scrollbar-width: thin;        /* çª„æ?å¡?*/
-  scrollbar-color: rgba(0,0,0,0.35) transparent; /* æ»‘å??Šé€æ? + è»Œé??æ? */
+  scrollbar-width: thin;        
+  scrollbar-color: rgba(0,0,0,0.35) transparent; 
 }
 
-
-/* Footer links ?€å¡?*/
 .footer-links {
   display: flex;
   justify-content: center;
   gap: 28px;
   margin-bottom: 10px;
-  flex-wrap: wrap; /* ?‹æ??ªå??›è? */
+  flex-wrap: wrap; 
 }
 
 .footer-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px; /* ?–ç¤º?‡æ?å­—é?è·?*/
+  gap: 8px; 
   text-decoration: none;
   color: var(--fg);
   font-weight: 600;
@@ -1566,12 +1423,10 @@ html {
   display: block;
 }
 
-
-/* === Footer layout (links + copyright) ??keeps links together === */
 .site-footer .footer-bar{
   display: flex;
-  flex-wrap: wrap;              /* ?è¨±?ªå??›è? */
-  justify-content: center;      /* ?´é?ç½®ä¸­ */
+  flex-wrap: wrap;              
+  justify-content: center;      
   align-items: center;
   gap: clamp(16px, 3vw, 28px);
   text-align: center;
@@ -1581,11 +1436,10 @@ html {
   display: inline-flex;
   align-items: center;
   gap: clamp(14px, 3vw, 28px);
-  flex-wrap: nowrap;            /* ?¡ç¶²??YouTube ä¸æ?è¡?*/
+  flex-wrap: nowrap;            
   white-space: nowrap;
 }
 
-/* ä¿è??ˆæ?ä¹Ÿé€²å…¥ flex å°é??ºç? */
 .footer-legal{
   display: flex;
   align-items: center;
@@ -1593,13 +1447,11 @@ html {
   color: var(--muted);
 }
 
-/* icon ("å¾½ç?") a bit larger */
 .footer-icon{
-  width: 30px;   /* å¾?22px -> 26px */
+  width: 30px;   
   height: 30px;
 }
 
-/* touch target & visual rhythm */
 .footer-link{
   padding: 6px 8px;
   border-radius: 10px;
@@ -1695,55 +1547,45 @@ html {
   }
 }
 
-/* When space is tight, allow copyright to wrap to next line naturally.
-   The last item (.footer-legal) will go to the next flex line. No extra rules needed.
-*/
-
-/* === Optical alignment fix for footer legal text === */
 .footer-legal {
-  transform: translateY(-2px); /* å¾®èª¿?ˆæ??‡å?ï¼Œè?å­—ç?ä¸­ç??‡é€??å°é? */
+  transform: translateY(-2px); 
 }
 
-/* ===== Tablet fluid grid like mobile (821??024px) ===== */
 @media (min-width: 821px) and (max-width: 1024px){
 
-  /* 1) ?ˆå??Šç?ï¼šè??‹æ??è¼¯?¸å?ï¼Œå??Šå·¦?³å??¨é??Œå?æ­?*/
+  
   body.teachers-page .teachers-hero > .container,
   body.teachers-page .panel > .container{
-    /* ?‡ä??‹æ??¨ç? inline è¦å?ä¸€?´ï??ºå?å·¦å³?§è?ï¼Œå?è®“å…§å®¹è‡ª??*/
+    
     padding-left: clamp(16px, 4.5vw, 28px);
     padding-right: clamp(16px, 4.5vw, 28px);
   }
 
-  /* 2) ?¡ç??“è?ï¼šå›ºå®?gapï¼Œå…¶é¤˜å¯¬åº¦äº¤çµ¦å¡?‡å¡«æ»?*/
+  
   body.teachers-page .teachers-grid{
-    gap: 20px; /* ?‡ç¾?‰è¨­è¨ˆä???*/
-    /* ??auto-fit + minmaxï¼Œå??‹æ?ä¸€æ¨???•ï??½å?å¹¾æ?å°±å?å¹¾æ? */
+    gap: 20px; 
+    
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    /* ?²æ­¢å¤–æº¢? æ??´é??¯å·¦?³æ? */
+    
     margin-left: 0; margin-right: 0;
     padding-left: 0; padding-right: 0;
   }
 
-  /* 3) ?¡ç??¬é?ä¸æ”¹?•å?è§€ï¼Œåªç¢ºä?ä¸æ??ºå®¹??*/
+  
   body.teachers-page .teacher-card{ max-width: 100%; }
 }
 
-/* ?¥ä??„ç¬¬äºŒå?ï¼ˆå¸«è³‡å?è¡¨ï???.panel æ»¿ç?é«˜ï?å¹³æ¿?ˆæ”¹?žè‡ª?¶é?åº?*/
 @media (min-width: 821px) and (max-width: 1024px){
   body.teachers-page .panel:nth-of-type(2){
     min-height: auto;
     scroll-snap-align: none;
     scroll-snap-stop: auto;
     display: block;
-    padding-top: calc(12px + 56px); /* ?‡ç¾??.panel.is-auto å°é? */
+    padding-top: calc(12px + 56px); 
     padding-bottom: 16px;
   }
 }
 
-
-/* === PATCH: Teachers page strict layout rhythm (2025-09-18) === */
-/* Base safety: prevent panel centering from shrinking containers on Teachers page */
 body.teachers-page section.panel:not(.teachers-hero){
   display: block !important;
   min-height: auto;
@@ -1751,7 +1593,6 @@ body.teachers-page section.panel:not(.teachers-hero){
   scroll-snap-stop: auto;
 }
 
-/* Ensure the container stretches full width and owns the side padding */
 body.teachers-page section.panel > .container{
   width: 100% !important;
   max-width: none !important;
@@ -1761,29 +1602,24 @@ body.teachers-page section.panel > .container{
   box-sizing: border-box;
 }
 
-/* Grid owns the internal gaps; leave 20px side padding to the container */
 body.teachers-page .teachers-grid{
   display: grid !important;
   gap: 15px !important;
 }
 
-/* Tablet portrait: 3 columns */
 @media (min-width: 601px) and (max-width: 1023px){
   body.teachers-page .teachers-grid{
     grid-template-columns: repeat(3, 1fr) !important;
   }
 }
 
-/* Landscape tablet and up: 4 columns */
 @media (min-width: 1024px){
   body.teachers-page .teachers-grid{
     grid-template-columns: repeat(4, 1fr) !important;
   }
   body.teachers-page .teacher-card{ width: 100% !important; }
 }
-/* === END PATCH === */
 
-/* === Inner-page Hero: shared viewport layout === */
 :root { --header-h: 56px; }
 :root { --inner-hero-nudge-desktop: -45px; }
 :root { --inner-hero-nudge-mobile: -20px; }
@@ -1798,10 +1634,9 @@ body.teachers-page .teachers-grid{
   display: grid;
   place-items: center;
   padding-top: var(--header-h);
-  padding-bottom: 24px;       /* ä¿ç?ä¸‹ç·£ç¯€å¥?*/
+  padding-bottom: 24px;       
 }
 
-/* ?¥è?ç½®ä??¯æ´ dvhï¼Œå°±?€?žä½¿??svh */
 @supports not (height: 100dvh) {
   .teachers-hero,
   .achievements-hero,
@@ -1811,7 +1646,6 @@ body.teachers-page .teachers-grid{
   }
 }
 
-/* ä¿éšªï¼šè?ä¸‹ä??€ç·Šè²¼ï¼Œä?é¡å?å¤–è? */
 body.teachers-page .teachers-hero + .panel {
   margin-top: 0;
 }
@@ -1845,7 +1679,6 @@ body.teachers-page .teachers-hero + .panel {
   letter-spacing: .02em;
 }
 
-/* === Teachers mobile final spacing patch (phones only) === */
 @media (max-width: 600px){
   body.teachers-page section.panel > .container{
     padding-left: 16px !important;
@@ -1882,20 +1715,19 @@ body.teachers-page .teachers-hero + .panel {
   font-size: 0.7rem;
   opacity: 0.8;
   margin-top: 0.25rem;
-  text-align: center;      /* ?”¸è®“å…§å®¹ç½®ä¸?*/
-  display: block;          /* ?”¸ç¢ºä??´è??¨ç? */
-  width: 100%;             /* ?”¸ä½”æ»¿ footer å¯¬åº¦ */
+  text-align: center;      
+  display: block;          
+  width: 100%;             
 }
 
 .site-meta span {
-  display: inline-block;   /* ?”¸è®“ä??¶è??´æ–°?¨å?ä¸€è¡?*/
+  display: inline-block;   
 }
 
 .site-meta .divider {
   margin: 0 0.5em;
 }
 
-/* === Footer final row layout patch === */
 .site-footer .footer-bar{
   display: grid !important;
   grid-template-columns: 1fr !important;
@@ -1930,5 +1762,4 @@ body.teachers-page .teachers-hero + .panel {
     white-space: nowrap !important;
   }
 }
-
 
