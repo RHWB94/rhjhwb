@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" translate="no">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>錄入端 - 仁和管樂</title>
@@ -442,11 +443,12 @@
             }); // end onValue
         } // end enterSystem
 
-        // 更新下拉選單 (依姓名排序)
         // 更新下拉選單 (依姓名排序並支援篩選)
-        function updateDropdown(query = '') {
+        let lastDropdownHTML = "";
+        function updateDropdown() {
             const dropdown = document.getElementById('name-dropdown');
             const currentVal = dropdown.value;
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
 
             let filtered = [...allStudents].map((s, idx) => ({ ...s, idx }));
             if (query) {
@@ -456,31 +458,23 @@
 
             filtered.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
 
-            dropdown.innerHTML = '<option value="">選擇學生...</option>' +
+            const newHTML = '<option value="">選擇學生...</option>' +
                 filtered.map(s => `<option value="${s.idx}">${s.name} (${s.school || '無'})</option>`).join('');
 
-            if (Array.from(dropdown.options).some(opt => opt.value === String(currentVal))) {
-                dropdown.value = currentVal;
+            // 只有當選項實際改變才更新 DOM，避免選單在使用中被重置跳針
+            if (lastDropdownHTML !== newHTML) {
+                lastDropdownHTML = newHTML;
+                dropdown.innerHTML = newHTML;
+
+                if (Array.from(dropdown.options).some(opt => opt.value === String(currentVal))) {
+                    dropdown.value = currentVal;
+                }
             }
         }
 
         // 搜尋鍵盤輸入：只篩選不強制選擇
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const val = e.target.value.trim().toLowerCase();
-            updateDropdown(val);
-        });
-
-        // 實際選擇下拉選項時：鎖定學生並恢復所有選項
-        document.getElementById('name-dropdown').addEventListener('change', (e) => {
-            if (e.target.value !== "") {
-                const selectedVal = e.target.value;
-                selectStudent(parseInt(selectedVal));
-
-                // 清空搜尋並且重繪清單，讓其他人也跑出來
-                document.getElementById('search-input').value = '';
-                updateDropdown();
-                document.getElementById('name-dropdown').value = selectedVal;
-            }
+        document.getElementById('search-input').addEventListener('input', () => {
+            updateDropdown();
         });
         document.getElementById('inst-select').addEventListener('change', () => {
             resetActionButtons();

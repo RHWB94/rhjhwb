@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" translate="no">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>仁和國中第24屆管樂團樂器挑選</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -160,6 +161,10 @@
         }
 
         .is-full .card-liquid-wave {
+            display: none;
+        }
+
+        .is-empty .card-liquid-wave {
             display: none;
         }
 
@@ -1661,7 +1666,17 @@
         function renderStudents() {
             const grid = document.getElementById('student-grid');
             const empty = document.getElementById('empty-state');
-            grid.innerHTML = '';
+            
+            // 判斷是否可以做 Soft Update (避免重繪 DOM 導致動畫閃爍中斷)
+            const existingCards = Array.from(grid.children);
+            const canSoftUpdate = existingCards.length > 0 &&
+                                  existingCards.length === students.length &&
+                                  existingCards.every((c, i) => c.dataset.studentId === String(students[i].id)) &&
+                                  !isEditMode && !isGodMode && currentTextEditingIndex === null;
+
+            if (!canSoftUpdate) {
+                grid.innerHTML = '';
+            }
 
             if (students.length > 0) {
                 grid.classList.remove('hidden');
@@ -1674,25 +1689,24 @@
                 else if (count > 40) { cols = 8; fontSize = 'text-base'; padding = 'p-1.5'; }
                 else if (count > 20) { cols = 6; fontSize = 'text-lg'; padding = 'p-2'; }
 
-                grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+                if (!canSoftUpdate) {
+                    grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+                }
 
                 let totalStages = 0;
                 let completedStages = 0;
 
                 students.forEach((s, index) => {
                     const isTextEditing = (index === currentTextEditingIndex);
-                    const card = document.createElement('div');
 
                     let completedCount = 0;
                     if (s.scores) {
                         const hasPitch = !!s.scores['音感'] || !!s.scores[encodeURIComponent('音感')];
                         const hasSight = !!s.scores['視譜'] || !!s.scores[encodeURIComponent('視譜')];
-                        // 扣掉音感與視譜後，計算剩餘樂器的數量
                         completedCount = Object.keys(s.scores).filter(k => {
                             const dec = decodeURIComponent(k);
                             return dec !== '音感' && dec !== '視譜';
                         }).length;
-                        // 若音感與視譜皆有分數，則總關卡 +1
                         if (hasPitch && hasSight) completedCount += 1;
                     }
                     totalStages += REQUIRED_STAGES;
@@ -1702,66 +1716,92 @@
 
                     const isSelectedGodMode = (isGodMode && currentGodModeIndex === index);
 
-                    card.className = `student-card border-2 ${padding} rounded-lg shadow-sm flex flex-col items-center justify-center transition-all overflow-hidden ${isAllFinished ? 'border-yellow-400 ring-2 ring-yellow-400 z-10' : 'border-gray-200'} ${isTextEditing ? 'is-editing-text ring-2 ring-blue-400 z-50 bg-white' : ''} ${completedCount > 0 ? 'has-progress' : ''} ${isGodMode ? `god-mode-fire-bg ${isSelectedGodMode ? 'ring-4 ring-red-500 border-red-500/0 scale-[1.05] shadow-red-200 shadow-2xl z-40 cursor-pointer' : 'cursor-pointer ring-4 ring-purple-400/30 border-purple-400/0 scale-[1.02] shadow-purple-200 shadow-xl z-20'}` : ''}`;
+                    const cardClassName = `student-card border-2 ${padding} rounded-lg shadow-sm flex flex-col items-center justify-center transition-all overflow-hidden ${isAllFinished ? 'border-yellow-400 ring-2 ring-yellow-400 z-10' : 'border-gray-200'} ${isTextEditing ? 'is-editing-text ring-2 ring-blue-400 z-50 bg-white' : ''} ${completedCount > 0 ? 'has-progress' : ''} ${isGodMode ? `god-mode-fire-bg ${isSelectedGodMode ? 'ring-4 ring-red-500 border-red-500/0 scale-[1.05] shadow-red-200 shadow-2xl z-40 cursor-pointer' : 'cursor-pointer ring-4 ring-purple-400/30 border-purple-400/0 scale-[1.02] shadow-purple-200 shadow-xl z-20'}` : ''}`;
 
-                    // Clear previous handlers
-                    card.ondblclick = null;
-                    card.onclick = null;
-                    card.onmouseenter = null;
-                    card.onmouseleave = null;
-
-                    if (isGodMode) {
-                        card.ondblclick = (e) => { e.stopPropagation(); hideStudentTooltip(); openGodModePopup(index, e); };
-                        card.onclick = (e) => { hideStudentTooltip(); };
-                    } else if (!isEditMode && !settlementState.isOpen && currentStatus !== 'setup') {
-                        card.onmouseenter = (e) => {
-                            clearTimeout(hoverTooltipTimeout);
-                            const cardEl = e.currentTarget;
-                            hoverTooltipTimeout = setTimeout(() => showStudentTooltip(index, cardEl), HOVER_DELAY_MS);
-                        };
-                        card.onmouseleave = hideStudentTooltip;
-                        card.onclick = hideStudentTooltip;
-                    }
-
-                    // 液體色彩漸層：Blue (59, 130, 246) 到 Green (34, 197, 94)
                     const progressRatio = progressPercent / 100;
                     const r = Math.round(59 + (34 - 59) * progressRatio);
                     const g = Math.round(130 + (197 - 130) * progressRatio);
                     const b = Math.round(246 + (94 - 246) * progressRatio);
-                    // 滿點時綠色更加濃烈，未滿時保持半透明讓波浪較清透
                     const liquidColor = isAllFinished ? 'rgba(34, 197, 94, 0.85)' : `rgba(${r}, ${g}, ${b}, 0.28)`;
 
-                    const liquidHTML = completedCount > 0 ? `
-                        <div class="card-liquid ${isAllFinished ? 'is-full' : ''}" style="--fill-level: ${progressPercent}%; --liquid-color: ${liquidColor};">
-                            <div class="card-liquid-wave"></div>
-                        </div>
-                    ` : '';
+                    if (canSoftUpdate) {
+                        const card = existingCards[index];
+                        card.className = cardClassName;
+                        
+                        const liquidEl = card.querySelector('.card-liquid');
+                        if (liquidEl) {
+                            liquidEl.style.setProperty('--fill-level', `${progressPercent}%`);
+                            liquidEl.style.setProperty('--liquid-color', liquidColor);
+                            if (isAllFinished) liquidEl.classList.add('is-full');
+                            else liquidEl.classList.remove('is-full');
+                            
+                            if (completedCount === 0) liquidEl.classList.add('is-empty');
+                            else liquidEl.classList.remove('is-empty');
+                        }
 
-                    if (isTextEditing) {
-                        card.innerHTML = `
-                            <button onclick="saveStudentTextChanges(${index})" class="absolute top-1 left-1 bg-emerald-600 text-white w-6 h-6 rounded-full flex items-center justify-center z-30 shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
-                            </button>
-                            <input type="text" id="edit-school-${index}" class="edit-input text-[9px] mb-1" value="${s.school}">
-                            <input type="text" id="edit-name-${index}" class="edit-input font-bold ${fontSize}" value="${s.name}">
-                        `;
-                    } else {
-                        card.innerHTML = `
-                            ${liquidHTML}
-                            ${(isEditMode && !isGodMode) ? `
-                                <button onclick="deleteStudent(event, ${index})" class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center z-30">✕</button>
-                                <button onclick="startStudentTextEdit(event, ${index})" class="absolute top-1 left-1 bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center z-30">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </button>` : ''}
-                            <div class="card-content flex flex-col items-center w-full ${isGodMode ? 'pointer-events-none' : ''}">
+                        const contentEl = card.querySelector('.card-content');
+                        if (contentEl) {
+                            contentEl.innerHTML = `
                                 <span class="adjustable-school ${isAllFinished ? 'text-emerald-50' : 'text-gray-500'} font-medium truncate w-full text-center">${s.school}</span>
-                                 <span class="adjustable-name-${fontSize.replace('text-', '')} ${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10">${s.name}</span>
+                                <span class="adjustable-name-${fontSize.replace('text-', '')} ${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10">${s.name}</span>
                                 <span class="text-[9px] mt-0.5 font-bold relative z-10 ${isAllFinished ? 'text-yellow-200' : (completedCount > 0 ? 'text-blue-600' : 'invisible')}">${completedCount}/${REQUIRED_STAGES}</span>
+                            `;
+                        }
+                    } else {
+                        const card = document.createElement('div');
+                        card.dataset.studentId = s.id; // 新增 dataset
+                        card.className = cardClassName;
+
+                        card.ondblclick = null;
+                        card.onclick = null;
+                        card.onmouseenter = null;
+                        card.onmouseleave = null;
+
+                        if (isGodMode) {
+                            card.ondblclick = (e) => { e.stopPropagation(); hideStudentTooltip(); openGodModePopup(index, e); };
+                            card.onclick = (e) => { hideStudentTooltip(); };
+                        } else if (!isEditMode && !settlementState.isOpen && currentStatus !== 'setup') {
+                            card.onmouseenter = (e) => {
+                                clearTimeout(hoverTooltipTimeout);
+                                const cardEl = e.currentTarget;
+                                hoverTooltipTimeout = setTimeout(() => showStudentTooltip(index, cardEl), HOVER_DELAY_MS);
+                            };
+                            card.onmouseleave = hideStudentTooltip;
+                            card.onclick = hideStudentTooltip;
+                        }
+
+                        // 強制生成液體動畫元素 (即使進度為0 也生成給予變數)
+                        const liquidHTML = `
+                            <div class="card-liquid ${isAllFinished ? 'is-full' : ''} ${completedCount === 0 ? 'is-empty' : ''}" style="--fill-level: ${progressPercent}%; --liquid-color: ${liquidColor};">
+                                <div class="card-liquid-wave"></div>
                             </div>
                         `;
-                        // 滿水位的背景色現在由 card-liquid 完全負責，不再需要手動覆蓋卡片背景色
+
+                        if (isTextEditing) {
+                            card.innerHTML = `
+                                <button onclick="saveStudentTextChanges(${index})" class="absolute top-1 left-1 bg-emerald-600 text-white w-6 h-6 rounded-full flex items-center justify-center z-30 shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                                </button>
+                                <input type="text" id="edit-school-${index}" class="edit-input text-[9px] mb-1" value="${s.school}">
+                                <input type="text" id="edit-name-${index}" class="edit-input font-bold ${fontSize}" value="${s.name}">
+                            `;
+                        } else {
+                            card.innerHTML = `
+                                ${liquidHTML}
+                                ${(isEditMode && !isGodMode) ? `
+                                    <button onclick="deleteStudent(event, ${index})" class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center z-30">✕</button>
+                                    <button onclick="startStudentTextEdit(event, ${index})" class="absolute top-1 left-1 bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center z-30">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                    </button>` : ''}
+                                <div class="card-content flex flex-col items-center w-full ${isGodMode ? 'pointer-events-none' : ''}">
+                                    <span class="adjustable-school ${isAllFinished ? 'text-emerald-50' : 'text-gray-500'} font-medium truncate w-full text-center">${s.school}</span>
+                                     <span class="adjustable-name-${fontSize.replace('text-', '')} ${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10">${s.name}</span>
+                                    <span class="text-[9px] mt-0.5 font-bold relative z-10 ${isAllFinished ? 'text-yellow-200' : (completedCount > 0 ? 'text-blue-600' : 'invisible')}">${completedCount}/${REQUIRED_STAGES}</span>
+                                </div>
+                            `;
+                        }
+                        grid.appendChild(card);
                     }
-                    grid.appendChild(card);
                 });
 
                 // 全域背景動態特效 (Ambient Blobs)
