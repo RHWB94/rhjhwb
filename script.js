@@ -296,6 +296,31 @@ document.addEventListener('keydown', (event) => {
   const page = document.body;
   if (!page || !page.classList.contains('recruit-page')) return;
 
+  const lockMobileZoom = () => {
+    if (!window.matchMedia || !window.matchMedia('(pointer: coarse)').matches) return;
+
+    const preventGesture = (event) => {
+      if (event.cancelable) event.preventDefault();
+    };
+    const preventMultiTouch = (event) => {
+      if (event.touches && event.touches.length > 1 && event.cancelable) event.preventDefault();
+    };
+
+    document.addEventListener('touchmove', preventMultiTouch, { passive: false });
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach((type) => {
+      document.addEventListener(type, preventGesture, { passive: false });
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300 && event.cancelable) event.preventDefault();
+      lastTouchEnd = now;
+    }, { passive: false });
+  };
+
+  lockMobileZoom();
+
   const bindEmbed = (selector, src, emptyText) => {
     const host = document.querySelector(selector);
     if (!host) return;
