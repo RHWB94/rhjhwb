@@ -243,7 +243,7 @@ document.addEventListener('keydown', (event) => {
 //vrecruit開關這在，true是開false是關，href是連結，image是圖片路徑，alt是替代文字，desktop和mobile分別是桌面和行動裝置的樣式設定
 (() => {
   const config = {
-    enabled: true,
+    enabled: false,
     href: 'recruit.html',
     image: 'assets/recruit.png',
     alt: '新生招生報名入口',
