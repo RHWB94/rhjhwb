@@ -2158,16 +2158,39 @@
         }
 
         function exportSettlementResults() {
+            function groupedInstrumentScoreToDisplay(student, inst) {
+                if (!student || !student.scores) return '未登記';
+                const raw = student.scores[inst] ?? student.scores[encodeURIComponent(inst)];
+                const v = String(raw || '').trim().toLowerCase();
+                if (v === 'star') return '⭐';
+                if (v === 'circle') return '○';
+                if (v === 'triangle') return '△';
+                return '未登記';
+            }
+            function specialScoreToDisplay(student, key) {
+                if (!student || !student.scores) return '無';
+                const raw = student.scores[key] ?? student.scores[encodeURIComponent(key)];
+                if (raw === null || raw === undefined || String(raw).trim() === '') return '無';
+                return String(raw).trim();
+            }
+
             const data = [];
             DETAILED_INSTRUMENTS.forEach(inst => {
                 const studentIds = settlementState.assignments[inst] || [];
                 studentIds.forEach(id => {
                     const student = findStudentById(id);
                     if (student) {
-                        data.push({
-                            "姓名": student.name,
+                        const row = {
+                            "姓名": student.name || '',
+                            "畢業國小": student.school || '',
                             "分配樂器": inst
+                        };
+                        INSTRUMENTS.forEach((gi) => {
+                            row[gi] = groupedInstrumentScoreToDisplay(student, gi);
                         });
+                        row["音感"] = specialScoreToDisplay(student, '音感');
+                        row["視譜"] = specialScoreToDisplay(student, '視譜');
+                        data.push(row);
                     }
                 });
             });
