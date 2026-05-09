@@ -12,6 +12,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="./firebase-config.js"></script>
 
     <style>
         html,
@@ -1085,15 +1086,10 @@
 
     <script>
         // 1. 初始化 Firebase (使用 Compat 寫法)
-        const firebaseConfig = {
-            apiKey: "AIzaSyAVmQaD3viLkaUYr2IJPRV_3HHDG29jICI",
-            authDomain: "rhwbnewbie.firebaseapp.com",
-            databaseURL: "https://rhwbnewbie-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "rhwbnewbie",
-            storageBucket: "rhwbnewbie.firebasestorage.app",
-            messagingSenderId: "65957218510",
-            appId: "1:65957218510:web:9a5dec94bc81d578ca689f"
-        };
+        const firebaseConfig = window.RHWB_FIREBASE_CONFIG;
+        if (!firebaseConfig) {
+            throw new Error("Missing Firebase config. Create Newbie/firebase-config.js from firebase-config.example.js.");
+        }
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
