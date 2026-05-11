@@ -1658,6 +1658,26 @@
             });
         }
 
+        // 與「硬重繪」分支一致：依目前狀態掛上／清除學生卡片的 hover、上帝模式等行為
+        function syncStudentCardPointerHandlers(card, studentIndex) {
+            card.ondblclick = null;
+            card.onclick = null;
+            card.onmouseenter = null;
+            card.onmouseleave = null;
+            if (isGodMode) {
+                card.ondblclick = (e) => { e.stopPropagation(); hideStudentTooltip(); openGodModePopup(studentIndex, e); };
+                card.onclick = (e) => { hideStudentTooltip(); };
+            } else if (!isEditMode && !settlementState.isOpen && currentStatus !== 'setup') {
+                card.onmouseenter = (e) => {
+                    clearTimeout(hoverTooltipTimeout);
+                    const cardEl = e.currentTarget;
+                    hoverTooltipTimeout = setTimeout(() => showStudentTooltip(studentIndex, cardEl), HOVER_DELAY_MS);
+                };
+                card.onmouseleave = hideStudentTooltip;
+                card.onclick = hideStudentTooltip;
+            }
+        }
+
         // 5. 畫面渲染邏輯
         function renderStudents() {
             const grid = document.getElementById('student-grid');
@@ -1665,10 +1685,12 @@
             
             // 判斷是否可以做 Soft Update (避免重繪 DOM 導致動畫閃爍中斷)
             const existingCards = Array.from(grid.children);
+            const domAllowsSoft = existingCards.every((c) => c.querySelector('.card-content') && !c.querySelector('.edit-input'));
             const canSoftUpdate = existingCards.length > 0 &&
                                   existingCards.length === students.length &&
                                   existingCards.every((c, i) => c.dataset.studentId === String(students[i].id)) &&
-                                  !isEditMode && !isGodMode && currentTextEditingIndex === null;
+                                  !isEditMode && !isGodMode && currentTextEditingIndex === null &&
+                                  domAllowsSoft;
 
             if (!canSoftUpdate) {
                 grid.innerHTML = '';
@@ -1723,14 +1745,16 @@
                     if (canSoftUpdate) {
                         const card = existingCards[index];
                         card.className = cardClassName;
-                        
+                        // 離開編輯名單模式時會走軟更新路徑，必須清掉先前插入的編輯按鈕（否則 ✕／鉛筆會殘留）
+                        card.querySelector('.student-card-edit-actions')?.remove();
+
                         const liquidEl = card.querySelector('.card-liquid');
                         if (liquidEl) {
                             liquidEl.style.setProperty('--fill-level', `${progressPercent}%`);
                             liquidEl.style.setProperty('--liquid-color', liquidColor);
                             if (isAllFinished) liquidEl.classList.add('is-full');
                             else liquidEl.classList.remove('is-full');
-                            
+
                             if (completedCount === 0) liquidEl.classList.add('is-empty');
                             else liquidEl.classList.remove('is-empty');
                         }
@@ -1743,28 +1767,14 @@
                                 <span class="text-[9px] mt-0.5 font-bold relative z-10 ${isAllFinished ? 'text-yellow-200' : (completedCount > 0 ? 'text-blue-600' : 'invisible')}">${completedCount}/${REQUIRED_STAGES}</span>
                             `;
                         }
+                        // 編輯名單時建立的卡片未掛 hover；軟更新離開編輯後須補上，否則提示框失效
+                        syncStudentCardPointerHandlers(card, index);
                     } else {
                         const card = document.createElement('div');
                         card.dataset.studentId = s.id; // 新增 dataset
                         card.className = cardClassName;
 
-                        card.ondblclick = null;
-                        card.onclick = null;
-                        card.onmouseenter = null;
-                        card.onmouseleave = null;
-
-                        if (isGodMode) {
-                            card.ondblclick = (e) => { e.stopPropagation(); hideStudentTooltip(); openGodModePopup(index, e); };
-                            card.onclick = (e) => { hideStudentTooltip(); };
-                        } else if (!isEditMode && !settlementState.isOpen && currentStatus !== 'setup') {
-                            card.onmouseenter = (e) => {
-                                clearTimeout(hoverTooltipTimeout);
-                                const cardEl = e.currentTarget;
-                                hoverTooltipTimeout = setTimeout(() => showStudentTooltip(index, cardEl), HOVER_DELAY_MS);
-                            };
-                            card.onmouseleave = hideStudentTooltip;
-                            card.onclick = hideStudentTooltip;
-                        }
+                        syncStudentCardPointerHandlers(card, index);
 
                         // 強制生成液體動畫元素 (即使進度為0 也生成給予變數)
                         const liquidHTML = `
@@ -1785,10 +1795,12 @@
                             card.innerHTML = `
                                 ${liquidHTML}
                                 ${(isEditMode && !isGodMode) ? `
+                                    <div class="student-card-edit-actions">
                                     <button onclick="deleteStudent(event, ${index})" class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center z-30">✕</button>
                                     <button onclick="startStudentTextEdit(event, ${index})" class="absolute top-1 left-1 bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center z-30">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                    </button>` : ''}
+                                    </button>
+                                    </div>` : ''}
                                 <div class="card-content flex flex-col items-center w-full ${isGodMode ? 'pointer-events-none' : ''}">
                                     <span class="adjustable-school ${isAllFinished ? 'text-emerald-50' : 'text-gray-500'} font-medium truncate w-full text-center">${s.school}</span>
                                      <span class="adjustable-name-${fontSize.replace('text-', '')} ${fontSize} font-bold ${isAllFinished ? 'text-white' : (completedCount > 0 ? 'text-blue-800' : 'text-gray-800')} truncate w-full text-center tracking-wide drop-shadow-sm relative z-10">${s.name}</span>
@@ -2457,6 +2469,16 @@
         }
 
         window.onload = () => {
+            const adminPassInput = document.getElementById('admin-pass-input');
+            if (adminPassInput) {
+                adminPassInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        verifyAdmin();
+                    }
+                });
+            }
+
             const isVerified = sessionStorage.getItem('admin_verified') === 'true';
 
             if (isVerified) {
