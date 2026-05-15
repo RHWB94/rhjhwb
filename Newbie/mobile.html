@@ -187,15 +187,16 @@
         const db = getDatabase(app);
         let allStudents = [];
         let selectedIndex = null;
+        let selectedStudentId = null;
         let pendingScoreType = null;
         let pendingSpecial = { pitch: null, sight: null };
         // 音感/視譜修改流程狀態
         let specialEditMode = false; // 進入修改後才允許選值並送出
         let specialEditDraft = { pitch: null, sight: null }; // 尚未送出的編輯值
         let specialEditWasActivated = false; // 控制「修改/重新修改」按鈕文案
-        let lockedStudentIndex = null;
+        let lockedStudentId = null;
         let lastSubmission = null;
-        let lastValidStudentIdx = "";
+        let lastValidStudentKey = "";
         let lastValidInst = "長笛";
 
         let currentEventPassword = null;
@@ -247,7 +248,29 @@
         }
 
         function isCurrentStudentLocked() {
-            return selectedIndex !== null && lockedStudentIndex === selectedIndex;
+            return selectedStudentId !== null && lockedStudentId === selectedStudentId;
+        }
+
+        function getStudentKey(student, index) {
+            if (student && student.id) return String(student.id);
+            return `index:${index}`;
+        }
+
+        function findStudentIndexByKey(key) {
+            if (!key) return -1;
+            const fallbackMatch = String(key).match(/^index:(\d+)$/);
+            if (fallbackMatch) return Number(fallbackMatch[1]);
+            return allStudents.findIndex((student, index) => getStudentKey(student, index) === String(key));
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[char]));
         }
 
         function isValidSpecialScore(v) {
@@ -287,7 +310,7 @@
             specialEditMode = false;
             specialEditDraft = { pitch: null, sight: null };
             specialEditWasActivated = false;
-            lockedStudentIndex = null;
+            lockedStudentId = null;
             lastSubmission = null;
             renderScoreButtons();
         }
@@ -359,9 +382,9 @@
 
             inner.innerHTML = `
                 <div class="h-full w-full flex flex-col justify-center items-center overflow-hidden">
-                    <p class="text-blue-500 font-bold text-sm mb-1">${student.school}</p>
+                    <p class="text-blue-500 font-bold text-sm mb-1">${escapeHTML(student.school)}</p>
                     <div class="w-full flex items-center justify-center gap-2 mb-1">
-                        <h2 class="${titleClass} font-black text-slate-800 leading-tight break-words text-center">${student.name}</h2>
+                        <h2 class="${titleClass} font-black text-slate-800 leading-tight break-words text-center">${escapeHTML(student.name)}</h2>
                         ${showPassBadge ? '<span class="shrink-0 bg-red-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">通關</span>' : ''}
                     </div>
                     ${scoreHTML}
@@ -394,12 +417,12 @@
 
             firebaseListenerUnsubscribe = onValue(ref(db, 'system'), (snapshot) => {
                 const data = snapshot.val() || {};
-                const serverPin = (data.auth && data.auth.pin) ? data.auth.pin : null;
+                const serverPin = (data.auth && data.auth.pin) ? String(data.auth.pin) : null;
 
                 // 動態驗證密碼：如果密碼被主控端修改或不符合，退出大廳
-                if (serverPin && serverPin !== currentEventPassword) {
+                if (!serverPin || serverPin !== currentEventPassword) {
                     document.getElementById('mobile-lobby-overlay').classList.remove('hidden');
-                    document.getElementById('lobby-error').innerText = '密碼錯誤或已被更改，請重新輸入';
+                    document.getElementById('lobby-error').innerText = serverPin ? '密碼錯誤或已被更改，請重新輸入' : '主控端尚未設定活動密碼';
                     document.getElementById('lobby-error').classList.remove('hidden');
                     return;
                 }
@@ -418,6 +441,16 @@
 
                 // 2. 更新學生名單 (即使鎖定也更新，以便查看資料)
                 allStudents = data.students || [];
+                if (selectedStudentId !== null) {
+                    const newIndex = findStudentIndexByKey(selectedStudentId);
+                    if (newIndex >= 0 && allStudents[newIndex]) {
+                        selectedIndex = newIndex;
+                    } else {
+                        selectedIndex = null;
+                        selectedStudentId = null;
+                        resetActionButtons();
+                    }
+                }
                 updateDropdown();
 
                 // 3. 如果當前已有選中學生，更新其顯示畫面
@@ -425,6 +458,7 @@
                     const s = allStudents[selectedIndex];
                     if (!s) {
                         selectedIndex = null;
+                        selectedStudentId = null;
                         resetActionButtons();
                     } else if (isCurrentStudentLocked() && lastSubmission) {
                         renderSelectedStudentCard(s, {
@@ -445,19 +479,22 @@
         let lastDropdownHTML = "";
         function updateDropdown() {
             const dropdown = document.getElementById('name-dropdown');
-            const currentVal = dropdown.value;
+            const currentVal = selectedStudentId || dropdown.value;
             const query = document.getElementById('search-input').value.trim().toLowerCase();
 
             let filtered = [...allStudents].map((s, idx) => ({ ...s, idx }));
             if (query) {
                 // 支援姓名或學校的關鍵字搜尋
-                filtered = filtered.filter(s => s.name.includes(query) || (s.school && s.school.includes(query)));
+                filtered = filtered.filter(s => String(s.name || '').toLowerCase().includes(query) || String(s.school || '').toLowerCase().includes(query));
             }
 
-            filtered.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
+            filtered.sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'zh-Hant'));
 
             const newHTML = '<option value="">選擇學生...</option>' +
-                filtered.map(s => `<option value="${s.idx}">${s.name} (${s.school || '無'})</option>`).join('');
+                filtered.map(s => {
+                    const key = getStudentKey(s, s.idx);
+                    return `<option value="${escapeHTML(key)}">${escapeHTML(s.name)} (${escapeHTML(s.school || '無')})</option>`;
+                }).join('');
 
             // 只有當選項實際改變才更新 DOM，避免選單在使用中被重置跳針
             if (lastDropdownHTML !== newHTML) {
@@ -481,10 +518,13 @@
             }
         });
 
-        window.selectStudent = (idx) => {
+        window.selectStudent = (studentKey) => {
             resetActionButtons();
+            const idx = typeof studentKey === 'number' ? studentKey : findStudentIndexByKey(studentKey);
+            if (idx < 0 || !allStudents[idx]) return;
             selectedIndex = idx;
             const s = allStudents[idx];
+            selectedStudentId = getStudentKey(s, idx);
             const card = document.getElementById('selected-card');
 
             card.classList.replace('border-blue-100', 'border-blue-500');
@@ -512,7 +552,7 @@
             if (String(inst).includes('/')) updates[`system/students/${selectedIndex}/scores/${inst}`] = null;
 
             update(ref(db), updates).then(() => {
-                lockedStudentIndex = selectedIndex;
+                lockedStudentId = selectedStudentId;
                 pendingScoreType = null;
                 lastSubmission = {
                     instrument: inst,
@@ -570,12 +610,12 @@
             if (e.target.value !== "") {
                 if (!checkSpecialCompletion()) {
                     alert('⚠️ 請將「音感」與「視譜」的成績都送出後，才能切換學生！');
-                    e.target.value = lastValidStudentIdx;
+                    e.target.value = lastValidStudentKey;
                     return;
                 }
                 const selectedVal = e.target.value;
-                lastValidStudentIdx = selectedVal;
-                selectStudent(parseInt(selectedVal));
+                lastValidStudentKey = selectedVal;
+                selectStudent(selectedVal);
                 document.getElementById('search-input').value = '';
                 updateDropdown();
                 document.getElementById('name-dropdown').value = selectedVal;
@@ -663,7 +703,7 @@
                 specialEditMode = false;
                 pendingSpecial = { pitch: null, sight: null };
                 specialEditDraft = { pitch: pitchVal, sight: sightVal };
-                lockedStudentIndex = selectedIndex;
+                lockedStudentId = selectedStudentId;
                 lastSubmission = { instrument: '音感/視譜', scoreType: '完成' };
 
                 renderSelectedStudentCard(student, {
@@ -725,7 +765,7 @@
                 // 兩項都送出後才鎖定並顯示通關
                 const { hasCompleted: nowHasCompleted } = getSpecialCompletionFromStudent(student);
                 if (nowHasCompleted) {
-                    lockedStudentIndex = selectedIndex;
+                    lockedStudentId = selectedStudentId;
                 }
 
                 // 未完成前不更新中間狀態框的高亮（只讓按鈕流程正常走）
