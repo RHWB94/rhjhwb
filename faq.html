@@ -4,15 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>仁和國中管樂團 | 常見 Q&A</title>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS5XBTLB1G"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-SS5XBTLB1G');
-  </script>
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* Page-level overrides: use site tokens from styles.css */
@@ -61,6 +52,17 @@
     .faq-form textarea{ resize: vertical; min-height: 120px; }
     .faq-form .actions{ display:flex; justify-content:center; align-items:center; gap:8px; }
     .faq-form .hint{ color: var(--muted); font-size: 12px; }
+    .faq-form .privacy-note{
+      margin: 2px 0 0;
+      color: #4b5563;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: left;
+    }
+    .faq-form button:disabled{
+      cursor: wait;
+      opacity: .65;
+    }
     .msg{ min-height: 1.2em; }
 
     /* Better placeholder legibility; support multi-line in textarea */
@@ -258,16 +260,16 @@
           <h2 class="cta-title">還有疑問嗎？</h2>
           <form id="faq-form" class="faq-form" novalidate>
             <label>姓名
-              <input name="name" placeholder="請填寫您的姓名" required autocomplete="name" />
+              <input name="name" placeholder="請填寫您的姓名" required maxlength="80" autocomplete="name" />
             </label>
             <label>電子郵件
-              <input name="email" placeholder="example@email.com" type="email" required autocomplete="email" />
+              <input name="email" placeholder="example@email.com" type="email" required maxlength="254" autocomplete="email" />
             </label>
             <label>電話／聯繫方式
-              <input name="phone" placeholder="手機或其他聯繫方式" required autocomplete="tel" />
+              <input name="phone" placeholder="手機或其他聯繫方式" required maxlength="80" autocomplete="tel" />
             </label>
             <label>輸入疑問
-              <textarea name="question" placeholder="請描述您的問題或需求（例如：
+              <textarea name="question" maxlength="2000" placeholder="請描述您的問題或需求（例如：
               1）零基礎可以參加嗎？
               2）招生時間與地點？
               3）器材或租借方式？）" required></textarea>
@@ -276,6 +278,9 @@
               <button class="btn btn-primary" type="submit">送出</button>
             </div>
             <p class="hint" style="text-align:center;margin-top:6px;">送出後會寄至團務端，通常 3–5 個工作日內回覆。</p>
+            <p class="privacy-note">
+              隱私說明：您填寫的姓名、電子郵件、聯繫方式與問題內容，僅供仁和國中管樂團回覆與團務聯繫使用，不作其他用途。請勿填寫與問題無關的敏感個人資料。
+            </p>
             <p id="faq-msg" class="msg" aria-live="polite"></p>
           </form>
           
@@ -362,12 +367,43 @@
   (() => {
     const FORM = document.getElementById('faq-form');
     const MSG  = document.getElementById('faq-msg');
+    const SUBMIT_BUTTON = FORM.querySelector('button[type="submit"]');
     const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzKVHXmIeg_guTsSevW8ffn0IWhw8uiNWJeRrzfPb9GGzW7GgcBQOohp-WDtzvsjov5_A/exec';
+    const SUBMIT_COOLDOWN_MS = 60 * 1000;
+    const LAST_SUBMIT_KEY = 'rhwb_faq_last_submit_at';
+    let isSubmitting = false;
 
     function validEmail(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
+    function getLastSubmitAt(){
+      try {
+        return Number(localStorage.getItem(LAST_SUBMIT_KEY) || 0);
+      } catch {
+        return 0;
+      }
+    }
+    function saveLastSubmitAt(){
+      try {
+        localStorage.setItem(LAST_SUBMIT_KEY, String(Date.now()));
+      } catch {
+        // The form should still work when browser storage is unavailable.
+      }
+    }
+    function getRemainingCooldown(){
+      const lastSubmitAt = getLastSubmitAt();
+      return Math.max(0, SUBMIT_COOLDOWN_MS - (Date.now() - lastSubmitAt));
+    }
 
     FORM.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (isSubmitting) return;
+
+      const remainingCooldown = getRemainingCooldown();
+      if (remainingCooldown > 0) {
+        MSG.className = 'msg err';
+        MSG.textContent = `請稍候 ${Math.ceil(remainingCooldown / 1000)} 秒後再送出。`;
+        return;
+      }
+
       const data = Object.fromEntries(new FormData(FORM).entries());
 
       // 保留原本的必填與 email 檢查
@@ -392,6 +428,10 @@
 
       MSG.className='msg';
       MSG.textContent = '送出中…';
+      isSubmitting = true;
+      SUBMIT_BUTTON.disabled = true;
+      const originalButtonText = SUBMIT_BUTTON.textContent;
+      SUBMIT_BUTTON.textContent = '送出中…';
 
       try {
         const res = await fetch(ENDPOINT, {
@@ -403,6 +443,7 @@
         const json = await res.json().catch(() => ({}));
 
         if (res.ok && json && json.ok) {
+          saveLastSubmitAt();
           MSG.className='msg ok';
           MSG.textContent = '已收到您的訊息，謝謝！';
           FORM.reset();
@@ -412,6 +453,10 @@
       } catch (err) {
         MSG.className='msg err';
         MSG.textContent = '送出失敗，請稍後再試或改以電話/Email 聯絡我們。';
+      } finally {
+        isSubmitting = false;
+        SUBMIT_BUTTON.disabled = false;
+        SUBMIT_BUTTON.textContent = originalButtonText;
       }
     });
   })();

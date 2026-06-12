@@ -76,8 +76,11 @@
     overlayRoot.setAttribute('hidden', '');
     overlayRoot.setAttribute('role', 'dialog');
     overlayRoot.setAttribute('aria-modal', 'true');
+    overlayRoot.setAttribute('aria-labelledby', 'course-experience-title');
     overlayRoot.innerHTML = `
       <div class="course-experience-bg"></div>
+      <button type="button" class="course-experience-close" aria-label="關閉課程介紹">關閉</button>
+      <h2 id="course-experience-title" class="sr-only"></h2>
       <div class="course-experience-stage">
         <div class="course-experience-copy">
           <div class="course-experience-title-slot" aria-hidden="true"></div>
@@ -482,7 +485,11 @@
       if (photoLayer) photoLayer.innerHTML = '';
     }
 
-    if (activeCard) activeCard.classList.remove('is-source-hidden');
+    if (activeCard) {
+      activeCard.classList.remove('is-source-hidden');
+      activeCard.setAttribute('aria-expanded', 'false');
+      activeCard.focus();
+    }
 
     body.classList.remove('course-experience-open', 'no-scroll');
     activeCard = null;
@@ -521,12 +528,16 @@
     const root = ensureOverlay();
     const descNode = root.querySelector('.course-experience-description');
     const titleSlot = root.querySelector('.course-experience-title-slot');
-    if (!descNode || !titleSlot) return;
+    const accessibleTitle = root.querySelector('#course-experience-title');
+    const closeButton = root.querySelector('.course-experience-close');
+    if (!descNode || !titleSlot || !accessibleTitle || !closeButton) return;
 
     clearTimers();
     isTransitioning = true;
     activeCard = card;
     card.classList.add('is-source-hidden');
+    card.setAttribute('aria-expanded', 'true');
+    accessibleTitle.textContent = title;
 
     descNode.innerHTML = '';
     detail.split('\n').filter(Boolean).forEach((line) => {
@@ -552,6 +563,7 @@
         floatingTitle.style.top = `${slotRect.top + slotRect.height / 2}px`;
         floatingTitle.style.width = `${slotRect.width}px`;
         root.classList.add('is-open');
+        closeButton.focus();
 
         const photoTimer = window.setTimeout(() => {
           populatePhotos(key, title);
@@ -578,9 +590,33 @@
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && activeCard) {
+    if (!activeCard || !overlayRoot) return;
+
+    if (event.key === 'Escape') {
       event.preventDefault();
       closeOverlay();
+      return;
+    }
+
+    if (event.key === 'Tab') {
+      const focusable = Array.from(overlayRoot.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter((element) => !element.hidden && element.getAttribute('aria-hidden') !== 'true');
+
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   });
 
@@ -596,6 +632,18 @@
   document.addEventListener('click', (event) => {
     if (!activeCard || !overlayRoot || isTransitioning) return;
     if (!overlayRoot.contains(event.target)) return;
-    closeOverlay();
+    const target = event.target;
+    if (
+      target === overlayRoot ||
+      target.classList.contains('course-experience-bg') ||
+      target.closest?.('.course-experience-close')
+    ) {
+      closeOverlay();
+    }
   }, { capture: true });
+
+  cards.forEach((card) => {
+    card.setAttribute('aria-haspopup', 'dialog');
+    card.setAttribute('aria-expanded', 'false');
+  });
 })();

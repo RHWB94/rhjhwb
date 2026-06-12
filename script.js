@@ -26,11 +26,14 @@ function openOverlay(overlayId, templateId, triggerBtn) {
   const closeOverlay = () => {
     overlay.hidden = true;
     body.classList.remove('modal-open');
+    if (triggerBtn) triggerBtn.setAttribute('aria-expanded', 'false');
+    overlay.onkeydown = null;
     if (triggerBtn) triggerBtn.focus();
   };
 
   overlay.hidden = false;
   body.classList.add('modal-open');
+  if (triggerBtn) triggerBtn.setAttribute('aria-expanded', 'true');
 
   const closeButton = overlay.querySelector('.overlay-close');
   if (closeButton) {
@@ -38,12 +41,36 @@ function openOverlay(overlayId, templateId, triggerBtn) {
     closeButton.onclick = closeOverlay;
   }
 
+  overlay.onkeydown = (event) => {
+    if (event.key !== 'Tab') return;
+
+    const focusable = Array.from(overlay.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter((element) => !element.hidden && element.getAttribute('aria-hidden') !== 'true');
+
+    if (focusable.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   overlay.onclick = (event) => {
     if (event.target === overlay) closeOverlay();
   };
 }
 
 document.querySelectorAll('.more-bio').forEach((button) => {
+  button.setAttribute('aria-expanded', 'false');
   button.addEventListener('click', () => openOverlay('yang-bio-overlay', 'yang-bio-template', button));
 });
 

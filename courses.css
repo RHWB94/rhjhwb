@@ -368,6 +368,33 @@ body.course-experience-open .float-launchers{
   transition: opacity .48s ease;
 }
 
+.course-experience-close{
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  right: max(18px, env(safe-area-inset-right));
+  z-index: 4;
+  min-width: 52px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 999px;
+  background: rgba(15,23,42,.72);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+}
+
+.course-experience-close:hover{
+  background: rgba(30,41,59,.92);
+}
+
+.course-experience-close:focus-visible{
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
 .course-experience-stage{
   position: relative;
   width: 100%;
