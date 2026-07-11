@@ -187,19 +187,13 @@ document.addEventListener('keydown', (event) => {
   const chips = Array.from(stack.querySelectorAll('.lg-chip'));
   if (chips.length === 0) return;
 
-  const supportsTouch =
-    ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0) ||
-    ('msMaxTouchPoints' in navigator && navigator.msMaxTouchPoints > 0) ||
-    ('ontouchstart' in window);
-
-  if (!supportsTouch) return;
-
   let main = stack.querySelector('.lg-main');
   if (!main) {
     main = document.createElement('button');
     main.type = 'button';
     main.className = 'lg-chip lg-main';
-    main.setAttribute('aria-label', 'Open quick navigation');
+    main.setAttribute('aria-label', '開啟快速導覽');
+    main.setAttribute('aria-expanded', 'false');
     main.innerHTML = `
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
         <path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/>
@@ -208,19 +202,23 @@ document.addEventListener('keydown', (event) => {
     stack.insertBefore(main, stack.firstChild);
   }
 
+  stack.classList.add('has-menu-toggle');
+  const compactMenu = window.matchMedia('(max-width: 680px)');
+
   const closeAll = () => {
-    stack.classList.remove('is-show', 'is-closing');
-    chips.forEach((chip) => {
-      chip.classList.remove('is-open');
-      chip.__armed = false;
-    });
+    stack.classList.remove('is-show');
+    main.setAttribute('aria-expanded', 'false');
+    main.setAttribute('aria-label', '開啟快速導覽');
   };
 
   const openMenu = () => {
     stack.classList.add('is-show');
+    main.setAttribute('aria-expanded', 'true');
+    main.setAttribute('aria-label', '關閉快速導覽');
   };
 
   main.addEventListener('click', (event) => {
+    if (!compactMenu.matches) return;
     event.preventDefault();
     if (stack.classList.contains('is-show')) {
       closeAll();
@@ -230,40 +228,29 @@ document.addEventListener('keydown', (event) => {
   });
 
   document.addEventListener('click', (event) => {
+    if (!compactMenu.matches) return;
     if (!stack.classList.contains('is-show')) return;
     if (event.target.closest('.float-launchers')) return;
     closeAll();
   });
 
   chips.forEach((chip) => {
-    chip.__armed = false;
-    chip.addEventListener('click', (event) => {
-      if (!stack.classList.contains('is-show')) {
-        event.preventDefault();
-        openMenu();
-        return;
-      }
-
-      if (chip.__armed) {
-        chip.__armed = false;
-        closeAll();
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-      openMenu();
-
-      chips.forEach((otherChip) => {
-        if (otherChip === chip) return;
-        otherChip.__armed = false;
-        otherChip.classList.remove('is-open');
-      });
-
-      chip.classList.add('is-open');
-      chip.__armed = true;
-    }, { passive: false });
+    chip.addEventListener('click', () => {
+      if (compactMenu.matches) closeAll();
+    });
   });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && compactMenu.matches && stack.classList.contains('is-show')) {
+      closeAll();
+      main.focus();
+    }
+  });
+
+  const syncMenu = () => {
+    if (!compactMenu.matches) closeAll();
+  };
+  compactMenu.addEventListener('change', syncMenu);
 })();
 
 

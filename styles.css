@@ -169,10 +169,6 @@ section.panel{min-height: 100svh;
   height: auto;                    
   object-fit: contain;             }
 
-.brand-text{display:flex;
-  flex-direction:column;
-  line-height:1.1;              }
-
 .bg-glass{position:fixed; inset:0; z-index:-1;
   pointer-events:none;
   
@@ -674,9 +670,6 @@ body.recruit-page{
 .lg-chip{transition: none;}
 .lg-chip::after{transition: none;}
 }
-
-.lg-chip.is-hovering{--w: 172px; justify-content:flex-start; padding-left:18px; padding-right:18px;}
-.lg-chip.is-hovering::after{opacity:1; transform:none;}
 
 .teachers-hero .container{text-align: center;}
 .teachers-hero h1{font-size: clamp(28px, 4.2vw, 42px);
@@ -1363,8 +1356,7 @@ body:hover::-webkit-scrollbar-track,
   }
 }
 
-.faq-page .faq-item,
-.faq-page .faq-form-wrapper {
+.faq-page .faq-item {
   width: 100%;
   max-width: 720px;   
   margin: 0 auto 20px auto; 
@@ -1761,5 +1753,131 @@ body.teachers-page .teachers-hero + .panel {
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
   }
+}
+
+/* ========================================================================== */
+/* Homepage reading flow and quick navigation                                 */
+/* Keep the final responsive rules together to avoid page-specific overrides. */
+/* ========================================================================== */
+
+/* Snap is useful for the introduction, but long biographies should scroll naturally. */
+main.snap{ scroll-snap-type: y proximity; }
+
+#main > .features-section,
+#main > .profile-section{
+  min-height: auto;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+  display: block;
+  padding-block: clamp(56px, 8vw, 96px);
+}
+
+/* Scan-friendly coach profiles. Full biographies remain available on demand. */
+.profile-summary{
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.profile-highlights{
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 8px;
+  font-weight: 650;
+}
+
+.profile-details{
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.profile-details summary{
+  padding: 12px 0 4px;
+  color: #1d4ed8;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.profile-details summary:focus-visible{
+  outline: 3px solid rgba(41,115,255,.35);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.profile-details .profile-list{ margin-top: 10px; }
+.profile-section-label{ list-style: none; margin-left: -18px; font-weight: 800; }
+
+/* The main menu is created only when JavaScript is available. */
+.float-launchers .lg-main{ display: none; }
+.float-launchers .lg-chip:focus-visible{
+  outline: 3px solid #1d4ed8;
+  outline-offset: 4px;
+}
+
+@media (min-width: 681px){
+  .float-launchers.has-menu-toggle .lg-chip:not(.lg-main){
+    display: inline-flex;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 680px){
+  .float-launchers.has-menu-toggle{
+    top: auto;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    transform: none;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .float-launchers.has-menu-toggle .lg-main{
+    display: inline-flex;
+    width: 56px !important;
+    height: 56px !important;
+    --w: 56px !important;
+    --h: 56px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+
+  .float-launchers.has-menu-toggle:not(.is-show) .lg-chip:not(.lg-main){
+    display: none;
+  }
+
+  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main){
+    display: inline-flex;
+    width: 168px !important;
+    height: 48px !important;
+    --w: 168px !important;
+    --h: 48px !important;
+    padding: 0 18px !important;
+    justify-content: flex-start !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+
+  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main)::after{
+    left: 54px;
+    right: auto;
+    opacity: 1;
+    transform: none;
+  }
+
+  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main) svg{
+    margin-right: 8px;
+  }
+}
+
+@media (max-width: 680px){
+  .profile-section .profile{ margin-inline: 0; }
+  .profile-highlights{ font-size: .96rem; }
 }
 

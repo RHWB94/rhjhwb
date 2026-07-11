@@ -1,0 +1,26 @@
+{
+  "name": "rhwb94",
+  "version": "1.0.0",
+  "description": "- 線上網址：[https://rhwb94.github.io/rhjhwb/](https://rhwb94.github.io/rhjhwb/) - 目標：提供仁和國中管樂團的最新資訊、師資介紹、成績展示，並確保在電腦、平板與手機上都有良好瀏覽體驗。",
+  "main": "achievements.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RHWB94/rhjhwb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RHWB94/rhjhwb/issues"
+  },
+  "homepage": "https://github.com/RHWB94/rhjhwb#readme",
+  "devDependencies": {
+    "vite": "^8.1.0"
+  }
+}
