@@ -171,6 +171,35 @@ body.recruit-page{
   -webkit-tap-highlight-color: transparent;
 }
 
+body.recruit-page[data-recruit-status="closed"] [data-recruit-open-only]{
+  display: none !important;
+}
+
+body.recruit-page[data-recruit-status="open"] [data-recruit-closed-only]{
+  display: none !important;
+}
+
+.recruit-status-notice{
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(30, 64, 175, .16);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(239,246,255,.94), rgba(255,255,255,.82));
+  color: #334155;
+  box-shadow: 0 10px 24px rgba(30, 64, 175, .08);
+}
+
+.recruit-status-notice strong{
+  color: #1e3a8a;
+  font-size: 1.04rem;
+}
+
+.recruit-status-notice span{
+  line-height: 1.7;
+}
+
 .recruit-signup-cta:hover,
 .recruit-signup-cta:focus-visible{
   outline: none;

@@ -254,23 +254,30 @@ document.addEventListener('keydown', (event) => {
 })();
 
 
-//vrecruit開關這在，true是開false是關，href是連結，image是圖片路徑，alt是替代文字，desktop和mobile分別是桌面和行動裝置的樣式設定
-(() => {
-  const config = {
-    enabled: false,
-    href: 'recruit.html',
+// 招生頁唯一的年度設定：招生開放時只需更新 status、formUrl，並視需要換 icon。
+const recruitmentConfig = Object.freeze({
+  status: 'closed', // 'open' | 'closed'
+  route: 'recruit.html',
+  formUrl: 'https://docs.google.com/forms/d/1TRbRIq3yUMgCvv11WHweR-EsLDQaE9vymkrnpuAv37g/viewform?edit_requested=true',
+  floatingIcon: {
     image: 'assets/recruit.png',
     alt: '新生招生報名入口',
-    desktop: {
-      top: '170px',
-      left: '160px',
-      width: '150px',
-    },
-    mobile: {
-      top: '96px',
-      left: '10px',
-      width: '120px',
-    },
+    desktop: { top: '170px', left: '160px', width: '150px' },
+    mobile: { top: '96px', left: '10px', width: '120px' },
+  },
+});
+
+window.RHWB_RECRUITMENT = recruitmentConfig;
+
+// 招生 icon：僅在招生開放時顯示。
+(() => {
+  const config = {
+    enabled: recruitmentConfig.status === 'open',
+    href: recruitmentConfig.route,
+    image: recruitmentConfig.floatingIcon.image,
+    alt: recruitmentConfig.floatingIcon.alt,
+    desktop: recruitmentConfig.floatingIcon.desktop,
+    mobile: recruitmentConfig.floatingIcon.mobile,
   };
 
   if (!config.enabled || !document.body) return;
@@ -309,6 +316,8 @@ document.addEventListener('keydown', (event) => {
 (() => {
   const page = document.body;
   if (!page || !page.classList.contains('recruit-page')) return;
+
+  page.dataset.recruitStatus = recruitmentConfig.status;
 
   const lockMobileZoom = () => {
     if (!window.matchMedia || !window.matchMedia('(pointer: coarse)').matches) return;
@@ -362,14 +371,18 @@ document.addEventListener('keydown', (event) => {
     '\u8acb\u5728 recruit.html \u7684 body \u6a19\u7c64\u586b\u5165 data-recruit-youtube\uff0c\u9019\u88e1\u5c31\u6703\u986f\u793a\u6bd4\u8cfd\u5f71\u7247\u3002'
   );
 
-  bindEmbed(
-    '[data-recruit-form]',
-    page.dataset.recruitFormUrl || '',
-    '\u8acb\u5728 recruit.html \u7684 body \u6a19\u7c64\u586b\u5165 data-recruit-form\uff0c\u9019\u88e1\u5c31\u6703\u5d4c\u5165 Google Form\u3002'
-  );
+  if (recruitmentConfig.status === 'open') {
+    bindEmbed(
+      '[data-recruit-form]',
+      recruitmentConfig.formUrl,
+      '尚未設定報名表單連結。'
+    );
+  }
 })();
 
 (() => {
+  if (window.RHWB_RECRUITMENT?.status !== 'open') return;
+
   const gallery = document.querySelector('[data-recruit-gallery]');
   if (!gallery) return;
 
