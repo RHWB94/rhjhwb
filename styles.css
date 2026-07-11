@@ -112,11 +112,13 @@ section.panel{min-height: 100svh;
 
 .hero .hero-content,
 .profile-section .profile{opacity: 0;
-  transform: translateY(calc(14px + var(--home-hero-nudge)));
   transition: opacity .45s ease, transform .45s ease;}
+.hero .hero-content{transform: translateY(calc(14px + var(--home-hero-nudge)));}
+.profile-section .profile{transform: translateY(14px);}
 .panel.in-view .hero-content,
-.panel.in-view .profile{opacity: 1;
-  transform: translateY(var(--home-hero-nudge));}
+.panel.in-view .profile{opacity: 1;}
+.panel.in-view .hero-content{transform: translateY(var(--home-hero-nudge));}
+.panel.in-view .profile{transform: none;}
 
 .site-footer{border-top:1px solid var(--border);
   padding:16px 0;
@@ -195,7 +197,7 @@ main.snap{scroll-snap-type: y proximity;}
 
 :root{--yellow:#F6E862; }
 
-.features-section{background: #FFFFFF;}
+.features-section{background: transparent;}
 
 .features-grid{display: grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
@@ -1760,16 +1762,35 @@ body.teachers-page .teachers-hero + .panel {
 /* Keep the final responsive rules together to avoid page-specific overrides. */
 /* ========================================================================== */
 
-/* Snap is useful for the introduction, but long biographies should scroll naturally. */
-main.snap{ scroll-snap-type: y proximity; }
+/* Each homepage chapter owns one viewport. The fixed glass background supplies
+   the colour transition, so adjacent chapters do not create hard seams. */
+main.snap{ scroll-snap-type: y mandatory; }
 
 #main > .features-section,
 #main > .profile-section{
-  min-height: auto;
-  scroll-snap-align: none;
-  scroll-snap-stop: normal;
-  display: block;
-  padding-block: clamp(56px, 8vw, 96px);
+  min-height: 100svh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: grid;
+  place-items: center;
+  padding: calc(56px + clamp(24px, 5vh, 56px)) 0 clamp(24px, 5vh, 56px);
+  background: transparent;
+}
+
+#main > .features-section > .container,
+#main > .profile-section > .container{
+  width: 100%;
+}
+
+/* Keep the four benefits visually centred as one self-contained scene. */
+#main > .features-section .features-grid{
+  margin-block: auto;
+}
+
+/* A coach card is centred in its own coloured scene; its entrance animation
+   must not inherit the upward hero offset. */
+#main > .profile-section .profile{
+  margin-block: auto;
 }
 
 /* Scan-friendly coach profiles. Full biographies remain available on demand. */
@@ -1879,5 +1900,19 @@ main.snap{ scroll-snap-type: y proximity; }
 @media (max-width: 680px){
   .profile-section .profile{ margin-inline: 0; }
   .profile-highlights{ font-size: .96rem; }
+}
+
+/* On compact screens a card can be taller than the viewport. Preserve the
+   chapter separation while allowing natural scrolling through its contents. */
+@media (max-width: 900px), (max-height: 700px){
+  main.snap{ scroll-snap-type: y proximity; }
+
+  #main > .features-section,
+  #main > .profile-section{
+    min-height: 100svh;
+    scroll-snap-stop: normal;
+    padding-top: calc(56px + clamp(20px, 5vh, 40px));
+    padding-bottom: clamp(28px, 6vh, 48px);
+  }
 }
 
