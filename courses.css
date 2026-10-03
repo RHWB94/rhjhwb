@@ -74,6 +74,8 @@ body.course-experience-open .float-launchers{
 .course-experience-root{
   position: fixed;
   inset: 0;
+  height: 100vh;
+  height: 100dvh;
   z-index: 980;
 }
 
@@ -120,6 +122,7 @@ body.course-experience-open .float-launchers{
 
 .course-experience-copy{
   position: absolute;
+  z-index: 2;
   inset: clamp(16px, 2.2vw, 28px);
   transform: translateY(48px);
   display: grid;
@@ -141,13 +144,26 @@ body.course-experience-open .float-launchers{
 
 .course-experience-body{
   width: min(560px, calc(100vw - 180px));
-  min-height: clamp(196px, 30vh, 312px);
+  min-height: min(clamp(196px, 30vh, 312px), 100%);
+  max-height: 100%;
   display: grid;
   place-items: center;
+  align-items: safe center;
   align-self: center;
   padding: 0;
   color: #fff;
   text-align: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.55) transparent;
+  pointer-events: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.course-experience-body:focus-visible{
+  outline: 2px solid rgba(255,255,255,.85);
+  outline-offset: 5px;
 }
 
 .course-experience-description{
@@ -295,7 +311,7 @@ body.course-experience-open .float-launchers{
 
   .course-experience-body{
     width: min(420px, calc(100vw - 36px));
-    min-height: clamp(160px, 28vh, 240px);
+    min-height: min(clamp(160px, 28vh, 240px), 100%);
     align-self: center;
   }
 
@@ -319,6 +335,23 @@ body.course-experience-open .float-launchers{
 
   .course-experience-photo img{
     border-radius: 16px;
+  }
+}
+
+@media (max-height: 520px){
+  .course-experience-copy{
+    inset: 12px;
+    gap: 12px;
+  }
+
+  .course-experience-title-slot{
+    margin-top: 12px;
+    min-height: 48px;
+  }
+
+  .course-experience-body{
+    min-height: 0;
+    width: min(560px, calc(100vw - 56px));
   }
 }
 

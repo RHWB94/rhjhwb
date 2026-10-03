@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" class="home-layout">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,11 +17,17 @@
   <link
     rel="preload"
     as="image"
-    href="/assets/hero_1200-s1NGyZEQ.webp"
-    imagesrcset="/assets/hero_360-DGSv-kmf.webp 360w, /assets/hero_1200-s1NGyZEQ.webp 1200w"
+    href="./assets/hero_1200-s1NGyZEQ.webp"
+    imagesrcset="./assets/hero_360-DGSv-kmf.webp 360w, ./assets/hero_1200-s1NGyZEQ.webp 1200w"
     imagesizes="100vw"
     type="image/webp"
   >
+  <noscript><style>
+    .hero .hero-content, .profile-section .profile, .features-grid { opacity: 1; }
+    .hero .hero-content { transform: translateY(var(--home-hero-nudge)); }
+    .profile-section .profile, .features-grid { transform: none; }
+    .more-bio { display: none; }
+  </style></noscript>
 
     <!-- Organization -->
   <script type="application/ld+json">
@@ -47,9 +53,9 @@
   }
   </script>
 
-  <link rel="icon" href="/assets/favicon-Dt7h36Cb.ico" type="image/x-icon">
-  <link rel="icon" href="/assets/favicon-DBSyqKla.png" type="image/png" sizes="48x48">
-  <link rel="apple-touch-icon" href="/assets/favicon-DBSyqKla.png">
+  <link rel="icon" href="./assets/favicon-Dt7h36Cb.ico" type="image/x-icon">
+  <link rel="icon" href="./assets/favicon-DBSyqKla.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="./assets/favicon-DBSyqKla.png">
   <meta name="description" content="仁和國中管樂團官方網站，最新公告、樂團特色、師資與演出資訊。全桃園唯一行進管樂與室內合奏並行。">
   <meta name="keywords" content="仁和國中, 管樂團, 樂團, 音樂, 桃園, Ren-he Wind Band, 學生音樂比賽">
   <meta name="author" content="仁和國中管樂團">
@@ -70,18 +76,20 @@
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-WZBM4QW7');</script>
   <!-- End Google Tag Manager -->
-  <link rel="stylesheet" crossorigin href="/assets/index-BlproJf2.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-8JyoyKCI.css">
+  <link rel="stylesheet" crossorigin href="./assets/styles-vZUUA4yH.css">
 </head>
 
-  <body>
+  <body class="home-page">
         <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WZBM4QW7"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
+  <a class="skip-link" href="#main">跳至主要內容</a>
   <header class="site-header">
     <div class="container">
       <a class="brand" href="./" aria-label="仁和國中管樂團首頁">
-        <img src="/assets/logo-B6zF3iDf.png" alt="仁和國中管樂團 團徽" class="brand-logo">
+        <img src="./assets/logo-B6zF3iDf.png" alt="仁和國中管樂團 團徽" class="brand-logo">
         <span class="brand-zh">仁和國中管樂團</span>
         <span class="brand-en">Renhe Junior High School Wind Band</span>
       </a>
@@ -95,15 +103,15 @@
   <a id="top" class="sr-anchor" aria-hidden="true"></a>
 
   <!-- 單一主體捲動容器 -->
-  <main class="snap" id="main">
+  <main class="snap" id="main" tabindex="-1">
     <!-- HERO (第一屏) -->
-    <section class="hero panel" aria-labelledby="ttl-home">
+    <section class="hero panel" id="home" aria-labelledby="ttl-home">
       <div class="hero-media">
   <picture>
     <source type="image/webp"
-            srcset="/assets/hero_360-DGSv-kmf.webp 360w, /assets/hero_1200-s1NGyZEQ.webp 1200w"
+            srcset="./assets/hero_360-DGSv-kmf.webp 360w, ./assets/hero_1200-s1NGyZEQ.webp 1200w"
             sizes="100vw">
-    <img src="/assets/hero-ClOZi-I0.jpg" alt="" decoding="async" fetchpriority="high" width="1200" height="750" />
+    <img src="./assets/hero-ClOZi-I0.jpg" alt="" decoding="async" fetchpriority="high" width="1200" height="750" />
   </picture>
   <div class="hero-blur"></div>
 </div>
@@ -116,27 +124,43 @@
           歡迎就讀仁和國中的同學們加入！
         </p>
       </div>
+      <a class="hero-scroll-cue" href="#features">認識仁和管樂 <span aria-hidden="true">↓</span></a>
     </section>
 
         <!-- 樂團特色（Hero 之後、楊教練之前） -->
     <section class="panel features-section" id="features" aria-labelledby="features-title">
       <div class="container">
-        <h2 id="features-title" class="sr-only">樂團特色</h2>
+        <div class="features-heading">
+          <h2 id="features-title">樂團特色</h2>
+          <p>從紮實訓練到舞台演出，讓音樂成為孩子成長的一部分。</p>
+        </div>
         <div class="features-grid">
           <article class="feature-card glow-yellow">
-            <p>合奏 + 行進管樂並進<br>激發孩子們的音樂潛能</p>
+            <div class="feature-copy">
+              <h3>合奏＋行進管樂並進</h3>
+              <p>激發孩子們的音樂潛能</p>
+            </div>
           </article>
 
           <article class="feature-card glow-blue">
-            <p>扎實的樂團訓練課程<br>讓孩子得到最精實的訓練</p>
+            <div class="feature-copy">
+              <h3>扎實的樂團訓練課程</h3>
+              <p>讓孩子得到最精實的訓練</p>
+            </div>
           </article>
 
           <article class="feature-card glow-green">
-            <p>樂團合奏<br>學習如何與他人相互配合</p>
+            <div class="feature-copy">
+              <h3>樂團合奏</h3>
+              <p>學習如何與他人相互配合</p>
+            </div>
           </article>
 
           <article class="feature-card glow-red">
-            <p>大量演出機會<br>學習克服緊張、抗壓</p>
+            <div class="feature-copy">
+              <h3>大量演出機會</h3>
+              <p>學習克服緊張、抗壓</p>
+            </div>
           </article>
         </div>
       </div>
@@ -147,8 +171,8 @@
     <section class="panel profile-section" id="sec-yang" data-theme="yang" aria-labelledby="ttl-yang">
       <div class="container profile">
         <picture>
-  <source type="image/webp" srcset="/assets/yang_360-Cv6gcfa8.webp 360w, /assets/yang_1200-WLJVjBC1.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
-  <img class="profile-photo yang" src="/assets/yang-CswE7bim.jpg" alt="樂團總指揮 楊宇綸 老師" loading="lazy" decoding="async">
+  <source type="image/webp" srcset="./assets/yang_360-Cv6gcfa8.webp 360w, ./assets/yang_1200-WLJVjBC1.webp 1200w" sizes="(max-width: 520px) calc(100vw - 80px), (max-width: 900px) 80vw, 420px">
+  <img class="profile-photo yang" src="./assets/yang-CswE7bim.jpg" alt="樂團總指揮 楊宇綸 老師" loading="lazy" decoding="async">
 </picture>
         <div class="profile-body">
           <h2 id="ttl-yang" class="profile-title">樂團總指揮　楊宇綸 老師</h2>
@@ -259,8 +283,8 @@
     <section class="panel profile-section" id="sec-chou" data-theme="chou" aria-labelledby="ttl-chou">
       <div class="container profile">
         <picture>
-  <source type="image/webp" srcset="/assets/chou_360-JsmYF1mT.webp 360w, /assets/chou_1200-DbGH0oxd.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
-  <img class="profile-photo chou" src="/assets/chou-D3Iteshu.jpg" alt="行進樂隊總教練 周健安 老師" loading="lazy" decoding="async">
+  <source type="image/webp" srcset="./assets/chou_360-JsmYF1mT.webp 360w, ./assets/chou_1200-DbGH0oxd.webp 1200w" sizes="(max-width: 520px) calc(100vw - 80px), 350px">
+  <img class="profile-photo chou" src="./assets/chou-D3Iteshu.jpg" alt="行進樂隊總教練 周健安 老師" loading="lazy" decoding="async">
 </picture>
         <div class="profile-body">
           <h2 id="ttl-chou" class="profile-title">行進樂隊總教練　周健安 老師</h2>
@@ -294,8 +318,8 @@
     <section class="panel profile-section" id="sec-jian" data-theme="jian" aria-labelledby="ttl-jian">
       <div class="container profile">
         <picture>
-  <source type="image/webp" srcset="/assets/jian_360-DXGQgJY8.webp 360w, /assets/jian_1200-h1h7iehy.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
-  <img class="profile-photo jian" src="/assets/jian-9YiYkvYC.jpg" alt="旗隊教練 簡語彤 老師" loading="lazy" decoding="async">
+  <source type="image/webp" srcset="./assets/jian_360-DXGQgJY8.webp 360w, ./assets/jian_1200-h1h7iehy.webp 1200w" sizes="(max-width: 520px) calc(100vw - 80px), (max-width: 900px) 80vw, 420px">
+  <img class="profile-photo jian" src="./assets/jian-9YiYkvYC.jpg" alt="旗隊教練 簡語彤 老師" loading="lazy" decoding="async">
 </picture>
         <div class="profile-body">
           <h2 id="ttl-jian" class="profile-title">旗隊教練　簡語彤 老師</h2>
@@ -374,19 +398,19 @@
     <div class="container footer-bar">
       <div class="footer-links" aria-label="外部連結">
         <a href="https://www.jhjhs.tyc.edu.tw/" target="_blank" rel="noopener" class="footer-link">
-          <img src="/assets/school_site-tzE2FW8c.png" alt="學校官網" class="footer-icon">
+          <img src="./assets/school_site-tzE2FW8c.png" alt="學校官網" class="footer-icon">
           <span>學校官網</span>
         </a>
         <a href="https://www.youtube.com/@%E4%BB%81%E5%92%8C%E5%9C%8B%E4%B8%AD%E7%AE%A1%E6%A8%82%E5%9C%98" target="_blank" rel="noopener" class="footer-link">
-          <img src="/assets/youtube-B2-ob9Jb.png" alt="YouTube" class="footer-icon">
+          <img src="./assets/youtube-B2-ob9Jb.png" alt="YouTube" class="footer-icon">
           <span>YouTube</span>
         </a>
         <a href="https://www.facebook.com/R.H.WindBand" target="_blank" rel="noopener" class="footer-link">
-          <img src="/assets/facebook-CmgJh3Hd.png" alt="Facebook" class="footer-icon">
+          <img src="./assets/facebook-CmgJh3Hd.png" alt="Facebook" class="footer-icon">
           <span>Facebook</span>
         </a>
         <a href="https://www.instagram.com/rhjhwb94/" target="_blank" rel="noopener" class="footer-link">
-          <img src="/assets/instagram-CNvVUa0U.png" alt="Instagram" class="footer-icon">
+          <img src="./assets/instagram-CNvVUa0U.png" alt="Instagram" class="footer-icon">
           <span>Instagram</span>
         </a>
       </div>

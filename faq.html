@@ -287,10 +287,6 @@
         </div>
     </section>
 
-      </section>
-
-      </div>
-
   </main>
 
   <!-- 右側懸浮導航（Liquid Glass） -->
@@ -371,9 +367,18 @@
     const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzKVHXmIeg_guTsSevW8ffn0IWhw8uiNWJeRrzfPb9GGzW7GgcBQOohp-WDtzvsjov5_A/exec';
     const SUBMIT_COOLDOWN_MS = 60 * 1000;
     const LAST_SUBMIT_KEY = 'rhwb_faq_last_submit_at';
+    const FIELD_NAMES = ['name', 'email', 'phone', 'question'];
     let isSubmitting = false;
 
     function validEmail(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
+    function showFieldError(name, message){
+      const field = FORM.elements.namedItem(name);
+      field.setAttribute('aria-invalid', 'true');
+      field.setAttribute('aria-describedby', 'faq-msg');
+      MSG.className = 'msg err';
+      MSG.textContent = message;
+      field.focus();
+    }
     function getLastSubmitAt(){
       try {
         return Number(localStorage.getItem(LAST_SUBMIT_KEY) || 0);
@@ -404,17 +409,23 @@
         return;
       }
 
-      const data = Object.fromEntries(new FormData(FORM).entries());
+      const data = Object.fromEntries(
+        Array.from(new FormData(FORM).entries(), ([name, value]) => [name, value.trim()])
+      );
+      FIELD_NAMES.forEach((name) => {
+        const field = FORM.elements.namedItem(name);
+        field.removeAttribute('aria-invalid');
+        field.removeAttribute('aria-describedby');
+      });
 
       // 保留原本的必填與 email 檢查
-      if(!data.name || !data.email || !data.phone || !data.question){
-        MSG.className = 'msg err';
-        MSG.textContent = '請完整填寫所有欄位。';
+      const missingField = FIELD_NAMES.find((name) => !data[name]);
+      if(missingField){
+        showFieldError(missingField, '請完整填寫所有欄位。');
         return;
       }
       if(!validEmail(data.email)){
-        MSG.className = 'msg err';
-        MSG.textContent = '請輸入有效的 Email。';
+        showFieldError('email', '請輸入有效的 Email。');
         return;
       }
 
@@ -458,6 +469,12 @@
         SUBMIT_BUTTON.disabled = false;
         SUBMIT_BUTTON.textContent = originalButtonText;
       }
+    });
+    FORM.addEventListener('input', (e) => {
+      const field = e.target;
+      if (!FIELD_NAMES.includes(field.name)) return;
+      field.removeAttribute('aria-invalid');
+      field.removeAttribute('aria-describedby');
     });
   })();
   </script>

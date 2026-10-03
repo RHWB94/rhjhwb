@@ -70,6 +70,11 @@
    ```
    然後開啟 `http://localhost:8080`
 
+### 建置與驗證
+- 執行 `npm run build`，會在 `dist/` 產生完整的多頁網站，包含首頁、師資、課程、佳績、FAQ 與招生頁。
+- 建置保留傳統 JavaScript 腳本與圖片／文件資料夾的原始相對路徑，可用 `npm run preview` 檢查輸出。
+- `dist/` 是自動產生的建置結果；請修改專案根目錄的來源檔，再重新建置。目前 GitHub Pages 從根目錄發布的流程維持不變。
+
 ### 部署
 - 推送到 GitHub main 分支，GitHub Pages 會自動更新。
 - 網址：`https://rhwb94.github.io/rhjhwb/`

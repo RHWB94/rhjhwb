@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" class="home-layout">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,6 +23,13 @@
     type="image/webp"
   >
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="home.css" />
+  <noscript><style>
+    .hero .hero-content, .profile-section .profile, .features-grid { opacity: 1; }
+    .hero .hero-content { transform: translateY(var(--home-hero-nudge)); }
+    .profile-section .profile, .features-grid { transform: none; }
+    .more-bio { display: none; }
+  </style></noscript>
 
     <!-- Organization -->
   <script type="application/ld+json">
@@ -73,11 +80,12 @@
   <!-- End Google Tag Manager -->
 </head>
 
-  <body>
+  <body class="home-page">
         <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WZBM4QW7"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
+  <a class="skip-link" href="#main">跳至主要內容</a>
   <header class="site-header">
     <div class="container">
       <a class="brand" href="./" aria-label="仁和國中管樂團首頁">
@@ -95,9 +103,9 @@
   <a id="top" class="sr-anchor" aria-hidden="true"></a>
 
   <!-- 單一主體捲動容器 -->
-  <main class="snap" id="main">
+  <main class="snap" id="main" tabindex="-1">
     <!-- HERO (第一屏) -->
-    <section class="hero panel" aria-labelledby="ttl-home">
+    <section class="hero panel" id="home" aria-labelledby="ttl-home">
       <div class="hero-media">
   <picture>
     <source type="image/webp"
@@ -116,27 +124,43 @@
           歡迎就讀仁和國中的同學們加入！
         </p>
       </div>
+      <a class="hero-scroll-cue" href="#features">認識仁和管樂 <span aria-hidden="true">↓</span></a>
     </section>
 
         <!-- 樂團特色（Hero 之後、楊教練之前） -->
     <section class="panel features-section" id="features" aria-labelledby="features-title">
       <div class="container">
-        <h2 id="features-title" class="sr-only">樂團特色</h2>
+        <div class="features-heading">
+          <h2 id="features-title">樂團特色</h2>
+          <p>從紮實訓練到舞台演出，讓音樂成為孩子成長的一部分。</p>
+        </div>
         <div class="features-grid">
           <article class="feature-card glow-yellow">
-            <p>合奏 + 行進管樂並進<br>激發孩子們的音樂潛能</p>
+            <div class="feature-copy">
+              <h3>合奏＋行進管樂並進</h3>
+              <p>激發孩子們的音樂潛能</p>
+            </div>
           </article>
 
           <article class="feature-card glow-blue">
-            <p>扎實的樂團訓練課程<br>讓孩子得到最精實的訓練</p>
+            <div class="feature-copy">
+              <h3>扎實的樂團訓練課程</h3>
+              <p>讓孩子得到最精實的訓練</p>
+            </div>
           </article>
 
           <article class="feature-card glow-green">
-            <p>樂團合奏<br>學習如何與他人相互配合</p>
+            <div class="feature-copy">
+              <h3>樂團合奏</h3>
+              <p>學習如何與他人相互配合</p>
+            </div>
           </article>
 
           <article class="feature-card glow-red">
-            <p>大量演出機會<br>學習克服緊張、抗壓</p>
+            <div class="feature-copy">
+              <h3>大量演出機會</h3>
+              <p>學習克服緊張、抗壓</p>
+            </div>
           </article>
         </div>
       </div>
@@ -147,7 +171,7 @@
     <section class="panel profile-section" id="sec-yang" data-theme="yang" aria-labelledby="ttl-yang">
       <div class="container profile">
         <picture>
-  <source type="image/webp" srcset="assets/assets_webp/yang_360.webp 360w, assets/assets_webp/yang_1200.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
+  <source type="image/webp" srcset="assets/assets_webp/yang_360.webp 360w, assets/assets_webp/yang_1200.webp 1200w" sizes="(max-width: 520px) calc(100vw - 80px), (max-width: 900px) 80vw, 420px">
   <img class="profile-photo yang" src="assets/assets_jpg/yang.jpg" alt="樂團總指揮 楊宇綸 老師" loading="lazy" decoding="async">
 </picture>
         <div class="profile-body">
@@ -259,7 +283,7 @@
     <section class="panel profile-section" id="sec-chou" data-theme="chou" aria-labelledby="ttl-chou">
       <div class="container profile">
         <picture>
-  <source type="image/webp" srcset="assets/assets_webp/chou_360.webp 360w, assets/assets_webp/chou_1200.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
+  <source type="image/webp" srcset="assets/assets_webp/chou_360.webp 360w, assets/assets_webp/chou_1200.webp 1200w" sizes="(max-width: 520px) calc(100vw - 80px), 350px">
   <img class="profile-photo chou" src="assets/assets_jpg/chou.jpg" alt="行進樂隊總教練 周健安 老師" loading="lazy" decoding="async">
 </picture>
         <div class="profile-body">
@@ -294,7 +318,7 @@
     <section class="panel profile-section" id="sec-jian" data-theme="jian" aria-labelledby="ttl-jian">
       <div class="container profile">
         <picture>
-  <source type="image/webp" srcset="assets/assets_webp/jian_360.webp 360w, assets/assets_webp/jian_1200.webp 1200w" sizes="(max-width: 768px) 50vw, 360px">
+  <source type="image/webp" srcset="assets/assets_webp/jian_360.webp 360w, assets/assets_webp/jian_1200.webp 1200w" sizes="(max-width: 520px) calc(100vw - 80px), (max-width: 900px) 80vw, 420px">
   <img class="profile-photo jian" src="assets/assets_jpg/jian.jpg" alt="旗隊教練 簡語彤 老師" loading="lazy" decoding="async">
 </picture>
         <div class="profile-body">
