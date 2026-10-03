@@ -1,143 +1,77 @@
 # 仁和國中管樂團網站
 
-- 線上網址：[https://rhwb94.github.io/rhjhwb/](https://rhwb94.github.io/rhjhwb/)
-- 目標：提供仁和國中管樂團的最新資訊、師資介紹、成績展示，並確保在電腦、平板與手機上都有良好瀏覽體驗。
+仁和國中管樂團網站是桃園市立仁和國民中學管樂團的公開資訊與成果展示平台，面向在校學生、家長、準新生及關心樂團發展的訪客。網站透過樂團特色、專業師資、課程活動與歷屆佳績，呈現室內合奏與行進管樂並行的教育方向，並提供入團資訊、常見問題與聯絡管道。
 
----
+公開網站：[仁和國中管樂團](https://rhwb94.github.io/rhjhwb/)
 
-## 📁 專案結構
+## 網站定位
 
+本專案以清楚的資訊架構與跨裝置閱讀體驗為核心，讓訪客能理解樂團的教學內容、師資背景與學習成果，也讓家長能快速找到招生及活動資訊。視覺以團照、明亮底色、彩色光暈與卡片呈現，兼顧樂團形象及內容可讀性。
+
+主要網站採用靜態多頁架構，內容由專案中的 HTML、JavaScript 資料與圖片檔案維護。專案另包含獨立活動頁，以及具備外部資料服務的新生工具；各區域的用途與技術範圍分別管理。
+
+## 主要功能
+
+| 區域 | 提供的資訊與功能 |
+| --- | --- |
+| [首頁](https://rhwb94.github.io/rhjhwb/) | 樂團品牌主視覺、四項樂團特色、教練介紹與完整經歷。 |
+| [師資介紹](https://rhwb94.github.io/rhjhwb/teachers.html) | 依教學領域呈現教師與助教的照片、姓名及專長。 |
+| [課程內容](https://rhwb94.github.io/rhjhwb/courses.html) | 八項課程與活動介紹，透過照片卡片與全螢幕相簿呈現學習情境。 |
+| [歷屆佳績](https://rhwb94.github.io/rhjhwb/achievements.html) | 按學年度整理比賽成果，支援年度篩選與年度連結。 |
+| [常見 Q&A](https://rhwb94.github.io/rhjhwb/faq.html) | 入團、樂器、練習及費用等常見問題，以及家長諮詢表單。 |
+| [新生專區](https://rhwb94.github.io/rhjhwb/recruit.html) | 樂團與入團介紹、成果回顧，以及依招生狀態顯示的報名資訊；目前設定為招生關閉。 |
+| [成果發表會活動頁](https://rhwb94.github.io/rhjhwb/22_23concert/) | 第 22、23 屆成果發表會的活動資訊、日程、工作組時間、座位圖、節目冊及後台路線影片。 |
+| 新生樂器挑選工具 | `Newbie/` 中的獨立工具，提供學生名單、關卡評分、樂器分配及 Excel 匯入／匯出，使用 Firebase 資料服務。 |
+
+網站支援桌機、平板與手機版面。主要互動涵蓋快速導覽、鍵盤操作、對話框焦點管理、年度篩選、表單驗證及減少動態效果設定。
+
+## 技術與專案組成
+
+- **主要網站**：HTML5、CSS3、原生 JavaScript；使用 Vite 提供開發伺服器與多頁建置。
+- **內容與素材**：頁面內容、JavaScript 資料、JPG／PNG 原圖及 WebP 尺寸版本，均保存在專案內。
+- **外部服務**：FAQ 表單接 Google Apps Script；招生與活動頁使用 Google Forms、Google Drive、Google 地圖及影片連結；`Newbie/` 使用 Firebase 與其自身的前端依賴。
+- **網站發布**：公開網址位於 GitHub Pages，資源路徑須兼容 `/rhjhwb/` 子路徑。
+
+```text
+專案根目錄/
+├── index.html、teachers.html、courses.html、achievements.html、faq.html
+├── recruit.html、recruit-closed.html
+├── styles.css、home.css、courses.css、recruit.css
+├── script.js、courses.js、achievements.js
+├── assets/、teachers-photo/、course-photo/
+├── 22_23concert/         # 成果發表會資訊頁
+├── Newbie/               # 新生樂器挑選工具
+├── tests/                # 局部功能回歸測試
+├── vite.config.mjs       # 多頁建置與靜態資源複製設定
+├── Menu.md               # 目前功能、樣式、資料與維護規範
+└── CHANGELOG.md          # 重要階段的變更紀錄
 ```
-/ (repo root)
-├─ index.html          # 首頁
-├─ teachers.html       # 師資介紹
-├─ achievements.html   # 成績展示
-├─ faq.html            # 常見問題
-├─ assets/
-│  ├─ css/             # 樣式檔
-│  ├─ js/              # JavaScript
-│  └─ img/             # 圖片素材
-├─ course-photo/       # 課程照片
-├─ favicon.ico
-├─ favicon.png         # 建議 512x512
-└─ sitemap.xml         # 站點地圖
+
+## 本機開發
+
+在專案根目錄執行：
+
+```sh
+npm ci
+npm run dev
 ```
 
----
+產生及預覽建置結果：
 
-## 🎨 頁面設計規格 (Design Specs)
+```sh
+npm run build
+npm run preview
+```
 
-### 首頁 (index.html)
-- **Hero 區**：標題置中，背景保持簡潔。  
-- **白框**：垂直置中，四角圓角 `12px`，陰影柔和。  
-- **色彩**：主色 `#1A3D8F` (深藍)，輔色 `#C62828` (紅)。  
-- **字體**：中文使用系統字體，英文標題用 `sans-serif`。  
+`dist/` 是建置產物。日常維護應修改來源檔，再依發布流程處理建置與部署。新生工具及外部表單的服務設定，請依 [Menu.md](./Menu.md) 中的資料與服務說明維護。
 
-### 師資介紹 (teachers.html)
-- **卡片排列**：桌機 4 欄；平板直式 2 欄、橫式自動等分；手機 1 欄。  
-- **間距**：左右邊距 20px；卡片間距 15px。  
-- **卡片樣式**：白底、圓角 `16px`、陰影柔和；hover 微縮放。  
-- **文字**：姓名加粗；職稱字色 `#555`。  
+## 專案文件
 
-### 成績展示 (achievements.html)
-- **排版**：電腦橫排；手機上下排。  
-- **標題字級**：「桃園市學生音樂比賽 / 全國賽」放大加粗。  
-- **項目字級**：縮小一級，顏色淺灰。  
-- **留白**：左右最大不超過 15%，避免白邊過寬。  
+| 文件 | 用途 |
+| --- | --- |
+| [README.md](./README.md) | 說明網站定位、服務對象、功能與專案組成。 |
+| [Menu.md](./Menu.md) | 導覽目前的功能、樣式及資料來源，定義修改時應保留的行為與驗證方式；修改前必讀。 |
+| [CHANGELOG.md](./CHANGELOG.md) | 依日期與階段追蹤重要變更、影響範圍及驗證結果。 |
+| [活動頁 Blueprint](./22_23concert/Blueprint.md) | 保留成果發表會頁的原始製作需求；現況與後續維護以 Menu.md 的活動頁紀錄為準。 |
 
-### FAQ (faq.html)
-- **問題列表**：白卡折疊樣式，每題獨立一塊。  
-- **漢堡選單**：手機、平板必須顯示；點擊後滑出選單。  
-- **間距**：段落上下 12px，左右 20px。  
-
-### Footer (全站共用)
-- **排列**：左側校網、YouTube 連結（不可換行）；右側版權字樣。  
-- **對齊**：兩側文字水平中線對齊。  
-- **顏色**：背景深灰 `#222`，文字白色 `#fff`；hover 淡藍 `#90CAF9`。  
-
----
-
-## 🛠️ 開發與部署
-
-### 本機預覽
-1. 直接用瀏覽器開啟 `index.html`。
-2. 或使用簡單伺服器：
-   ```bash
-   # Python
-   python3 -m http.server 8080
-   # Node
-   npx http-server .
-   ```
-   然後開啟 `http://localhost:8080`
-
-### 建置與驗證
-- 執行 `npm run build`，會在 `dist/` 產生完整的多頁網站，包含首頁、師資、課程、佳績、FAQ 與招生頁。
-- 建置保留傳統 JavaScript 腳本與圖片／文件資料夾的原始相對路徑，可用 `npm run preview` 檢查輸出。
-- `dist/` 是自動產生的建置結果；請修改專案根目錄的來源檔，再重新建置。目前 GitHub Pages 從根目錄發布的流程維持不變。
-
-### 部署
-- 推送到 GitHub main 分支，GitHub Pages 會自動更新。
-- 網址：`https://rhwb94.github.io/rhjhwb/`
-
----
-
-## 🔄 更新流程
-
-1. 先拉取最新檔案。
-2. 修改順序：HTML → CSS → JS。
-3. 測試裝置：手機 (直/橫)、平板 (直/橫)、桌機 (1440px / 1920px)。
-4. 檢查清單：
-   - 白框置中、間距正確。
-   - 漢堡選單在 FAQ 頁可正常顯示。
-   - footer 連結與版權字體對齊。
-   - 連結是否有效（校網、YouTube、Google Sheet）。
-   - 圖片大小是否最佳化。
-5. 提交訊息格式：
-   - `feat(teachers): 平板橫式卡片等分`
-   - `fix(achievements): 手機白卡左右間距修正`
-   - `chore(seo): 新增 og:image 與 favicon.png`
-
----
-
-## 🔎 SEO 與追蹤設定
-
-- **Meta / Open Graph**
-  ```html
-  <meta name="description" content="仁和國中管樂團．全桃園唯一行進管樂與室內合奏並行的優秀樂團！">
-  <meta property="og:title" content="仁和國中管樂團">
-  <meta property="og:description" content="優良師資與豐富活動，學生比賽屢獲佳績！">
-  <meta property="og:image" content="https://rhwb94.github.io/rhjhwb/assets/img/og-cover.jpg">
-  <meta property="og:url" content="https://rhwb94.github.io/rhjhwb/">
-  <meta name="twitter:card" content="summary_large_image">
-  ```
-
-- **Favicon**
-  ```html
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/favicon.png">
-  ```
-
-- **Google Analytics (GA4)**：已安裝。  
-- **Sitemap**：`/sitemap.xml` 已提交至 Search Console。
-
----
-
-## 🧾 變更紀錄
-
-👉 詳細變更請參考 [CHANGELOG.md](./CHANGELOG.md)
-
----
-
-## 🐛 已知問題 / 待辦
-
-- Google 搜尋結果尚未顯示自訂 favicon  
-  - [ ] 等待 Google 抓取，必要時加上 512x512 PNG。
-- 圖片最佳化  
-  - [ ] 大圖壓縮與 lazyload。
-
----
-
-## 🪪 授權與致謝
-- 版權：仁和國中管樂團
-- 團照/比賽照片：已獲得相關人員同意使用
+網站及內容歸屬：桃園市立仁和國民中學管樂團。
