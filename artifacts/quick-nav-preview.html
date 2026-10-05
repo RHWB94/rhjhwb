@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- TEST ONLY: QA fixture for shipped pages. Pointer and motion conditions are
+     simulated by replacing the exact menu/reduced-motion media queries; this
+     does not emulate a physical touch device or its rendering performance. -->
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quick navigation QA preview</title>
+</head>
+<body>
+  <p id="status">正在載入導覽驗證頁…</p>
+  <script>
+    (async () => {
+      const query = new URLSearchParams(location.search);
+      const page = query.get('page') || 'index';
+      const pages = new Set(['index', 'teachers', 'courses', 'achievements', 'faq', 'recruit-closed']);
+      const compactQuery = '(max-width: 680px), (any-pointer: coarse), (hover: none)';
+      const reducedQuery = '(prefers-reduced-motion: reduce)';
+
+      try {
+        if (!pages.has(page)) throw new Error(`Unsupported preview page: ${page}`);
+
+        const read = async (path) => {
+          const response = await fetch(new URL(path, location.href));
+          if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+          return response.text();
+        };
+        let [html, css, js] = await Promise.all([
+          read(`../${page}.html`),
+          // Vite uses ?direct to return CSS text instead of its JS module wrapper.
+          read('../styles.css?direct'),
+          read('../script.js')
+        ]);
+
+        // Change only the explicitly named conditions, leaving every other
+        // responsive rule and all page-specific assets as shipped.
+        if (query.get('touch') === '1') {
+          css = css.split(compactQuery).join('(min-width: 0px)');
+          js = js.split(compactQuery).join('(min-width: 0px)');
+        }
+        if (query.get('reduce') === '1') {
+          css = css.split(reducedQuery).join('(min-width: 0px)');
+          js = js.split(reducedQuery).join('(min-width: 0px)');
+        }
+
+        const parsed = new DOMParser().parseFromString(html, 'text/html');
+        const base = parsed.createElement('base');
+        base.setAttribute('href', '../');
+        parsed.head.prepend(base);
+        parsed.head.append(parsed.createComment(
+          ' TEST ONLY: quick-nav-preview.html; touch/reduced-motion conditions are simulated, not device emulation. '
+        ));
+
+        const sharedStyles = [...parsed.querySelectorAll('link[rel="stylesheet"]')]
+          .find((link) => /(?:^|\/)styles\.css(?:[?#].*)?$/.test(link.getAttribute('href') || ''));
+        if (!sharedStyles) throw new Error('The shipped styles.css link was not found.');
+        const style = parsed.createElement('style');
+        style.textContent = css;
+        sharedStyles.replaceWith(style);
+
+        if (query.get('nojs') === '1') {
+          parsed.querySelectorAll('script').forEach((script) => script.remove());
+        } else {
+          const sharedScript = [...parsed.querySelectorAll('script[src]')]
+            .find((script) => /(?:^|\/)script\.js(?:[?#].*)?$/.test(script.getAttribute('src') || ''));
+          if (!sharedScript) throw new Error('The shipped script.js tag was not found.');
+          // Preserve its original position and attributes, including defer,
+          // so scripts retain the same parser/deferred execution ordering.
+          sharedScript.setAttribute('src', `data:text/javascript;charset=utf-8,${encodeURIComponent(js)}`);
+
+          if (query.get('motionprobe') === '1') {
+            // Fixture-only measurements stay in hidden DOM attributes so the
+            // browser reader can inspect frames without accessing page internals.
+            const probe = parsed.createElement('output');
+            probe.id = 'nav-motion-probe';
+            probe.hidden = true;
+            probe.setAttribute('aria-hidden', 'true');
+            probe.setAttribute('data-frames', '[]');
+            probe.setAttribute('data-complete', 'idle');
+            probe.setAttribute('data-click-count', '0');
+            parsed.body.appendChild(probe);
+
+            const motionProbe = function () {
+              const install = () => {
+                const output = document.getElementById('nav-motion-probe');
+                const stack = document.querySelector('.float-launchers');
+                const main = stack && stack.querySelector('.lg-main');
+                if (!output || !main) return;
+                const links = [...stack.querySelectorAll('.lg-chip:not(.lg-main)')];
+                const rect = (element) => {
+                  const box = element.getBoundingClientRect();
+                  return Object.fromEntries(['x', 'y', 'width', 'height'].map((key) =>
+                    [key, Math.round(box[key] * 1000) / 1000]));
+                };
+                let run = 0;
+
+                document.addEventListener('click', (event) => {
+                  if (!(event.target instanceof Element) || !main.contains(event.target)) return;
+                  const token = ++run;
+                  const started = performance.now();
+                  const frames = [];
+                  output.setAttribute('data-click-count', String(run));
+                  output.setAttribute('data-expanded', main.getAttribute('aria-expanded'));
+                  output.setAttribute('data-complete', 'false');
+                  output.setAttribute('data-frames', '[]');
+
+                  const sample = () => {
+                    if (token !== run) return;
+                    const elapsed = performance.now() - started;
+                    frames.push({
+                      time: Math.round((started + elapsed) * 1000) / 1000,
+                      elapsed: Math.round(elapsed * 1000) / 1000,
+                      main: rect(main),
+                      links: links.map((link) => {
+                        const style = getComputedStyle(link);
+                        return {
+                          id: link.id,
+                          opacity: Number(style.opacity),
+                          transform: style.transform,
+                          rect: rect(link),
+                        };
+                      }),
+                    });
+                    if (elapsed < 650) {
+                      requestAnimationFrame(sample);
+                    } else {
+                      output.setAttribute('data-frames', JSON.stringify(frames));
+                      output.setAttribute('data-complete', 'true');
+                    }
+                  };
+                  sample();
+                });
+                output.setAttribute('data-ready', 'true');
+              };
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', install, { once: true });
+              } else {
+                install();
+              }
+            };
+            const probeScript = parsed.createElement('script');
+            probeScript.textContent = `(${motionProbe.toString()})();`;
+            parsed.body.appendChild(probeScript);
+          }
+        }
+
+        const output = '<!doctype html>\n' + parsed.documentElement.outerHTML;
+        document.open();
+        document.write(output);
+        document.close();
+      } catch (error) {
+        document.getElementById('status').textContent = `Preview failed: ${error.message}`;
+      }
+    })();
+  </script>
+</body>
+</html>

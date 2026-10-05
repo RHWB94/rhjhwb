@@ -1,0 +1,129 @@
+
+> rhwb94@1.0.0 build
+> vite build
+
+vite v8.1.0 building client environment for production...
+[2Ktransforming...<script src="assets/site-meta.js"> in "/recruit-closed.html" can't be bundled without type="module" attribute
+<script src="script.js"> in "/recruit-closed.html" can't be bundled without type="module" attribute
+<script src="assets/site-meta.js"> in "/achievements.html" can't be bundled without type="module" attribute
+<script src="script.js"> in "/achievements.html" can't be bundled without type="module" attribute
+<script src="achievements.js"> in "/achievements.html" can't be bundled without type="module" attribute
+<script src="assets/site-meta.js"> in "/index.html" can't be bundled without type="module" attribute
+<script src="script.js"> in "/index.html" can't be bundled without type="module" attribute
+<script src="assets/site-meta.js"> in "/faq.html" can't be bundled without type="module" attribute
+<script src="script.js"> in "/faq.html" can't be bundled without type="module" attribute
+<script src="assets/site-meta.js"> in "/teachers.html" can't be bundled without type="module" attribute
+<script src="script.js"> in "/teachers.html" can't be bundled without type="module" attribute
+<script src="assets/site-meta.js"> in "/courses.html" can't be bundled without type="module" attribute
+<script src="script.js"> in "/courses.html" can't be bundled without type="module" attribute
+<script src="courses.js"> in "/courses.html" can't be bundled without type="module" attribute
+✓ 15 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/recruit.html                             0.49 kB │ gzip: 0.36 kB
+dist/assets/horn_360-D627J8oG.webp            4.16 kB
+dist/assets/tp1_360-Dbe7yu81.webp             4.51 kB
+dist/assets/euph_360-CFLbfEkO.webp            4.56 kB
+dist/assets/tb_360-jiGLNFSM.webp              4.87 kB
+dist/assets/cl1_360-Dg4ou377.webp             4.98 kB
+dist/assets/favicon-DBSyqKla.png              5.06 kB
+dist/assets/assistant_360-Cmo3pTKx.webp       5.14 kB
+dist/assets/sax_360-CfuYOaXW.webp             6.63 kB
+dist/assets/cl2_360-i6AyRWFa.webp             7.03 kB
+dist/assets/yang_360-Cv6gcfa8.webp            8.45 kB
+dist/assets/youtube-B2-ob9Jb.png              8.54 kB
+dist/assets/tp2_360-CkIcppXt.webp             8.80 kB
+dist/assets/hero_360-DGSv-kmf.webp            9.50 kB
+dist/assets/course7-2_360-CocLdA-c.webp      11.19 kB
+dist/assets/tuba_360-cGp0MWOl.webp           11.68 kB
+dist/assets/course1-1_360-FQdxB6Zy.webp      11.71 kB
+dist/assets/fl_360-BYnH_-a8.webp             12.04 kB
+dist/achievements.html                       12.73 kB │ gzip: 5.12 kB
+dist/assets/course5-1_360-CF1Wop7r.webp      13.15 kB
+dist/assets/march2_360-DOwmENwQ.webp         13.27 kB
+dist/assets/march_per_360-DdBJME--.webp      13.97 kB
+dist/assets/course2-1_360-BwdSWTfZ.webp      14.48 kB
+dist/assets/course1-2_360-DWt4bkRs.webp      14.98 kB
+dist/recruit-closed.html                     15.03 kB │ gzip: 5.55 kB
+dist/assets/course2-2_360-BX8IKN_y.webp      15.92 kB
+dist/assets/per_360-CHG-1ue-.webp            16.24 kB
+dist/assets/course7-1_360-DL3hDXlJ.webp      17.83 kB
+dist/teachers.html                           20.13 kB │ gzip: 6.27 kB
+dist/assets/favicon-Dt7h36Cb.ico             21.23 kB
+dist/assets/course3-1_360-BdiOzDfy.webp      21.76 kB
+dist/courses.html                            23.18 kB │ gzip: 6.75 kB
+dist/assets/chou_360-JsmYF1mT.webp           23.54 kB
+dist/assets/horn_1200-pcSsskus.webp          24.15 kB
+dist/assets/tp1_1200-q3jdZBBu.webp           25.14 kB
+dist/faq.html                                25.77 kB │ gzip: 9.72 kB
+dist/assets/jian_360-DXGQgJY8.webp           26.81 kB
+dist/assets/tb_1200-XirhB4v5.webp            27.22 kB
+dist/assets/cl1_1200--Jklwk7t.webp           27.63 kB
+dist/assets/course5-2_360-DFDPDh5p.webp      28.15 kB
+dist/index.html                              28.48 kB │ gzip: 9.54 kB
+dist/assets/course6-2_360-wvKCCJFP.webp      28.56 kB
+dist/assets/course6-1_360-P8itL5KD.webp      28.68 kB
+dist/assets/euph_1200-BT6ubCmi.webp          29.80 kB
+dist/assets/assistant_1200-B9N3wjlO.webp     29.83 kB
+dist/assets/course4-1_360-CmgnsKb0.webp      30.07 kB
+dist/assets/course3-2_360-DyLZrqTN.webp      31.03 kB
+dist/assets/course4-2_360-CaOmp89y.webp      32.29 kB
+dist/assets/yang_1200-WLJVjBC1.webp          34.64 kB
+dist/assets/logo-B6zF3iDf.png                38.53 kB
+dist/assets/tp2_1200-BaT1cQ3q.webp           41.44 kB
+dist/assets/cl2_1200-DJquB04E.webp           45.10 kB
+dist/assets/sax_1200-D7wIacSd.webp           48.17 kB
+dist/assets/facebook-CmgJh3Hd.png            54.77 kB
+dist/assets/fl_1200-Cq-p47rr.webp            56.66 kB
+dist/assets/hero_1200-s1NGyZEQ.webp          62.12 kB
+dist/assets/jian-9YiYkvYC.jpg                63.09 kB
+dist/assets/tuba_1200-BwEbXowh.webp          64.95 kB
+dist/assets/course8-2_360-DSbdm2pK.webp      65.17 kB
+dist/assets/course8-1_360-BeBkdDEb.webp      65.55 kB
+dist/assets/march2_1200-jlHo2gpF.webp        66.11 kB
+dist/assets/course1-1_1200-Vj1sAQ5c.webp     75.71 kB
+dist/assets/course2-1_1200-CzXZsEmI.webp     83.29 kB
+dist/assets/march_per_1200-Byveq3m5.webp     84.11 kB
+dist/assets/course3-1_1200-_RNZi3wS.webp     86.70 kB
+dist/assets/course7-1_1200-C5em2np3.webp     90.71 kB
+dist/assets/course5-1_1200-7wSn-LiR.webp     93.73 kB
+dist/assets/course4-1_1200-fbNgCMFc.webp    104.38 kB
+dist/assets/march2-Ce8xG2M2.jpg             106.15 kB
+dist/assets/per_1200-BgWzOyc1.webp          107.98 kB
+dist/assets/jian_1200-h1h7iehy.webp         108.74 kB
+dist/assets/school_site-tzE2FW8c.png        131.97 kB
+dist/assets/cl1-BgSXhZOu.jpg                138.53 kB
+dist/assets/fl-BwXPtKDC.jpg                 141.48 kB
+dist/assets/course6-1_1200-CcQSBM5V.webp    148.64 kB
+dist/assets/chou_1200-DbGH0oxd.webp         156.56 kB
+dist/assets/cl2-BH8LxVe4.jpg                162.45 kB
+dist/assets/euph-CGIBs4r1.jpg               183.67 kB
+dist/assets/course8-1_1200-Cfxrg0sD.webp    183.97 kB
+dist/assets/tp2-CXls_giH.jpg                184.27 kB
+dist/assets/tuba-D1Lyujvp.jpg               262.61 kB
+dist/assets/tp1-7fQpvqmG.jpg                283.17 kB
+dist/assets/horn-DmQJFjPV.jpg               440.72 kB
+dist/assets/tb-CFgKnSsI.jpg                 465.53 kB
+dist/assets/per-CjE3zBJO.jpg                477.50 kB
+dist/assets/hero-ClOZi-I0.jpg               626.18 kB
+dist/assets/sax-DXDu2eWq.jpg                705.65 kB
+dist/assets/chou-D3Iteshu.jpg               781.87 kB
+dist/assets/course4-1-sgDQ2Chg.jpg        1,271.28 kB
+dist/assets/course2-1-Dzd8roGU.jpg        1,328.99 kB
+dist/assets/course3-1-BVJnHBib.jpg        1,862.02 kB
+dist/assets/course6-1-D0oroqpK.jpg        2,482.83 kB
+dist/assets/instagram-CNvVUa0U.png        2,648.79 kB
+dist/assets/march_per-qRK-QgUJ.jpg        3,354.28 kB
+dist/assets/course1-1-D9fx_JxY.jpg        3,526.56 kB
+dist/assets/course7-1-Cr6iV9pt.jpg        3,775.38 kB
+dist/assets/course8-1-DGT0-6sK.jpg        4,168.26 kB
+dist/assets/course5-1-U5whe-SU.jpg        4,206.12 kB
+dist/assets/assistant-Be42qqWX.jpg        4,554.00 kB
+dist/assets/yang-CswE7bim.jpg             5,174.11 kB
+dist/assets/teachers-DXp6-9tv.css             3.88 kB │ gzip: 1.28 kB
+dist/assets/index-8JyoyKCI.css                4.78 kB │ gzip: 1.62 kB
+dist/assets/courses-DA2P-oyx.css              7.26 kB │ gzip: 2.17 kB
+dist/assets/recruit-closed-BKEu7OTV.css       8.84 kB │ gzip: 2.55 kB
+dist/assets/styles-BsX7GRcH.css              36.13 kB │ gzip: 8.15 kB
+
+✓ built in 237ms

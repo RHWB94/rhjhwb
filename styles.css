@@ -662,10 +662,6 @@ body.recruit-page{
 .lg-chip:hover svg,
 .lg-chip.is-open svg{margin-right: 8px;}
 
-@media (pointer: coarse){
-.lg-chip{--size: 60px;}
-}
-
 @media (prefers-reduced-motion: reduce){
 .lg-chip{transition: none;}
 .lg-chip::after{transition: none;}
@@ -742,37 +738,6 @@ body.recruit-page{
   border-radius: 999px;
   background: #F7F7F7;
   border: 1px solid var(--border);}
-
-@media (pointer: coarse) {
-.float-launchers{align-items: flex-end;}
-.float-launchers .lg-chip{transition: opacity .2s ease, transform .2s ease;}
-
-  .float-launchers:not(.is-show) .lg-chip:not(.lg-main){opacity: 0;
-    pointer-events: none;
-    transform: translateY(6px);}
-
-  .float-launchers.is-show .lg-chip{opacity: 1;
-    transform: none;}
-}
-
-@media (pointer: coarse) {
-.lg-chip{--w: 56px !important;}
-
-  .lg-chip:hover,
-  .lg-chip.is-open{--w: 56px !important;}
-
-  
-  .lg-chip.is-open{box-shadow: 0 0 0 3px rgba(0,0,0,.06), 0 0 0 6px rgba(var(--glow, 41,115,255), .25);}
-}
-
-@media (pointer: coarse) {
-
-  .lg-main,
-  .lg-main:hover,
-  .lg-main.is-open{--w: 56px !important;}
-
-  .lg-chip:not(.lg-main).is-open{--w: 172px !important;}
-}
 
 .teacher-card .content { padding: 12px 12px 14px; }
 
@@ -889,101 +854,6 @@ body.recruit-page{
   pointer-events: none;    
 }
 
-@media (pointer: coarse){
-  
-  .lg-main{
-    --size: 56px;
-    width: var(--size) !important;
-    height: var(--size) !important;
-    aspect-ratio: 1 / 1;
-    border-radius: 50% !important;
-    flex: 0 0 auto;
-    padding: 0 !important;
-    transform: translateZ(0); 
-  }
-
-  
-  .float-launchers .lg-chip{
-    opacity: 0;
-    transform: translateY(6px) scale(.98);
-    transition:
-      opacity .22s ease,
-      transform .28s cubic-bezier(.22,.61,.36,1);
-  }
-  .float-launchers .lg-main{
-    opacity: 1;
-    transform: none;
-  }
-  .float-launchers.is-show .lg-chip{
-    opacity: 1;
-    transform: none;
-  }
-  
-  .float-launchers.is-show .lg-chip:nth-of-type(2){ transition-delay: 40ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(3){ transition-delay: 80ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(4){ transition-delay: 120ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(5){ transition-delay: 160ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(6){ transition-delay: 200ms; }
-
-  
-  .lg-chip:not(.lg-main).is-open{ --w: 172px !important; padding-left: 18px; padding-right: 18px; }
-  .lg-chip.is-open::after{ transition-delay: .06s; }
-
-  
-  .lg-main,
-  .lg-main:hover,
-  .lg-main.is-open{ --w: 56px !important; }
-}
-
-@media (pointer: coarse){
-  .lg-main,
-  .lg-main:hover,
-  .lg-main.is-open{
-    --w: 56px !important;          
-    justify-content: center !important;  
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-}
-
-@media (pointer: coarse){
-  .lg-main,
-  .lg-main.is-open,
-  .lg-main:hover{
-    width: 56px !important;
-    height: 56px !important;
-    border-radius: 50% !important;
-    aspect-ratio: 1 / 1 !important;
-    justify-content: center !important;
-    padding: 0 !important;
-  }
-}
-
-@media (pointer: coarse){
-  .float-launchers .lg-main,
-  .float-launchers .lg-main:hover,
-  .float-launchers .lg-main.is-open{
-    width: 60px !important;
-    height: 60px !important;
-    --w: 60px !important;
-    --h: 60px !important;
-    border-radius: 50% !important;
-    aspect-ratio: 1 / 1 !important;
-    justify-content: center !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  
-  .float-launchers.is-show .lg-chip{ --w: 60px !important; }
-  .float-launchers .lg-chip svg{ display:block; } 
-  .float-launchers .lg-chip:not(.lg-main).is-open{
-    --w: 172px !important;
-    justify-content: flex-start !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-  }
-}
-
   
   .teacher-card{
     aspect-ratio: 3 / 4;
@@ -1023,98 +893,8 @@ body.recruit-page{
     0 0 32px rgba(var(--glow, 41,115,255), .42);
 }
 
-@keyframes lgIn   { from{opacity:0; transform: translateY(6px) scale(.98)} to{opacity:1; transform:none} }
-@keyframes lgOut  { from{opacity:1; transform:none} to{opacity:0; transform: translateY(6px) scale(.98)} }
-
-@media (pointer: coarse){
-  
-  .float-launchers .lg-main{ opacity:1; transform:none; }
-
-  
-  .float-launchers:not(.is-show) .lg-chip:not(.lg-main){
-    opacity:0; pointer-events:none; transform: translateY(6px) scale(.98);
-  }
-
-  
-  .float-launchers.is-show .lg-chip{ animation: lgIn .26s cubic-bezier(.22,.61,.36,1) forwards; }
-  .float-launchers.is-show .lg-chip:nth-of-type(2){ animation-delay: 40ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(3){ animation-delay: 80ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(4){ animation-delay:120ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(5){ animation-delay:160ms; }
-
-  
-  .float-launchers.is-closing .lg-chip{ animation: lgOut .22s ease forwards; }
-  .float-launchers.is-closing .lg-chip:nth-of-type(2){ animation-delay: 0ms;  }
-  .float-launchers.is-closing .lg-chip:nth-of-type(3){ animation-delay: 30ms; }
-  .float-launchers.is-closing .lg-chip:nth-of-type(4){ animation-delay: 60ms; }
-  .float-launchers.is-closing .lg-chip:nth-of-type(5){ animation-delay: 90ms; }
-}
-
 .float-launchers .lg-chip{ --txt: rgba(15,23,42,.82); }               
-.float-launchers .lg-chip.is-open::after{ color: rgba(15,23,42,.72);} 
-
-@media (pointer: coarse){
-  .float-launchers .lg-chip{
-    transition:
-      opacity .22s ease,
-      transform .28s cubic-bezier(.22,.61,.36,1),
-      width .28s cubic-bezier(.22,.61,.36,1),
-      border-radius .28s cubic-bezier(.22,.61,.36,1),
-      padding .28s cubic-bezier(.22,.61,.36,1);
-    transform-origin: 90% 50%; 
-  }
-  
-  .float-launchers .lg-chip:not(.lg-main).is-open{
-    --w: 172px !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-  }
-}
-
-@keyframes bubbleOut { from{opacity:0; transform: translateY(10px) scale(.72)} to{opacity:1; transform:none} }
-@keyframes bubbleIn  { from{opacity:1; transform:none} to{opacity:0; transform: translateY(10px) scale(.72)} }
-
-@media (pointer: coarse){
-  
-  .float-launchers.is-show .lg-chip:not(.lg-main){
-    animation: bubbleOut .28s cubic-bezier(.22,.61,.36,1) both;
-  }
-  
-  .float-launchers.is-closing .lg-chip:not(.lg-main){
-    animation: bubbleIn .24s ease both;
-  }
-  
-  .float-launchers.is-show .lg-chip:nth-of-type(2),
-  .float-launchers.is-closing .lg-chip:nth-of-type(5){ animation-delay: 40ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(3),
-  .float-launchers.is-closing .lg-chip:nth-of-type(4){ animation-delay: 80ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(4),
-  .float-launchers.is-closing .lg-chip:nth-of-type(3){ animation-delay: 120ms; }
-  .float-launchers.is-show .lg-chip:nth-of-type(5),
-  .float-launchers.is-closing .lg-chip:nth-of-type(2){ animation-delay: 160ms; }
-}
-
-@media (pointer: coarse){
-  
-  .lg-chip.is-closing::after{
-    opacity: 0;
-    transform: translateX(6px);
-    transition: opacity .12s ease, transform .12s ease;
-  }
-
-  
-  .float-launchers .lg-main{
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    will-change: auto !important;
-    pointer-events: auto !important;
-  }
-  .float-launchers:not(.is-show) .lg-main{
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
+.float-launchers .lg-chip.is-open::after{ color: rgba(15,23,42,.72);}
 
 :is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) h1,
 :is(.teachers-hero, .courses-hero, .achievements-hero, .faq-hero) .hero-title{
@@ -1348,14 +1128,6 @@ body:hover::-webkit-scrollbar-track,
           backface-visibility: hidden;
 }
 
-@media (pointer: coarse){
-  .float-launchers .lg-main,
-  .float-launchers .lg-main *{
-    transition: none !important;
-    animation: none !important;
-  }
-}
-
 .faq-page .faq-item {
   width: 100%;
   max-width: 720px;   
@@ -1475,67 +1247,6 @@ html {
   .site-footer .footer-icon{
     width: 24px;
     height: 24px;
-  }
-}
-
-@media (pointer: coarse){
-  .float-launchers{
-    contain: layout paint style;
-  }
-
-  .float-launchers .lg-chip{
-    width: var(--w) !important;
-    height: var(--h) !important;
-    animation: none !important;
-    transition:
-      opacity .18s ease,
-      transform .18s ease,
-      width .24s cubic-bezier(.22,.61,.36,1),
-      border-radius .24s cubic-bezier(.22,.61,.36,1),
-      padding .24s cubic-bezier(.22,.61,.36,1) !important;
-    will-change: transform, opacity !important;
-    transform: translate3d(0, 0, 0);
-    box-shadow: none !important;
-  }
-
-  .float-launchers .lg-main,
-  .float-launchers .lg-main:hover,
-  .float-launchers .lg-main.is-open{
-    width: 60px !important;
-    height: 60px !important;
-    --w: 60px !important;
-    --h: 60px !important;
-    padding: 0 !important;
-    justify-content: center !important;
-    border-radius: 50% !important;
-  }
-
-  .float-launchers:not(.is-show) .lg-chip:not(.lg-main){
-    opacity: 0;
-    pointer-events: none;
-    transform: translate3d(0, 8px, 0) scale(.96);
-  }
-
-  .float-launchers.is-show .lg-chip:not(.lg-main){
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  .float-launchers .lg-chip:not(.lg-main).is-open{
-    --w: 172px !important;
-    justify-content: flex-start !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-    box-shadow: none !important;
-  }
-
-  .float-launchers .lg-chip::after{
-    transition: opacity .14s ease, transform .14s ease !important;
-  }
-
-  .float-launchers .lg-chip.is-open{
-    box-shadow: none !important;
   }
 }
 
@@ -1810,70 +1521,10 @@ main.snap{ scroll-snap-type: y proximity; }
 
 /* The main menu is created only when JavaScript is available. */
 .float-launchers .lg-main{ display: none; }
+.float-launchers .lg-items{ display: contents; }
 .float-launchers .lg-chip:focus-visible{
   outline: 3px solid #1d4ed8;
   outline-offset: 4px;
-}
-
-@media (min-width: 681px){
-  .float-launchers.has-menu-toggle .lg-chip:not(.lg-main){
-    display: inline-flex;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    transform: none !important;
-  }
-}
-
-@media (max-width: 680px){
-  .float-launchers.has-menu-toggle{
-    top: auto;
-    right: max(12px, env(safe-area-inset-right));
-    bottom: max(16px, env(safe-area-inset-bottom));
-    transform: none;
-    gap: 8px;
-    align-items: flex-end;
-  }
-
-  .float-launchers.has-menu-toggle .lg-main{
-    display: inline-flex;
-    width: 56px !important;
-    height: 56px !important;
-    --w: 56px !important;
-    --h: 56px !important;
-    padding: 0 !important;
-    justify-content: center !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    transform: none !important;
-  }
-
-  .float-launchers.has-menu-toggle:not(.is-show) .lg-chip:not(.lg-main){
-    display: none;
-  }
-
-  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main){
-    display: inline-flex;
-    width: 168px !important;
-    height: 48px !important;
-    --w: 168px !important;
-    --h: 48px !important;
-    padding: 0 18px !important;
-    justify-content: flex-start !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    transform: none !important;
-  }
-
-  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main)::after{
-    left: 54px;
-    right: auto;
-    opacity: 1;
-    transform: none;
-  }
-
-  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main) svg{
-    margin-right: 8px;
-  }
 }
 
 @media (max-width: 680px){
@@ -1910,6 +1561,7 @@ html { scroll-padding-top: 88px; }
 }
 body.modal-open { overflow: hidden; }
 body.modal-open .float-launchers { visibility: hidden; }
+body.modal-open .float-launchers.has-menu-toggle .lg-items { visibility: hidden; transition: none; }
 .overlay { z-index: 80; padding: 16px; }
 .overlay-card { max-height: 85svh; }
 .overlay-body { overscroll-behavior: contain; }
@@ -1929,54 +1581,141 @@ body.modal-open .float-launchers { visibility: hidden; }
   }
 }
 
-/* A short touch viewport uses the same hamburger, including phone landscape. */
-@media (max-width: 680px), (max-height: 480px) and (pointer: coarse) {
+/* Touch navigation shares the desktop glass, with one stationary toggle.
+   Link dimensions never animate: only the composited transform and opacity do. */
+@media (max-width: 680px), (any-pointer: coarse), (hover: none) {
   .float-launchers.has-menu-toggle {
+    --nav-size: 56px;
+    --nav-inset-right: 20px;
+    --nav-inset-bottom: 20px;
     top: auto;
-    right: max(12px, env(safe-area-inset-right));
-    bottom: max(16px, env(safe-area-inset-bottom));
+    right: max(var(--nav-inset-right), env(safe-area-inset-right));
+    bottom: max(var(--nav-inset-bottom), env(safe-area-inset-bottom));
+    width: var(--nav-size);
+    height: var(--nav-size);
     transform: none;
-    gap: 8px;
-    align-items: flex-end;
-    justify-content: flex-start;
+    contain: layout style;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
   }
+
+  /* Bring the tablet control into the reading area, away from the corner.
+     Its anchor remains identical in the open and closed states. */
+  @media (min-width: 681px) {
+    .float-launchers.has-menu-toggle {
+      --nav-inset-right: clamp(36px, 5vw, 80px);
+      --nav-inset-bottom: clamp(80px, 14svh, 160px);
+    }
+  }
+
   .float-launchers.has-menu-toggle .lg-main {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
     display: inline-flex;
-    width: 56px !important;
-    height: 56px !important;
-    --w: 56px !important;
-    --h: 56px !important;
-    padding: 0 !important;
-    justify-content: center !important;
+    width: var(--nav-size);
+    height: var(--nav-size);
+    --w: var(--nav-size);
+    --h: var(--nav-size);
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    transform: none;
+    opacity: 1;
+    transition: none;
+    animation: none;
+    will-change: auto;
+    -webkit-tap-highlight-color: transparent;
   }
-  .float-launchers.has-menu-toggle:not(.is-show) .lg-chip:not(.lg-main) { display: none; }
+  .float-launchers.has-menu-toggle .lg-main svg { margin: 0; }
+
+  .float-launchers.has-menu-toggle .lg-items {
+    position: absolute;
+    right: -16px;
+    bottom: var(--nav-size);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    width: 208px;
+    padding: 16px;
+    box-sizing: border-box;
+    /* Keep a painted starting state for Safari's transform transition.
+       Closed links are isolated by opacity, pointer-events and inert/ARIA. */
+    visibility: visible;
+    pointer-events: none;
+  }
+
+  .float-launchers.has-menu-toggle .lg-chip:not(.lg-main) {
+    --w: 176px;
+    --h: 52px;
+    width: 176px;
+    height: 52px;
+    display: inline-flex;
+    padding: 0 18px;
+    justify-content: flex-start;
+    border-radius: 9999px;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: calc(100% - 28px) 50%;
+    transform: translate3d(0, var(--nav-return-y), 0) scale(.32, .85);
+    transition: transform .48s cubic-bezier(.22,.8,.25,1), opacity .28s ease;
+    will-change: transform, opacity;
+    animation: none;
+    -webkit-tap-highlight-color: transparent;
+  }
   .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main) {
-    display: inline-flex;
-    width: 168px !important;
-    height: 48px !important;
-    --w: 168px !important;
-    --h: 48px !important;
-    padding: 0 18px !important;
-    justify-content: flex-start !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    transform: none !important;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) scale(1);
+    transition-delay: var(--nav-delay);
   }
-  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main)::after {
+  .float-launchers.has-menu-toggle .lg-chip:not(.lg-main)::after {
     left: 54px;
     right: auto;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity .12s ease, transform .2s ease;
+  }
+  .float-launchers.has-menu-toggle.is-show .lg-chip:not(.lg-main)::after {
     opacity: 1;
     transform: none;
+    transition-delay: calc(var(--nav-delay) + 80ms);
   }
+  .float-launchers.has-menu-toggle .lg-chip:not(.lg-main) svg {
+    margin-right: 8px;
+  }
+
+  /* Without JS, all four native links remain available with visible labels. */
+  .float-launchers:not(.has-menu-toggle) {
+    top: auto;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    transform: none;
+    gap: 10px;
+    max-height: calc(100svh - 40px);
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .float-launchers:not(.has-menu-toggle) .lg-chip {
+    --w: 176px;
+    --h: 52px;
+    justify-content: flex-start;
+    padding-inline: 18px;
+  }
+  .float-launchers:not(.has-menu-toggle) .lg-chip::after { opacity: 1; transform: none; }
 }
 
-@media (max-height: 360px) and (max-width: 680px),
-       (max-height: 360px) and (pointer: coarse) {
-  .float-launchers.has-menu-toggle {
-    max-height: calc(100svh - 32px);
+/* Keep all destinations reachable in landscape and with an on-screen keyboard. */
+@media (max-height: 420px) {
+  .float-launchers.has-menu-toggle { --nav-inset-bottom: 20px; }
+  .float-launchers.has-menu-toggle .lg-items {
+    max-height: calc(100svh - max(var(--nav-inset-bottom), env(safe-area-inset-bottom)) - 68px);
     overflow-y: auto;
-    padding: 8px 24px;
-    margin: -8px -24px;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
   }
 }
 
@@ -1991,6 +1730,14 @@ body::-webkit-scrollbar, body:hover::-webkit-scrollbar,
     animation-duration: .01ms !important;
     animation-delay: 0s !important;
     transition-duration: .01ms !important;
+    transition-delay: 0s !important;
+  }
+  /* Prefer a short dissolve to an abrupt pop when iOS reduces motion.
+     No travel, stretching or delayed cascade in this mode. */
+  .float-launchers.has-menu-toggle .lg-chip:not(.lg-main),
+  .float-launchers.has-menu-toggle .lg-chip:not(.lg-main)::after {
+    transform: none !important;
+    transition: opacity .16s ease !important;
     transition-delay: 0s !important;
   }
 }

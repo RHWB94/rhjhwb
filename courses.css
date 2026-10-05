@@ -7,8 +7,8 @@
 }
 #courses-page .courses-hero .container { text-align: center; }
 #courses-page .courses-hero h1 {
-  margin: 0 0 12px; color: var(--album-ink);
-  font-size: clamp(32px, 4.2vw, 48px); letter-spacing: .06em;
+  margin: 0 0 8px; color: var(--album-ink);
+  font-size: clamp(28px, 4.2vw, 42px); letter-spacing: .02em;
 }
 #courses-page .courses-hero .sub { margin: 0; color: #556760; }
 #courses-page .course-grid {

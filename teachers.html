@@ -7,54 +7,7 @@
 <title>仁和國中管樂團 | 師資介紹</title>
 <meta content="仁和國中管樂團師資介紹" name="description"/>
 <link href="styles.css" rel="stylesheet"/>
-
-<style>/* 2025-09-14 — INLINE HARD OVERRIDE (mobile & small tablets)
-   Ensure teachers page side padding matches Index coach cards.
-   Inline style wins over external CSS without cache issues. */
-@media (max-width: 820px){
-  body.teachers-page .teachers-hero > .container,
-  body.teachers-page .panel > .container{
-    padding-left: clamp(10px, 3.2vw, 16px) !important;
-    padding-right: clamp(10px, 3.2vw, 16px) !important;
-  }
-  body.teachers-page .teachers-grid{
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  body.teachers-page .teacher-card .content{
-    padding: 12px 14px 22px !important;
-  }
-  body.teachers-page .teacher-card .role{
-    margin-bottom: 0 !important;
-  }
-}</style>
-<style>/* 2026-02-28 mobile-only follow-up fix */
-@media (max-width: 600px){
-  body.teachers-page .teachers-hero > .container,
-  body.teachers-page .panel > .container{
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-  body.teachers-page .teachers-grid{
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    gap: 12px !important;
-  }
-  body.teachers-page .teacher-card{
-    aspect-ratio: 4 / 5.2 !important;
-    grid-template-rows: 60% 1fr !important;
-  }
-  body.teachers-page .teacher-card .content{
-    padding: 12px 14px 24px !important;
-  }
-  body.teachers-page .teacher-card .role{
-    margin-bottom: 0 !important;
-  }
-}</style>
+<link href="teachers.css" rel="stylesheet"/>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="favicon.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="favicon.png">
@@ -104,185 +57,216 @@
 <p class="sub hero-sub">優秀的音樂家老師們，只為給學生最好的。</p>
 </div>
 </section>
-<!-- 自適應網格：1~5 欄（依寬度） -->
-<section class="panel">
-<div class="container">
-<div aria-label="教師名單" class="teachers-grid">
-<!-- 木管（紅） -->
-<article class="teacher-card -woodwind">
+<div class="faculty-directory">
+<section class="faculty-group -woodwind" aria-labelledby="ttl-woodwinds">
+<header class="faculty-heading">
+<div>
+<p class="faculty-eyebrow" lang="en">WOODS</p>
+<h2 id="ttl-woodwinds">木管師資</h2>
+</div>
+</header>
+<div class="faculty-grid">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/fl_360.webp 360w, teachers-photo/teachers_webp/fl_1200.webp 1200w" type="image/webp"/>
-<img alt="蕭昀莉 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/fl.jpg"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/fl_360.webp 360w, teachers-photo/teachers_webp/fl_1200.webp 1200w" type="image/webp"/>
+<img class="portrait-centered" alt="蕭昀莉 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/fl.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">蕭昀莉 老師</h3>
 <p class="role">長笛</p>
+<h3 class="name">蕭昀莉 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -woodwind">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/cl2_360.webp 360w, teachers-photo/teachers_webp/cl2_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/cl2_360.webp 360w, teachers-photo/teachers_webp/cl2_1200.webp 1200w" type="image/webp"/>
 <img alt="黃若栩 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/cl2.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">黃若栩 老師</h3>
 <p class="role">豎笛</p>
+<h3 class="name">黃若栩 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -woodwind">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/cl1_360.webp 360w, teachers-photo/teachers_webp/cl1_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/cl1_360.webp 360w, teachers-photo/teachers_webp/cl1_1200.webp 1200w" type="image/webp"/>
 <img alt="吳惠琪 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/cl1.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">吳惠琪 老師</h3>
 <p class="role">豎笛</p>
+<h3 class="name">吳惠琪 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -woodwind">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/sax_360.webp 360w, teachers-photo/teachers_webp/sax_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/sax_360.webp 360w, teachers-photo/teachers_webp/sax_1200.webp 1200w" type="image/webp"/>
 <img alt="廖約翰 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/sax.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">廖約翰 老師</h3>
 <p class="role">薩克斯風</p>
+<h3 class="name">廖約翰 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<!-- 銅管（藍） -->
-<article class="teacher-card -brass">
+</div>
+</section>
+<section class="faculty-group -brass" aria-labelledby="ttl-brass">
+<header class="faculty-heading">
+<div>
+<p class="faculty-eyebrow" lang="en">BRASS</p>
+<h2 id="ttl-brass">銅管師資</h2>
+</div>
+</header>
+<div class="faculty-grid">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/tp1_360.webp 360w, teachers-photo/teachers_webp/tp1_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/tp1_360.webp 360w, teachers-photo/teachers_webp/tp1_1200.webp 1200w" type="image/webp"/>
 <img alt="陳昱伶 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/tp1.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">陳昱伶 老師</h3>
 <p class="role">小號</p>
+<h3 class="name">陳昱伶 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -brass">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/tp2_360.webp 360w, teachers-photo/teachers_webp/tp2_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/tp2_360.webp 360w, teachers-photo/teachers_webp/tp2_1200.webp 1200w" type="image/webp"/>
 <img alt="王邑東 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/tp2.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">王邑東 老師</h3>
 <p class="role">小號</p>
+<h3 class="name">王邑東 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -brass">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/horn_360.webp 360w, teachers-photo/teachers_webp/horn_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/horn_360.webp 360w, teachers-photo/teachers_webp/horn_1200.webp 1200w" type="image/webp"/>
 <img alt="王鈺成 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/horn.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">王鈺成 老師</h3>
 <p class="role">法國號</p>
+<h3 class="name">王鈺成 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -brass">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/tb_360.webp 360w, teachers-photo/teachers_webp/tb_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/tb_360.webp 360w, teachers-photo/teachers_webp/tb_1200.webp 1200w" type="image/webp"/>
 <img alt="姜威霖 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/tb.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">姜威霖 老師</h3>
 <p class="role">長號</p>
+<h3 class="name">姜威霖 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -brass">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/euph_360.webp 360w, teachers-photo/teachers_webp/euph_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/euph_360.webp 360w, teachers-photo/teachers_webp/euph_1200.webp 1200w" type="image/webp"/>
 <img alt="邱惠宇 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/euph.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">邱惠宇 老師</h3>
 <p class="role">上低音號</p>
+<h3 class="name">邱惠宇 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -brass">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/tuba_360.webp 360w, teachers-photo/teachers_webp/tuba_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 600px) 44vw, (max-width: 1023px) 30vw, 280px" srcset="teachers-photo/teachers_webp/tuba_360.webp 360w, teachers-photo/teachers_webp/tuba_1200.webp 1200w" type="image/webp"/>
 <img alt="楊朝翔 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/tuba.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">楊朝翔 老師</h3>
 <p class="role">低音號 / 上低音號</p>
+<h3 class="name">楊朝翔 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<!-- 擊樂（綠） -->
-<article class="teacher-card -perc">
+</div>
+</section>
+<section class="faculty-group -perc -paired" aria-labelledby="ttl-percussion">
+<header class="faculty-heading">
+<div>
+<p class="faculty-eyebrow" lang="en">PERCUSSION</p>
+<h2 id="ttl-percussion">擊樂師資</h2>
+</div>
+</header>
+<div class="faculty-grid">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/per_360.webp 360w, teachers-photo/teachers_webp/per_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 1023px) 44vw, 260px" srcset="teachers-photo/teachers_webp/per_360.webp 360w, teachers-photo/teachers_webp/per_1200.webp 1200w" type="image/webp"/>
 <img alt="黃子臻 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/per.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">黃子臻 老師</h3>
 <p class="role">擊樂</p>
+<h3 class="name">黃子臻 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -perc">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/march_per_360.webp 360w, teachers-photo/teachers_webp/march_per_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 1023px) 44vw, 260px" srcset="teachers-photo/teachers_webp/march_per_360.webp 360w, teachers-photo/teachers_webp/march_per_1200.webp 1200w" type="image/webp"/>
 <img alt="朱家恆 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/march_per.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">朱家恆 老師</h3>
 <p class="role">行進擊樂</p>
+<h3 class="name">朱家恆 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<!-- 其餘（黃） -->
-<article class="teacher-card -other">
+</div>
+</section>
+<section class="faculty-group -other -paired" aria-labelledby="ttl-support">
+<header class="faculty-heading">
+<div>
+<p class="faculty-eyebrow" lang="en">MARCHING &amp; SUPPORT</p>
+<h2 id="ttl-support">行進與教學支援</h2>
+</div>
+</header>
+<div class="faculty-grid">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/march2_360.webp 360w, teachers-photo/teachers_webp/march2_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 1023px) 44vw, 260px" srcset="teachers-photo/teachers_webp/march2_360.webp 360w, teachers-photo/teachers_webp/march2_1200.webp 1200w" type="image/webp"/>
 <img alt="林昀佋 老師" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/march2.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">林昀佋 老師</h3>
 <p class="role">行進樂隊</p>
+<h3 class="name">林昀佋 <span class="honorific">老師</span></h3>
 </div>
 </article>
-<article class="teacher-card -other">
+<article class="faculty-card">
 <div class="media">
 <picture>
-<source sizes="(max-width: 768px) 44vw, 320px" srcset="teachers-photo/teachers_webp/assistant_360.webp 360w, teachers-photo/teachers_webp/assistant_1200.webp 1200w" type="image/webp"/>
+<source sizes="(max-width: 359px) 90vw, (max-width: 1023px) 44vw, 260px" srcset="teachers-photo/teachers_webp/assistant_360.webp 360w, teachers-photo/teachers_webp/assistant_1200.webp 1200w" type="image/webp"/>
 <img alt="林祐民 助教" decoding="async" loading="lazy" src="teachers-photo/teachers_jpg/assistant.jpg"/>
 </picture>
 </div>
 <div class="content">
-<h3 class="name">林祐民 助教</h3>
 <p class="role">樂團助教</p>
+<h3 class="name">林祐民 <span class="honorific">助教</span></h3>
 </div>
 </article>
 </div>
-</div>
 </section>
+</div>
 </main>
 <!-- 右側懸浮導航（Liquid Glass） -->
 <nav aria-label="快速導覽" class="float-launchers">

@@ -23,7 +23,7 @@
 | [成果發表會活動頁](https://rhwb94.github.io/rhjhwb/22_23concert/) | 第 22、23 屆成果發表會的活動資訊、日程、工作組時間、座位圖、節目冊及後台路線影片。 |
 | 新生樂器挑選工具 | `Newbie/` 中的獨立工具，提供學生名單、關卡評分、樂器分配及 Excel 匯入／匯出，使用 Firebase 資料服務。 |
 
-網站支援桌機、平板與手機版面。主要互動涵蓋快速導覽、鍵盤操作、對話框焦點管理、年度篩選、表單驗證及減少動態效果設定。
+網站支援桌機、平板與手機版面。主要互動涵蓋快速導覽、鍵盤操作、對話框焦點管理、年度篩選、表單驗證及減少動態效果設定；觸控導覽使用固定於右下方的單一漢堡按鈕，以沿用桌機玻璃光暈風格的液體動畫展開及收合。
 
 ## 技術與專案組成
 
@@ -36,7 +36,7 @@
 專案根目錄/
 ├── index.html、teachers.html、courses.html、achievements.html、faq.html
 ├── recruit.html、recruit-closed.html
-├── styles.css、home.css、courses.css、recruit.css
+├── styles.css、home.css、teachers.css、courses.css、recruit.css
 ├── script.js、courses.js、achievements.js
 ├── assets/、teachers-photo/、course-photo/
 ├── 22_23concert/         # 成果發表會資訊頁

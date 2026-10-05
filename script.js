@@ -254,8 +254,20 @@ document.addEventListener('keydown', (event) => {
     stack.insertBefore(main, stack.firstChild);
   }
 
+  // A separate link layer can grow above the toggle without moving it.
+  const items = document.createElement('div');
+  items.className = 'lg-items';
+  chips.forEach((chip, index) => {
+    // The bottom link starts closest to the button; the original reading order stays intact.
+    const fromBottom = chips.length - index - 1;
+    chip.style.setProperty('--nav-return-y', `${70 + fromBottom * 62}px`);
+    chip.style.setProperty('--nav-delay', `${fromBottom * 28}ms`);
+    items.appendChild(chip);
+  });
+  stack.appendChild(items);
   stack.classList.add('has-menu-toggle');
-  const compactMenu = window.matchMedia('(max-width: 680px), (max-height: 480px) and (pointer: coarse)');
+  // Touch-capable tablets retain the toggle even with an attached trackpad.
+  const compactMenu = window.matchMedia('(max-width: 680px), (any-pointer: coarse), (hover: none)');
   const originalTabIndexes = new Map(chips.map((chip) => [chip, chip.getAttribute('tabindex')]));
   main.setAttribute('aria-controls', chips.map((chip, index) => {
     if (!chip.id) chip.id = `quick-nav-link-${index + 1}`;
@@ -335,7 +347,11 @@ document.addEventListener('keydown', (event) => {
     if (!compactMenu.matches && toggleWasFocused) chips[0].focus({ preventScroll: true });
   };
   compactMenu.addEventListener('change', syncMenu);
-  window.addEventListener('pageshow', syncMenu);
+  // Initial setup already ran. A late iframe/image load must not dismiss a
+  // menu the visitor opened; only reset when restoring a cached page.
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) syncMenu();
+  });
   syncMenu();
 })();
 
@@ -422,6 +438,12 @@ window.RHWB_RECRUITMENT = recruitmentConfig;
 
     let lastTouchEnd = 0;
     document.addEventListener('touchend', (event) => {
+      // Navigation already uses touch-action: manipulation. Let rapid taps
+      // produce native clicks, including toggling again during the animation.
+      if (event.target instanceof Element && event.target.closest('.float-launchers')) {
+        lastTouchEnd = 0;
+        return;
+      }
       const now = Date.now();
       if (now - lastTouchEnd <= 300 && event.cancelable) event.preventDefault();
       lastTouchEnd = now;

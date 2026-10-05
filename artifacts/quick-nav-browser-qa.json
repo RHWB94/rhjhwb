@@ -1,0 +1,421 @@
+{
+  "phonePages": [
+    {
+      "page": "index",
+      "before": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "closed": true
+      },
+      "after": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "open": true,
+        "overflow": false
+      }
+    },
+    {
+      "page": "teachers",
+      "before": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "closed": true
+      },
+      "after": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "open": true,
+        "overflow": false
+      }
+    },
+    {
+      "page": "courses",
+      "before": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "closed": true
+      },
+      "after": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "open": true,
+        "overflow": false
+      }
+    },
+    {
+      "page": "achievements",
+      "before": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "closed": true
+      },
+      "after": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "open": true,
+        "overflow": false
+      }
+    },
+    {
+      "page": "faq",
+      "before": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "closed": true
+      },
+      "after": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "open": true,
+        "overflow": false
+      }
+    },
+    {
+      "page": "recruit-closed",
+      "before": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "closed": true
+      },
+      "after": {
+        "button": {
+          "bottom": 824,
+          "height": 56,
+          "left": 304,
+          "right": 360,
+          "top": 768,
+          "width": 56,
+          "x": 304,
+          "y": 768
+        },
+        "open": true,
+        "overflow": false
+      }
+    }
+  ],
+  "desktopPages": [
+    {
+      "hiddenToggle": true,
+      "nativeLinks": 4,
+      "overflow": false,
+      "page": "/"
+    },
+    {
+      "hiddenToggle": true,
+      "nativeLinks": 4,
+      "overflow": false,
+      "page": "/teachers.html"
+    },
+    {
+      "hiddenToggle": true,
+      "nativeLinks": 4,
+      "overflow": false,
+      "page": "/courses.html"
+    },
+    {
+      "hiddenToggle": true,
+      "nativeLinks": 4,
+      "overflow": false,
+      "page": "/achievements.html"
+    },
+    {
+      "hiddenToggle": true,
+      "nativeLinks": 4,
+      "overflow": false,
+      "page": "/faq.html"
+    },
+    {
+      "hiddenToggle": true,
+      "nativeLinks": 4,
+      "overflow": false,
+      "page": "/recruit-closed.html"
+    }
+  ],
+  "fallbackPages": [
+    {
+      "page": "index",
+      "mode": "nojs",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 0,
+        "transitions": [
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "teachers",
+      "mode": "nojs",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 0,
+        "transitions": [
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "courses",
+      "mode": "nojs",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 0,
+        "transitions": [
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "achievements",
+      "mode": "nojs",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 0,
+        "transitions": [
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "faq",
+      "mode": "nojs",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 0,
+        "transitions": [
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "recruit-closed",
+      "mode": "nojs",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 0,
+        "transitions": [
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s",
+          "0.28s, 0.28s, 0.28s, 0.28s, 0.28s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "index",
+      "mode": "reduce",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 1,
+        "transitions": [
+          "1e-05s",
+          "1e-05s",
+          "1e-05s",
+          "1e-05s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "teachers",
+      "mode": "reduce",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 1,
+        "transitions": [
+          "1e-05s",
+          "1e-05s",
+          "1e-05s",
+          "1e-05s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "courses",
+      "mode": "reduce",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 1,
+        "transitions": [
+          "1e-05s",
+          "1e-05s",
+          "1e-05s",
+          "1e-05s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "achievements",
+      "mode": "reduce",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 1,
+        "transitions": [
+          "1e-05s",
+          "1e-05s",
+          "1e-05s",
+          "1e-05s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "faq",
+      "mode": "reduce",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 1,
+        "transitions": [
+          "1e-05s",
+          "1e-05s",
+          "1e-05s",
+          "1e-05s"
+        ],
+        "visible": true
+      }
+    },
+    {
+      "page": "recruit-closed",
+      "mode": "reduce",
+      "result": {
+        "links": 4,
+        "overflow": false,
+        "toggle": 1,
+        "transitions": [
+          "1e-05s",
+          "1e-05s",
+          "1e-05s",
+          "1e-05s"
+        ],
+        "visible": true
+      }
+    }
+  ],
+  "notes": [
+    "Tablet touch and reduced-motion media conditions were simulated using the test fixture; no physical device performance or Safari verification.",
+    "375x280: fourth link reached by Tab, menu scrollTop70, Escape restored toggle focus.",
+    "667x375 and simulated tablet 768x1024 / 1024x768: toggle remains fixed through opening/closing."
+  ]
+}

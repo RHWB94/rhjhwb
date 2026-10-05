@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: load completes before decode starts, even if decode could resolve early
+ok 1 - load completes before decode starts, even if decode could resolve early
+  ---
+  duration_ms: 2.9332
+  type: 'test'
+  ...
+# Subtest: a loaded cached image can resolve without another load event
+ok 2 - a loaded cached image can resolve without another load event
+  ---
+  duration_ms: 0.1894
+  type: 'test'
+  ...
+# Subtest: successful load is enough when image.decode is unavailable
+ok 3 - successful load is enough when image.decode is unavailable
+  ---
+  duration_ms: 0.3268
+  type: 'test'
+  ...
+# Subtest: decode that throws falls back only after a successful load
+ok 4 - decode that throws falls back only after a successful load
+  ---
+  duration_ms: 0.2883
+  type: 'test'
+  ...
+# Subtest: decode that rejects falls back only after a successful load
+ok 5 - decode that rejects falls back only after a successful load
+  ---
+  duration_ms: 0.2954
+  type: 'test'
+  ...
+# Subtest: decode that stalls falls back only after a successful load
+ok 6 - decode that stalls falls back only after a successful load
+  ---
+  duration_ms: 0.1966
+  type: 'test'
+  ...
+# Subtest: load error does not call decode or reveal a broken image
+ok 7 - load error does not call decode or reveal a broken image
+  ---
+  duration_ms: 0.1612
+  type: 'test'
+  ...
+# Subtest: a load that never completes times out without starting decode
+ok 8 - a load that never completes times out without starting decode
+  ---
+  duration_ms: 0.1843
+  type: 'test'
+  ...
+# Subtest: abort cancels both loading and decoding and clears their timers
+ok 9 - abort cancels both loading and decoding and clears their timers
+  ---
+  duration_ms: 1.2989
+  type: 'test'
+  ...
+# Subtest: an already aborted session rejects even a cached loaded image
+ok 10 - an already aborted session rejects even a cached loaded image
+  ---
+  duration_ms: 0.5427
+  type: 'test'
+  ...
+# Subtest: the whole batch waits for its slowest decode and two animation frames
+ok 11 - the whole batch waits for its slowest decode and two animation frames
+  ---
+  duration_ms: 1.62
+  type: 'test'
+  ...
+# Subtest: failed images are hidden while the remaining loaded batch animates
+ok 12 - failed images are hidden while the remaining loaded batch animates
+  ---
+  duration_ms: 0.1612
+  type: 'test'
+  ...
+# Subtest: closing while loading prevents stale photos from scheduling a reveal
+ok 13 - closing while loading prevents stale photos from scheduling a reveal
+  ---
+  duration_ms: 0.1163
+  type: 'test'
+  ...
+# Subtest: reopening the same card cannot reveal photos from the previous session
+ok 14 - reopening the same card cannot reveal photos from the previous session
+  ---
+  duration_ms: 0.2953
+  type: 'test'
+  ...
+# Subtest: closing after paint but before the delayed entry also cancels reveal
+ok 15 - closing after paint but before the delayed entry also cancels reveal
+  ---
+  duration_ms: 0.2107
+  type: 'test'
+  ...
+# Subtest: picture sources precede src; touch tablets keep small assets even with a trackpad
+ok 16 - picture sources precede src; touch tablets keep small assets even with a trackpad
+  ---
+  duration_ms: 0.6669
+  type: 'test'
+  ...
+# Subtest: touch menu starts closed with a single operable trigger
+ok 17 - touch menu starts closed with a single operable trigger
+  ---
+  duration_ms: 3.1877
+  type: 'test'
+  ...
+# Subtest: rapid repeated toggles always expose the latest state without stale callbacks
+ok 18 - rapid repeated toggles always expose the latest state without stale callbacks
+  ---
+  duration_ms: 1.0697
+  type: 'test'
+  ...
+# Subtest: outside click closes but inside link activation keeps native navigation available
+ok 19 - outside click closes but inside link activation keeps native navigation available
+  ---
+  duration_ms: 0.8028
+  type: 'test'
+  ...
+# Subtest: null focusout during native link activation does not make the link inert
+ok 20 - null focusout during native link activation does not make the link inert
+  ---
+  duration_ms: 1.0169
+  type: 'test'
+  ...
+# Subtest: Escape closes an open touch menu and restores focus without scrolling
+ok 21 - Escape closes an open touch menu and restores focus without scrolling
+  ---
+  duration_ms: 4.7336
+  type: 'test'
+  ...
+# Subtest: mode changes close the menu, restore link tabindex, and keep focus on visible controls
+ok 22 - mode changes close the menu, restore link tabindex, and keep focus on visible controls
+  ---
+  duration_ms: 3.6605
+  type: 'test'
+  ...
+# Subtest: pageshow resets restored touch state and returns focus out of hidden links
+ok 23 - pageshow resets restored touch state and returns focus out of hidden links
+  ---
+  duration_ms: 1.4794
+  type: 'test'
+  ...
+# Subtest: normal pageshow after a slow iframe load leaves an already opened menu available
+ok 24 - normal pageshow after a slow iframe load leaves an already opened menu available
+  ---
+  duration_ms: 0.6749
+  type: 'test'
+  ...
+# Subtest: desktop mode leaves native quick links available and ignores toggle clicks
+ok 25 - desktop mode leaves native quick links available and ignores toggle clicks
+  ---
+  duration_ms: 1.0637
+  type: 'test'
+  ...
+# Subtest: pages without quick links do not receive an empty toggle
+ok 26 - pages without quick links do not receive an empty toggle
+  ---
+  duration_ms: 1.8388
+  type: 'test'
+  ...
+# Subtest: recruitment double-tap guard allows rapid native clicks inside quick navigation
+ok 27 - recruitment double-tap guard allows rapid native clicks inside quick navigation
+  ---
+  duration_ms: 1.5595
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 122.6189
