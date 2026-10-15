@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>課程圖片載入檢查（僅本機測試）</title>
+<style>
+  body { margin: 16px; font: 14px system-ui; }
+  iframe { display: block; border: 1px solid #ccc; margin-top: 12px; }
+  pre { white-space: pre-wrap; }
+</style>
+<label>測試尺寸
+  <select id="size">
+    <option value="1366,768">桌機 1366 × 768</option>
+    <option value="390,844">手機 390 × 844</option>
+    <option value="667,375">橫向 667 × 375</option>
+    <option value="768,1024">平板 768 × 1024</option>
+    <option value="1024,768">平板橫向 1024 × 768</option>
+    <option value="375,500">小視窗 375 × 500</option>
+  </select>
+</label>
+<button id="report">讀取載入紀錄</button>
+<pre id="result">在下方開啟相簿，再讀取紀錄。尺寸切換保留同一份相簿。</pre>
+<iframe title="課程頁測試" src="../courses.html" width="1366" height="768"></iframe>
+<script>
+  // Test-only page: use the actual page and resource timing without changing
+  // photo helpers, media queries or browser pointer/motion preferences.
+  const frame = document.querySelector('iframe');
+  document.querySelector('#size').addEventListener('change', (event) => {
+    const [width, height] = event.target.value.split(',');
+    frame.width = width;
+    frame.height = height;
+  });
+  document.querySelector('#report').addEventListener('click', () => {
+    const doc = frame.contentDocument;
+    const photos = [...doc.querySelectorAll('.course-experience-photo')];
+    const resources = frame.contentWindow.performance.getEntriesByType('resource')
+      .filter((entry) => entry.name.includes('/course-photo/'))
+      .map((entry) => ({ file: entry.name.split('/').pop(), bytes: entry.encodedBodySize }));
+    const result = {
+      viewport: [frame.contentWindow.innerWidth, frame.contentWindow.innerHeight],
+      dpr: frame.contentWindow.devicePixelRatio,
+      open: !!doc.querySelector('.course-experience-root.is-open'),
+      active: doc.activeElement?.className,
+      covers: [...doc.querySelectorAll('.card-cover img')].map((img) => ({
+        source: img.currentSrc.split('/').pop(), width: img.getBoundingClientRect().width,
+      })),
+      slots: photos.length,
+      requestedPhotos: photos.filter((item) => item.querySelector('img')).length,
+      shownPhotos: photos.filter((item) => !item.hidden && item.classList.contains('is-visible')).length,
+      hiddenEmptySlots: photos.filter((item) => item.hidden && !item.querySelector('img')).length,
+      brokenPhotos: photos.filter((item) => {
+        const img = item.querySelector('img');
+        return img && img.complete && !img.naturalWidth;
+      }).length,
+      photos: photos.filter((item) => item.querySelector('img')).map((item) => ({
+        source: item.querySelector('img').currentSrc.split('/').pop(), hidden: item.hidden,
+      })),
+      jpgRequests: resources.filter((entry) => /\.jpg$/.test(entry.file)),
+      resources,
+    };
+    document.querySelector('#result').textContent = JSON.stringify(result, null, 2);
+  });
+</script>
+</html>

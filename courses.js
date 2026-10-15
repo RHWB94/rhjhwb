@@ -105,17 +105,8 @@
   const createPicture = (key, index, title) => {
     const picture = document.createElement('picture');
 
-    const touch = document.createElement('source');
-    touch.type = 'image/webp';
-    touch.media = '(any-pointer: coarse)';
-    touch.srcset = `./course-photo/${key}-${index}_360.webp`;
-
-    const large = document.createElement('source');
-    large.type = 'image/webp';
-    // Album prints are small: touch devices do not need 1200px downloads.
-    large.media = '(min-width: 1200px) and (hover: hover) and (pointer: fine)';
-    large.srcset = `./course-photo/${key}-${index}_1200.webp`;
-
+    // Scattered prints are at most 274 CSS px wide, including on desktop.
+    // Use the existing preview instead of downloading twelve 1200px photos.
     const small = document.createElement('source');
     small.type = 'image/webp';
     small.srcset = `./course-photo/${key}-${index}_360.webp`;
@@ -125,9 +116,6 @@
     img.loading = 'eager';
     img.decoding = 'async';
 
-    // Keep iPads on the small source even when a trackpad is connected.
-    picture.appendChild(touch);
-    picture.appendChild(large);
     picture.appendChild(small);
     picture.appendChild(img);
     // Assemble <picture> before setting src, avoiding an original JPG request
@@ -172,38 +160,37 @@
     if (img.complete && img.currentSrc) loaded();
   });
 
-  const revealPhotos = async (photos, photoLayer, signal) => {
-    const ready = await Promise.all(photos.map((item) => waitForPhoto(item.querySelector('img'), signal)));
-    const stillOpen = () => (
-      !signal.aborted && photoLoadController?.signal === signal && activeCard &&
-      !overlayRoot.classList.contains('is-closing') && photoLayer.contains(photos[0])
-    );
-    if (!stillOpen()) return;
-    photos.forEach((item, index) => {
-      if (!ready[index]) {
+  const revealPhotos = (photos, photoLayer, signal) => Promise.all(
+    photos.map(async (item, index) => {
+      const delay = photoSeeds[index].delay;
+      const stillOpen = () => (
+        !signal.aborted && photoLoadController?.signal === signal && activeCard &&
+        !overlayRoot.classList.contains('is-closing') && photoLayer.contains(item)
+      );
+      const ready = await waitForPhoto(item.querySelector('img'), signal);
+      if (!stillOpen()) return;
+      if (!ready) {
         item.dataset.failed = 'true';
         item.hidden = true;
+        return;
       }
-    });
-    const reveal = () => {
-      if (!stillOpen()) return;
-      photos.forEach((item, index) => {
-        if (!ready[index]) return;
+      const reveal = () => {
+        if (!stillOpen()) return;
         const show = () => {
           if (stillOpen()) item.classList.add('is-visible');
         };
         if (reducedMotion.matches) show();
-        else enterTimers.push(window.setTimeout(show, photoSeeds[index].delay));
+        else enterTimers.push(window.setTimeout(show, delay));
+      };
+      // Paint each loaded photo's starting transform before animating it.
+      // A slow or failed neighbour must not hold the whole album blank.
+      window.getComputedStyle(item).transform;
+      window.requestAnimationFrame(() => {
+        if (!stillOpen()) return;
+        window.requestAnimationFrame(reveal);
       });
-    };
-    // Flush the starting transforms, then give WebKit a painted frame before
-    // changing classes. Cached images must animate just like first-time loads.
-    photos.filter((item) => !item.hidden).forEach((item) => { window.getComputedStyle(item).transform; });
-    window.requestAnimationFrame(() => {
-      if (!stillOpen()) return;
-      window.requestAnimationFrame(reveal);
-    });
-  };
+    })
+  );
 
   const pickPositions = (titleRect, contentRect) => {
     const width = overlayRoot.clientWidth;
@@ -306,15 +293,15 @@
     const titleSlot = overlayRoot.querySelector('.course-experience-title-slot');
     const isNewAlbum = photoLayer.children.length === 0;
     if (isNewAlbum) {
-      photoIndexes.forEach((photoIndex) => {
+      photoIndexes.forEach(() => {
         const item = document.createElement('div');
         item.className = 'course-experience-photo';
-        item.appendChild(createPicture(key, photoIndex, title));
         photoLayer.appendChild(item);
       });
     }
     const photos = Array.from(photoLayer.children);
     const placements = pickPositions(titleSlot.getBoundingClientRect(), contentBox.getBoundingClientRect());
+    const photosToLoad = [];
 
     placements.forEach((placement, index) => {
       const item = photos[index];
@@ -331,9 +318,15 @@
       item.style.setProperty('--photo-throw-y', placement.throwY);
       item.style.setProperty('--photo-leave-x', placement.leaveX);
       item.style.setProperty('--photo-leave-y', placement.leaveY);
+      // Start requests only for photos that fit. Resizing can load additional
+      // slots without replacing or replaying photos already in the album.
+      if (!item.firstElementChild) {
+        item.appendChild(createPicture(key, photoIndexes[index], title));
+        photosToLoad[index] = item;
+      }
     });
     photos.slice(placements.length).forEach((item) => { item.hidden = true; });
-    if (isNewAlbum) revealPhotos(photos, photoLayer, photoLoadController.signal);
+    if (photosToLoad.length) revealPhotos(photosToLoad, photoLayer, photoLoadController.signal);
   };
 
   const syncFloatingTitleToSlot = () => {

@@ -276,7 +276,7 @@ test('an already aborted session rejects even a cached loaded image', async () =
   assert.equal(await h.waitForPhoto(img, h.controller.signal), false);
 });
 
-test('the whole batch waits for its slowest decode and two animation frames', async () => {
+test('each photo gets two painted frames and its own delay without waiting for a slow decode', async () => {
   const h = harness({ delays: [10, 30] });
   const slowDecode = deferred();
   const photos = [photo(), photo()];
@@ -284,13 +284,10 @@ test('the whole batch waits for its slowest decode and two animation frames', as
   const reveal = h.revealPhotos(photos, layerFor(photos), h.controller.signal);
   photos.forEach((item) => item.img.load());
   await flush();
-  assert.equal(h.frames.size, 0);
+  assert.deepEqual(h.paintReads, [photos[0]]);
+  assert.equal(h.frames.size, 1);
   assert.equal(h.timers.size, 1, 'Only the outstanding decode timeout remains');
   assert.ok(photos.every((item) => !item.classList.contains('is-visible')));
-  slowDecode.resolve();
-  await reveal;
-  assert.deepEqual(h.paintReads, photos);
-  assert.equal(h.frames.size, 1);
   h.frame();
   h.advance(100);
   assert.ok(photos.every((item) => !item.classList.contains('is-visible')));
@@ -301,11 +298,51 @@ test('the whole batch waits for its slowest decode and two animation frames', as
   h.advance(1);
   assert.equal(photos[0].classList.contains('is-visible'), true);
   assert.equal(photos[1].classList.contains('is-visible'), false);
-  h.advance(20);
+
+  slowDecode.resolve();
+  await reveal;
+  assert.deepEqual(h.paintReads, photos);
+  h.frame();
+  h.advance(100);
+  assert.equal(photos[1].classList.contains('is-visible'), false);
+  h.frame();
+  h.advance(29);
+  assert.equal(photos[1].classList.contains('is-visible'), false);
+  h.advance(1);
   assert.ok(photos.every((item) => item.classList.contains('is-visible')));
 });
 
-test('failed images are hidden while the remaining loaded batch animates', async () => {
+test('a stalled load does not delay ready photos and stays hidden after its timeout', async () => {
+  const h = harness({ delays: [0, 0] });
+  const photos = [photo(), photo()];
+  let settled = false;
+  const reveal = h.revealPhotos(photos, layerFor(photos), h.controller.signal)
+    .then(() => { settled = true; });
+  photos[0].img.load();
+  await flush();
+  h.frame();
+  h.frame();
+  h.advance(0);
+  assert.equal(photos[0].classList.contains('is-visible'), true);
+  assert.equal(photos[1].classList.contains('is-visible'), false);
+  assert.equal(settled, false, 'The returned promise still tracks the pending image');
+  h.advance(11999);
+  await flush();
+  assert.equal(settled, false);
+  h.advance(1);
+  await reveal;
+  assert.equal(photos[1].hidden, true);
+  assert.equal(photos[1].dataset.failed, 'true');
+  photos[1].img.load();
+  await flush();
+  h.frame();
+  h.frame();
+  h.advance(100);
+  assert.equal(photos[1].classList.contains('is-visible'), false);
+  assert.equal(h.timers.size, 0);
+});
+
+test('failed images are hidden while the remaining loaded photo animates', async () => {
   const h = harness({ delays: [0, 0] });
   const photos = [photo(), photo()];
   const reveal = h.revealPhotos(photos, layerFor(photos), h.controller.signal);
@@ -319,6 +356,85 @@ test('failed images are hidden while the remaining loaded batch animates', async
   h.advance(0);
   assert.equal(photos[0].classList.contains('is-visible'), true);
   assert.equal(photos[1].classList.contains('is-visible'), false);
+});
+
+test('cached photos retain two painted frames and the staggered entry delay', async () => {
+  const h = harness({ delays: [10, 30] });
+  const photos = [photo(), photo()];
+  photos.forEach((item) => item.img.load());
+  await h.revealPhotos(photos, layerFor(photos), h.controller.signal);
+  assert.deepEqual(h.paintReads, photos);
+  assert.ok(photos.every((item) => !item.classList.contains('is-visible')));
+  h.frame();
+  h.advance(100);
+  assert.ok(photos.every((item) => !item.classList.contains('is-visible')));
+  h.frame();
+  h.advance(9);
+  assert.ok(photos.every((item) => !item.classList.contains('is-visible')));
+  h.advance(1);
+  assert.equal(photos[0].classList.contains('is-visible'), true);
+  assert.equal(photos[1].classList.contains('is-visible'), false);
+  h.advance(20);
+  assert.ok(photos.every((item) => item.classList.contains('is-visible')));
+});
+
+test('reduced motion reveals a ready photo without its entry delay or waiting for slower photos', async () => {
+  const h = harness({ reducedMotion: true, delays: [500, 500] });
+  const photos = [photo(), photo()];
+  const reveal = h.revealPhotos(photos, layerFor(photos), h.controller.signal);
+  photos[0].img.load();
+  await flush();
+  h.frame();
+  h.frame();
+  assert.equal(photos[0].classList.contains('is-visible'), true);
+  assert.equal(photos[1].classList.contains('is-visible'), false);
+  assert.equal(h.timers.size, 1, 'Only the still-loading photo has a timeout');
+  photos[1].img.fail();
+  await reveal;
+  assert.equal(photos[1].hidden, true);
+  assert.equal(photos[1].classList.contains('is-visible'), false);
+  assert.equal(h.timers.size, 0);
+});
+
+test('sparse photo arrays keep each photo paired with its original seed delay', async () => {
+  const h = harness({ delays: [0, 20, 200, 40] });
+  const photos = [];
+  photos[1] = photo();
+  photos[3] = photo();
+  const reveal = h.revealPhotos(photos, layerFor(photos), h.controller.signal);
+  photos.forEach((item) => item.img.load());
+  await reveal;
+  assert.deepEqual(h.paintReads, [photos[1], photos[3]]);
+  h.frame();
+  h.frame();
+  h.advance(19);
+  assert.ok(photos.every((item) => !item.classList.contains('is-visible')));
+  h.advance(1);
+  assert.equal(photos[1].classList.contains('is-visible'), true);
+  assert.equal(photos[3].classList.contains('is-visible'), false);
+  h.advance(19);
+  assert.equal(photos[3].classList.contains('is-visible'), false);
+  h.advance(1);
+  assert.equal(photos[3].classList.contains('is-visible'), true);
+});
+
+test('a detached photo cannot reveal or prevent remaining photos from appearing', async () => {
+  for (const phase of ['loading', 'before-frames', 'before-delay']) {
+    const h = harness({ delays: [10, 10] });
+    const photos = [photo(), photo()];
+    const attached = new Set(photos);
+    const reveal = h.revealPhotos(photos, { contains: (item) => attached.has(item) }, h.controller.signal);
+    if (phase === 'loading') attached.delete(photos[0]);
+    photos.forEach((item) => item.img.load());
+    await reveal;
+    if (phase === 'before-frames') attached.delete(photos[0]);
+    h.frame();
+    h.frame();
+    if (phase === 'before-delay') attached.delete(photos[0]);
+    h.advance(10);
+    assert.equal(photos[0].classList.contains('is-visible'), false, phase);
+    assert.equal(photos[1].classList.contains('is-visible'), true, phase);
+  }
 });
 
 test('closing while loading prevents stale photos from scheduling a reveal', async () => {
@@ -370,24 +486,20 @@ test('closing after paint but before the delayed entry also cancels reveal', asy
   assert.equal(photos[0].classList.contains('is-visible'), false);
 });
 
-test('picture sources precede src; touch tablets keep small assets even with a trackpad', () => {
+test('album pictures select the small WebP on every device before setting the JPG fallback', () => {
   const h = harness();
   const picture = h.createPicture('course4', 7, '節奏練習');
-  const [touch, large, small, img] = picture.children;
-  assert.deepEqual(picture.children.map((item) => item.tagName), ['SOURCE', 'SOURCE', 'SOURCE', 'IMG']);
-  assert.equal(touch.type, 'image/webp');
-  assert.equal(touch.media, '(any-pointer: coarse)');
-  assert.equal(touch.srcset, './course-photo/course4-7_360.webp');
-  assert.equal(large.type, 'image/webp');
-  assert.equal(large.srcset, './course-photo/course4-7_1200.webp');
-  assert.equal(large.media, '(min-width: 1200px) and (hover: hover) and (pointer: fine)');
+  const [small, img] = picture.children;
+  assert.deepEqual(picture.children.map((item) => item.tagName), ['SOURCE', 'IMG']);
+  assert.equal(small.type, 'image/webp');
   assert.equal(small.srcset, './course-photo/course4-7_360.webp');
-  assert.equal(small.media, undefined, 'The smaller source remains available to wide touch tablets');
+  assert.equal(small.media, undefined, 'Large desktops and touch devices use the same album-sized asset');
   assert.equal(img.src, './course-photo/course4-7.jpg');
+  assert.equal(img.alt, '節奏練習 7');
   assert.equal(img.loading, 'eager');
   assert.equal(img.decoding, 'async');
   const srcWrites = h.pictureLog.filter((entry) => entry.type === 'src');
   assert.equal(srcWrites.length, 1);
-  assert.deepEqual(srcWrites[0].siblings, [touch, large, small, img]);
+  assert.deepEqual(srcWrites[0].siblings, [small, img]);
   assert.equal(h.pictureLog.at(-1), srcWrites[0]);
 });
