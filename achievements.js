@@ -1,4 +1,4 @@
-// achievements.js | 將頁內資料與渲染外移，維持原有功能並補強可用性
+// achievements.js | 緞帶獎章、同項目成績對照與年度篩選
 (() => {
   // === 資料 ===
   const DATA = {
@@ -88,79 +88,111 @@
     }
   };
 
-  const BADGE_CLASS = {
-    '特優': 'b-特優',
-    '優等': 'b-優等',
-    '甲等': 'b-甲等',
-    '未出賽': 'b-尚未出賽',
-    '無': 'b-無',
-    '尚未出賽': 'b-尚未出賽',
-    '疫情停辦': 'b-無'
+  const MEDAL_CLASS = {
+    '特優': 'is-gold',
+    '優等': 'is-silver',
+    '甲等': 'is-bronze'
+  };
+  const SCOPE_LABEL = {
+    '桃園市學生音樂比賽': '桃園市',
+    '全國學生音樂比賽': '全國'
   };
 
   // === DOM 參照 ===
   const cards = document.getElementById('cards');
   const filtersWrap = document.getElementById('year-filters');
+  const filterStatus = document.getElementById('achievement-filter-status');
   if (!cards || !filtersWrap) return;
 
   // 年度排序（與原本相同，使用中文數字比較）
   const order = Object.keys(DATA).sort((a, b) => b.localeCompare(a, 'zh-Hant-u-nu-hanidec'));
 
   // === 元件 ===
-  const makeBadge = (text) => {
-    const span = document.createElement('span');
-    const badgeClass = Object.entries(BADGE_CLASS).find(([label]) => text.includes(label))?.[1] ?? 'b-無';
+  const makeAward = (scope, text) => {
+    const award = document.createElement('div');
+    award.className = 'achievement-award';
+    award.setAttribute('role', 'img');
+    award.setAttribute('aria-label', `${scope}：${text}`);
 
-    span.className = `badge ${badgeClass}`;
-    span.innerHTML = `<span class="dot" aria-hidden="true"></span>${text}`;
-    return span;
+    const scopeLabel = document.createElement('div');
+    scopeLabel.className = 'achievement-scope';
+    scopeLabel.setAttribute('aria-hidden', 'true');
+    scopeLabel.textContent = SCOPE_LABEL[scope] || scope;
+    award.appendChild(scopeLabel);
+
+    const match = text.match(/^(特優|優等|甲等)(\([^)]*\))?$/);
+    const disc = document.createElement('div');
+    disc.className = `achievement-disc ${match ? MEDAL_CLASS[match[1]] : 'is-noaward'}`;
+    disc.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span');
+    label.className = 'achievement-award-label';
+    if (text === '疫情停辦') {
+      label.append('疫情', document.createElement('br'), '停辦');
+    } else {
+      label.textContent = match ? match[1] : text;
+    }
+    disc.appendChild(label);
+
+    if (match) {
+      // 分數獨立定位，不影響獎項大字在圓章中央的位置。
+      const score = document.createElement('small');
+      score.className = 'achievement-score';
+      score.textContent = match[2] || '';
+      disc.appendChild(score);
+      const ribbon = document.createElement('div');
+      ribbon.className = 'achievement-rosette';
+      ribbon.setAttribute('aria-hidden', 'true');
+      ribbon.appendChild(disc);
+      award.appendChild(ribbon);
+    } else {
+      award.appendChild(disc);
+    }
+    return award;
   };
 
 
   const makeCard = (year, y) => {
-    const card = document.createElement('div');
-    card.className = 'card pad year-card';
+    const card = document.createElement('section');
+    card.className = 'achievement-year';
 
     const hd = document.createElement('div');
-    hd.className = 'hd';
+    hd.className = 'achievement-year-heading';
     const h3 = document.createElement('h3'); h3.textContent = year;
-    const desc = document.createElement('div'); desc.className = 'desc'; desc.textContent = '桃園市／全國';
+    h3.id = `achievement-year-${year.replace(/\D/g, '')}`;
+    card.setAttribute('aria-labelledby', h3.id);
+    const desc = document.createElement('p');
+    desc.className = 'achievement-year-description';
+    desc.append('桃園市 / 全國', document.createElement('br'), '學生音樂比賽');
     hd.appendChild(h3); hd.appendChild(desc);
     card.appendChild(hd);
 
-    const blocks = document.createElement('div');
-    blocks.className = 'blocks';
-
-    Object.keys(y).forEach(scope => {
-      const block = document.createElement('div');
-      block.className = 'block';
-      const h4 = document.createElement('h4'); h4.textContent = scope; block.appendChild(h4);
-
-      const rows = document.createElement('div');
-      rows.className = 'rows';
-
-      Object.keys(y[scope]).forEach(item => {
-        const row = document.createElement('div'); row.className = 'row';
-        const left = document.createElement('div'); left.className = 'label'; left.textContent = item;
-        const right = document.createElement('div'); right.appendChild(makeBadge(y[scope][item]));
-        row.appendChild(left); row.appendChild(right);
-        rows.appendChild(row);
-      });
-
-      block.appendChild(rows);
-      blocks.appendChild(block);
+    const items = document.createElement('div');
+    items.className = 'achievement-items';
+    const scopes = Object.keys(y);
+    const itemNames = [...new Set(scopes.flatMap(scope => Object.keys(y[scope])))];
+    itemNames.forEach(item => {
+      const article = document.createElement('article');
+      article.className = 'achievement-item';
+      article.setAttribute('aria-label', item);
+      const h4 = document.createElement('h4');
+      h4.textContent = item;
+      const pair = document.createElement('div');
+      pair.className = 'achievement-pair';
+      scopes.forEach(scope => pair.appendChild(makeAward(scope, y[scope][item] ?? '—')));
+      article.append(h4, pair);
+      items.appendChild(article);
     });
 
-    card.appendChild(blocks);
+    card.appendChild(items);
     return card;
   };
 
   // === 渲染 ===
   const animateIn = (container) => {
-    container.classList.add('anim-enter');
-    const list = Array.from(container.children);
-    list.forEach((el, i) => setTimeout(() => el.classList.add('anim-in'), 60 * i));
-    setTimeout(() => container.classList.remove('anim-enter'), 60 * list.length + 400);
+    // 延遲只屬於當次建立的卡片，快速切換不留下舊計時器。
+    Array.from(container.children).forEach((el, i) => {
+      el.style.setProperty('--achievement-delay', `${60 * i}ms`);
+    });
   };
 
   const render = (filter = 'all') => {
@@ -171,6 +203,11 @@
     }
     cards.innerHTML = '';
     cards.appendChild(frag);
+    if (filterStatus) {
+      filterStatus.textContent = filter === 'all'
+        ? `${order.at(-1).replace('學年度', '')}–${order[0]} · 共 ${order.length} 屆`
+        : filter;
+    }
     animateIn(cards);
   };
 
@@ -179,7 +216,7 @@
     const years = order;
     const btnAll = document.createElement('button');
     btnAll.type = 'button';
-    btnAll.className = 'btn';
+    btnAll.className = 'achievement-filter is-all';
     btnAll.dataset.filter = 'all';
     btnAll.setAttribute('aria-pressed', 'true');
     btnAll.textContent = '全部年度';
@@ -188,14 +225,19 @@
     years.forEach(y => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'btn';
+      b.className = 'achievement-filter';
       b.dataset.filter = y;
       b.setAttribute('aria-pressed', 'false');
-      b.textContent = y;
+      b.setAttribute('aria-label', y);
+      const yearNumber = document.createElement('span');
+      yearNumber.textContent = y.replace('學年度', '');
+      const suffix = document.createElement('small');
+      suffix.textContent = '學年度';
+      b.append(yearNumber, suffix);
       filtersWrap.appendChild(b);
     });
 
-    const buttons = Array.from(filtersWrap.querySelectorAll('.btn'));
+    const buttons = Array.from(filtersWrap.querySelectorAll('.achievement-filter'));
     let currentFilter = null;
 
     const setActive = (btn, { updateUrl = true, focusCards = true } = {}) => {
@@ -214,9 +256,7 @@
       }
       // 將焦點帶回列表（與原行為一致）
       if (focusCards) {
-        cards.setAttribute('tabindex', '-1');
         cards.focus();
-        cards.removeAttribute('tabindex');
       }
     };
 
@@ -235,6 +275,10 @@
         e.preventDefault();
         const p = buttons[(idx - 1 + buttons.length) % buttons.length];
         p.focus(); setActive(p, { focusCards: false });
+      } else if (e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        const target = e.key === 'Home' ? buttons[0] : buttons.at(-1);
+        target.focus(); setActive(target, { focusCards: false });
       }
     });
 

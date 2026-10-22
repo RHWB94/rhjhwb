@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>仁和國中管樂團 | 比賽佳績</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="achievements.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="favicon.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="favicon.png">
@@ -57,24 +58,19 @@
       </div>
     </section>
 
-    <!-- Toolbar：收斂為白卡樣式，置頂 -->
-    <section class="panel is-auto">
-      <div class="container card achievements-toolbar" role="region" aria-label="成績篩選工具列">
-        <div class="ach-toolbar-row">
-          <h2 class="cta-title">查看歷屆成績</h2>
-        </div>
-        <div class="ach-toolbar-row">
-          <div class="filters" role="group" aria-label="年度篩選" id="year-filters">
+    <!-- 年度篩選與同項目市賽／全國賽對照 -->
+    <section class="panel is-auto achievements-content" aria-labelledby="achievement-filter-title">
+      <div class="container achievements-container">
+        <div class="achievement-toolbar" role="region" aria-label="成績篩選工具列">
+          <div class="achievement-toolbar-heading">
+            <h2 id="achievement-filter-title">查看歷屆成績</h2>
+            <span id="achievement-filter-status" class="achievement-filter-status"></span>
+          </div>
+          <div class="achievement-filters" role="group" aria-label="年度篩選" id="year-filters">
             <!-- 由 achievements.js 產生年度按鈕 -->
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Cards -->
-    <section class="panel is-auto cards-panel">
-      <div class="container">
-        <div class="achievements-grid" id="cards" aria-live="polite"></div>
+        <div class="achievement-results" id="cards" role="region" aria-live="polite" aria-label="比賽成績" tabindex="-1"></div>
       </div>
     </section>
   </main>
